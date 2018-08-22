@@ -1,0 +1,2222 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EntLibContrib.Logging</name>
+    </assembly>
+    <members>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampParserFraction">
+            <summary>
+            Encapsulates the logic for parsing the time stamp text from a log file.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.ITimeStampParser">
+            <summary>
+            Generic Interface for parsing the timeStamp text from a log file.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.ITimeStampParser.ParseTimeStamp(System.String)">
+            <summary>
+            Parse the timeStamp text from a log file.
+            </summary>
+            <param name="timeStampText">The time stamp text.</param>
+            <returns>date and time</returns>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.TimeStampParserFraction.TimeStampFormat">
+            <summary>
+            TimeStamp format
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFraction.#ctor">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            Sets <see cref="P:EntLibContrib.Logging.Parser.TimeStampParserFraction.FormatProvider"/> to <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFraction.#ctor(System.IFormatProvider)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFraction.ParseTimeStamp(System.String)">
+            <summary>
+            Parse the time stamp text from a log file.
+            </summary>
+            <param name="timeStampText">time stamp text</param>
+            <returns>date and time</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampParserFraction.FormatProvider">
+            <summary>
+            Specify time stamp format for month-day or day-month order, etc.
+            </summary>
+            <value>The format provider.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.FileIO">
+            <summary>
+            Capability not available in <see cref="T:System.IO.File"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FileIO.ReadAllText(System.String,System.IO.FileShare)">
+            <summary>
+            Opens a text file, reads all lines of the file, and then closes the file.
+            </summary>
+            <param name="path">The file to open for reading.</param>
+            <param name="share">Specifies the type of access others can have to the file.</param>
+            <returns>
+            A string array containing all lines of the file.
+            </returns>
+            <exception cref="T:System.OutOfMemoryException">Thrown with the path as the message when the file is too large to open.</exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FileIO.ReadAllText(System.String)">
+            <summary>
+            Read all the text from a file that is already open due to write.
+            </summary>
+            <param name="path">The file to open for reading.</param>
+            <returns>
+            A string array containing all lines of the file.
+            </returns>
+            <remarks>
+            Avoids the <see cref="T:System.IO.IOException"/> :
+            The process cannot access the file 'path'
+            because it is being used by another process.
+            </remarks>
+            <exception cref="T:System.OutOfMemoryException">Thrown when the file too large to open.</exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.DateTimeProvider">
+            <summary>
+            DateTime provider
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.DateTimeProvider.CurrentDateTime">
+            <summary>
+            Gets the current date time.
+            </summary>
+            <value>The current date time.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingFileSizeException">
+            <summary>
+            Wrapper for the OutOfMemoryException when reading a log file
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileSizeException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.LoggingFileSizeException"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileSizeException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.LoggingFileSizeException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileSizeException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.LoggingFileSizeException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileSizeException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.LoggingFileSizeException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.NativeMethods">
+            <summary>
+            Platform Invocation methods used to support Tracer.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.NativeMethods.GetCurrentProcessId">
+            <summary>
+            Made public for testing purposes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.NativeMethods.GetModuleFileName(System.IntPtr,System.Text.StringBuilder,System.Int32)">
+            <summary>
+            Made public for testing purposes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.NativeMethods.GetModuleHandle(System.String)">
+            <summary>
+            Made public for testing purposes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.NativeMethods.GetCurrentThreadId">
+            <summary>
+            Made public for testing purposes.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="F:EntLibContrib.Logging.NativeMethods.ExtendedNameFormat.NameDnsDomain">
+            <summary>
+            DNS domain name + SAM username 
+            eg: engineering.widget.com\JohnDoe
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Formatters.TemplateTextFormatter">
+            <summary>
+            Custom template text formatter.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Formatters.ITemplateTextFormatter">
+            <summary>
+            Exposes the Template and Text Formatter classes e.g.
+            <see cref="T:EntLibContrib.Logging.Formatters.TemplateTextFormatter"/>.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.ITemplateText">
+            <summary>
+            Exposes the Template of Text Formatter classes e.g.
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TextFormatterData"/>
+            and
+            <see cref="T:EntLibContrib.Logging.Formatters.TemplateTextFormatter"/>.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.ITemplateText.Template">
+            <summary>
+            Template containing tokens to replace by the text formatter.
+            </summary>
+            <value>The template.</value>
+        </member>
+        <member name="M:EntLibContrib.Logging.Formatters.TemplateTextFormatter.#ctor(System.String)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="templateData">Template containing tokens to replace.</param>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.TemplateTextFormatterData">
+            <summary>
+            Represents the configuration settings for a custom template text formatter.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.ITemplateTextFormatterData">
+            <summary>
+            Exposes the properties of Template based Text Formatter classes e.g.
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TextFormatterData"/>.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.ITemplateTextFormatterData.Name">
+            <summary>
+            Name of the trace listener instance.
+            </summary>
+            <value>The name.</value>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.TemplateTextFormatterData.GetRegistrations">
+            <summary>
+            Returns the <see cref="T:Microsoft.Practices.EnterpriseLibrary.Common.Configuration.ContainerModel.TypeRegistration"/> entry for this data section.
+            </summary>
+            <returns>The type registration for this data section</returns>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper">
+            <summary>
+            Encapsulates the logic to perform rolls.
+            </summary>
+            <remarks>
+            If no rolling behavior has been configured no further processing will be performed.
+            </remarks>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.owner">
+            <summary>
+            The trace listener for which rolling is being managed.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.performsRolling">
+            <summary>
+            A flag indicating whether at least one rolling criteria has been configured.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.dateTimeProvider">
+            <summary>
+            The provider for the current date. Necessary for unit testing.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.managedWriter">
+            <summary>
+            A tally keeping writer used when file size rolling is configured.<para/>
+            The original stream writer from the base trace listener will be replaced with
+            this listener.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.nextRollDateTime">
+            <summary>
+            The next date when date based rolling should occur if configured.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.#ctor(EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper"/> class.
+            </summary>
+            <param name="owner">The owner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.RollIfNecessary">
+            <summary>
+            Rolls if necessary.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.UpdateRollingInformationIfNecessary">
+            <summary>
+            Updates bookeeping information necessary for rolling, as required by the specified
+            rolling configuration.
+            </summary>
+            <returns>
+            true if update was successful, false if an error occurred.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.CheckIsRollNecessary">
+            <summary>
+            Checks whether rolling should be performed, and returns the date to use when performing the roll.
+            </summary>
+            <returns>
+            The date roll to use if performing a roll, or <see langword="null"/> if no rolling should occur.
+            </returns>
+            <remarks>
+            Defer request for the roll date until it is necessary to avoid overhead.<para/>
+            Information used for rolling checks should be set by now.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.PerformRoll(System.DateTime)">
+            <summary>
+            Performs the roll.
+            </summary>
+            <param name="rollDateTime">The roll date time.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.ComputeArchiveFileName(System.String,System.DateTime)">
+            <summary>
+            Computes the name of the archive file.
+            </summary>
+            <param name="actualFileName">Actual name of the file.</param>
+            <param name="currentDateTime">The current date time.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.FindMaxSequenceNumber(System.String,System.String,System.String)">
+            <summary>
+            Finds the max sequence number.
+            </summary>
+            <param name="directoryName">Name of the directory.</param>
+            <param name="fileName">Name of the file.</param>
+            <param name="extension">The extension.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.CalculateNextRollDate(System.DateTime)">
+            <summary>
+            Calculates the next roll date.
+            </summary>
+            <param name="dateTime">The date time.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.Dispose">
+            <summary>
+            Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.DateTimeProvider">
+            <summary>
+            Sets the date time provider.
+            </summary>
+            <value>The date time provider.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.StreamWriterRollingHelper.NextRollDateTime">
+            <summary>
+            Gets the next roll date time.
+            </summary>
+            <value>The next roll date time.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.FlatFileTraceListenerFile">
+            <summary>
+            Adds interface that exposes the preexisting properties of the class.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.IFileTraceListenerData">
+            <summary>
+            Exposes common file properties of classes derived from
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TraceListenerData"/>.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.IFileTraceListenerData.FileName">
+            <summary>
+            File name to write the log entry into.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.IFileTraceListenerData.Footer">
+            <summary>
+            Footer to write after the log entry.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.IFileTraceListenerData.Formatter">
+            <summary>
+            Name of the formatter that will format the log entry.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.IFileTraceListenerData.Header">
+            <summary>
+            Header to write before the log entry.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.IFileTraceListenerData.Name">
+            <summary>
+            Name of the trace listener instance.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampParserLocal">
+            <summary>
+            Encapsulates the logic for parsing the local time stamp text from a log file.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.TimeStampParserLocal.TimeStampFormat">
+            <summary>
+            TimeStamp format
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserLocal.#ctor">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            Sets <see cref="P:EntLibContrib.Logging.Parser.TimeStampParserLocal.FormatProvider"/> to <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserLocal.#ctor(System.IFormatProvider)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserLocal.ParseTimeStamp(System.String)">
+            <summary>
+            Parse the time stamp text from a log file.
+            </summary>
+            <param name="timeStampText">time stamp text</param>
+            <returns>date and time</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampParserLocal.FormatProvider">
+            <summary>
+            Specify time stamp format for month-day or day-month order, etc.
+            </summary>
+            <value>The format provider.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LogEntryParser">
+            <summary>
+            Encapsulates the logic for parsing the log entry text from a log file.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LogEntryParser.#ctor">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LogEntryParser.#ctor(EntLibContrib.Logging.Parser.ITimeStampParser)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="theTimeStampParser">the time stamp parser to use</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LogEntryParser.DeserializeLogEntry(System.Text.RegularExpressions.Match)">
+            <summary>
+            Deserialize the regular expression match values into a log entry object.
+            </summary>
+            <param name="match">The match.</param>
+            <returns>the deserialized log entry</returns>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.RegularExpressionBuilder">
+            <summary>
+            Read the logging configuration and build from each TextFormatter message template a corresponding regular expression which
+            is the tokenizer for the log file or the windows event log.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.TimeStampToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.PropertyToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.DictionaryToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.MessageToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.CategoryToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.PriorityToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.EventIdToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.SeverityToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.TitleToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ErrorMessagesToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.MachineToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.AppDomainNameToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ProcessIdToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ProcessNameToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ThreadNameToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.Win32ThreadIdToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ActivityIdToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.NewLineToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.TabToken">
+            <summary>
+            Token which is used by the TextFormatter. Since it is not public we have it to redeclare here
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.DictionaryParameterToken">
+            <summary>
+            Dictionary parameter token
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.SeverityTokenValues">
+            <summary>
+            Allowed values of TraceEventType
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.Parser.RegularExpressionBuilder.myTemplateNameToTemplate">
+            <summary>
+            Map of template instance names to template string
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.RegularExpressionBuilder"/> class which retrieves the logging
+            configuration from the current applications App.Config file. Not really a real world scenario for
+            an application which logs and the parses its own previously written log file but it makes testing a
+            bit easier.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.#ctor(Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.RegularExpressionBuilder"/> class.
+            </summary>
+            <param name="source">The Enterprise Library configuration source which contains the logging settings.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.RegularExpressionBuilder"/> class.
+            </summary>
+            <param name="configFile">The config file containing the logging settings.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.ConcatCompleteTemplate(System.String,System.String,System.String)">
+            <summary>
+            Concatenate the complete template text with header and footer.
+            </summary>
+            <param name="listenerHeader">Header from the trace listener</param>
+            <param name="formatterTemplate">Template from the formatter</param>
+            <param name="listenerFooter">Footer from the listener</param>
+            <returns>
+            the complete template text with header and footer
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.AddFileNameAndTemplate(System.String,System.String)">
+            <summary>
+            Add for this log file a template to the internal list. This function does create from the given message
+            template the regular expression which can be used later.
+            </summary>
+            <param name="fileName">Name of the log file the template was used for.</param>
+            <param name="messageTemplate">The message template.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.DoBuildRegularExpressionFromTemplate(System.String)">
+            <summary>
+            Builds the regular expression from a message template.
+            </summary>
+            <param name="messageTemplate">The message template.</param>
+            <returns>
+            A regular expression which can match every message which was written with this template
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.BuildTemplateInstanceList">
+            <summary>
+            Builds the template instance list. It does iterate over all text formatters which have been read
+            from the logging configuration and creates a regular expression from every message template. Each
+            process template is stored in a dictionar with its name.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.CreateRegexFromListenerConfig">
+            <summary>
+            Create the final message template strings. At first we get from the FileListeners the header and footer strings which are added to the
+            complete template. Then we create for each configured log file from the full template string the regular expression which can parse
+            every message written into the log file or event logs.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.EscapeToken(System.String)">
+            <summary>
+            Escapes the token name with its enclosing tags plus the regular expression escape char for the { char
+            </summary>
+            <param name="tokenName">The token name.</param>
+            <returns>Escaped token</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.TreatToken(System.String,System.String,System.String)">
+            <summary>
+            Treat the special timeStamp( and property( tokens as blobs to create a correct regex from it.
+            </summary>
+            <param name="regex">The current regular expresson message template string.</param>
+            <param name="token">The token name.</param>
+            <param name="varName">Name of the capturing group which will match the formatted token string.</param>
+            <returns>
+            Changed regular expression message template
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.TreatDictionary(System.String)">
+            <summary>
+            Treat the dictionary token as blob data which will be stored as one string in the dictionary
+            </summary>
+            <param name="regex">Current Regular expression string</param>
+            <returns>Replaced dictionary token if present.</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.RegularExpressionBuilder.BuildRegularExpressionFromTemplate(System.String)">
+            <summary>
+            Builds the regular expression from a message template.
+            </summary>
+            <param name="messageTemplate">The message template.</param>
+            <returns>
+            A regular expression which can match every message which was written with this template
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.RegularExpressionBuilder.FileRegularExpressions">
+            <summary>
+            This is the result of our hard regular expression building after we did
+            parse the logging configuration and created from the TextFormatter templates the corresponding regular
+            expression lists.
+            Key is the event log name, or the log file name (without path). The values are a list regular expressions which
+            represent the tokenizer for this file.
+            </summary>
+            <value>The file regular expressions.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampFunctionParser">
+            <summary>
+            TimeStamp function parser
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampFunctionParser.#ctor(System.String,System.IFormatProvider)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="template">The template.</param>
+            <param name="formatProvider">The format provider.</param>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampFunctionParser.ParsingTemplate">
+            <summary>
+            Gets the parsing template.
+            </summary>
+            <value>The parsing template.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampFunctionParser.TimeStampParser">
+            <summary>
+            Gets the time stamp parser.
+            </summary>
+            <value>The time stamp parser.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader">
+            <summary>
+            This class is responsable for reading filtered LogEntry objects
+            written with a timeStamp function token with a custom date time format string
+            from a normal text file which has previously
+            been writtern by the Enterprise Library Logging Application Block.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.CategoryLogFileReader">
+            <summary>
+            Contains functions for reading log files and log setting from configuration files.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.#ctor">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.#ctor(EntLibContrib.Logging.Parser.ITimeStampParser)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="theTimeStampParser">The time stamp parser to use</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetConfigTraceListenerFileName(System.String,System.String)">
+            <summary>
+            Get the log file name from the specified category name in the logging settings configuration file.
+            </summary>
+            <param name="configurationFilePath">configuration file with the logging settings</param>
+            <param name="categoryName">category name</param>
+            <returns>name of the log file</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetConfigTraceListenerFileName(System.String)">
+            <summary>
+            Get the log file name from the specified category name in the app settings configuration file.
+            </summary>
+            <param name="categoryName">category name</param>
+            <returns>name of the log file</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetLoggingSettings(System.String)">
+            <summary>
+            Get the logging settings from the specified configuration file.
+            </summary>
+            <param name="configurationFilePath">configuration file with the logging settings</param>
+            <returns>the logging settings</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetLoggingSettings(Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Get the logging settings from the specified configuration source.
+            </summary>
+            <param name="configurationSource">logging configuration source</param>
+            <returns>the logging settings</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetConfigTraceSourceData(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings,System.String)">
+            <summary>
+            Get the configuration source data from the specified category name in the logging settings.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <param name="categoryName">category name</param>
+            <returns>
+            configuration source data for the category
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetTraceListeners(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings,Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TraceSourceData)">
+            <summary>
+            Iteration for each of the trace listeners in the category.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <param name="categoryTraceSourceData">configuration source data</param>
+            <returns>each of the trace listeners</returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetFileTraceListener(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings,Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TraceSourceData)">
+            <summary>
+            Get the trace listener that implements the file properties.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <param name="categoryTraceSourceData">configuration source data</param>
+            <returns>
+            the trace listener that implements the file properties
+            </returns>
+            <remarks>
+            Categories can reference multiple trace listeners, so
+            find the best match based on similarity between the category name and trace listener name
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.ConcatCompleteTemplate(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings,EntLibContrib.Logging.Configuration.IFileTraceListenerData)">
+            <summary>
+            Concatenate the complete template text with header and footer.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <param name="fileTraceListenerData">logging file trace listener configuration data with the common properties</param>
+            <returns>
+            the complete template text with header and footer
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetTextFormatterData(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings,EntLibContrib.Logging.Configuration.IFileTraceListenerData)">
+            <summary>
+            Get the logging text formatter configuration data for the logging trace listener.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <param name="fileTraceListenerData">logging file trace listener configuration data with the common properties</param>
+            <returns>
+            logging text formatter configuration data
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.GetTextFormatterData(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.FormatterData)">
+            <summary>
+            Get the logging template text formatter configuration data.
+            </summary>
+            <param name="theFormatter">configuration settings for a log formatter</param>
+            <returns>
+            logging text formatter configuration data
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.AppCategoryNames">
+            <summary>
+            Iterates through each category name in the app configuration logging settings.
+            </summary>
+            <returns>
+            an enumerator that iterates through each category name
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.ConfigCategoryNames(System.String)">
+            <summary>
+            Iterates through each category name in the logging configuration settings.
+            </summary>
+            <param name="configurationFilePath">configuration file with the logging settings</param>
+            <returns>
+            an enumerator that iterates through each category name
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.LogCategoryNames(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.LoggingSettings)">
+            <summary>
+            Iterates through each category name in the logging configuration settings.
+            </summary>
+            <param name="loggingSettings">logging configuration settings</param>
+            <returns>
+            an enumerator that iterates through each category name
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.ParseLogFile(System.String,System.String,System.String,EntLibContrib.Logging.Parser.Filter)">
+            <summary>
+            Iterates through each log entry using the specified trace listener in configuration file to build the template.
+            </summary>
+            <param name="configurationFilePath">configuration file with the logging settings</param>
+            <param name="categoryName">category name</param>
+            <param name="logFileName">name of the log file to parse, or null to use the one specified in the configuration</param>
+            <param name="filter">null for all or the filter range of interest</param>
+            <returns>
+            an enumerator that iterates through each log entry in the filter range
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.ParseLogText(System.String,System.String,EntLibContrib.Logging.Parser.Filter)">
+            <summary>
+            Iterates through each log entry that matches the template.
+            </summary>
+            <param name="template">log entry template for creating the regular expression</param>
+            <param name="logFileText">log file text</param>
+            <param name="filter">null for all or the filter range of interest</param>
+            <returns>
+            an enumerator that iterates through each log entry in the filter range
+            </returns>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.CategoryLogFileReader.ExposeTextFormatterData">
+            <summary>
+            Expose the properties of the <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TextFormatterData"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.CategoryLogFileReader.ExposeTextFormatterData.#ctor(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TextFormatterData)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="theData">The data.</param>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.CategoryLogFileReader.ExposeTextFormatterData.Name">
+            <summary>
+            Name of the trace listener instance.
+            </summary>
+            <value>The name.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.CategoryLogFileReader.ExposeTextFormatterData.Template">
+            <summary>
+            Template containing tokens to replace by the text formatter.
+            </summary>
+            <value>The template.</value>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader.#ctor(System.String,System.String,System.IFormatProvider)">
+            <summary>
+            Uses the category configuration information and time stamp format provider
+            to define the time stamp parser for log files.
+            </summary>
+            <param name="configurationFilePath">configuration file with the logging settings</param>
+            <param name="categoryName">category name</param>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader.#ctor(EntLibContrib.Logging.Configuration.IFileTraceListenerData,EntLibContrib.Logging.ITemplateText,System.IFormatProvider)">
+            <summary>
+            Constructor that specifies the configuration information needed
+            to define the time stamp parser for log files.
+            </summary>
+            <param name="fileTraceListenerData">config data with the file name, header and footer</param>
+            <param name="textFormatter">config data with the text formatter template</param>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader.ParseLogFile(System.String,EntLibContrib.Logging.Parser.Filter)">
+            <summary>
+            Iterates through each log entry in the specified log file.
+            </summary>
+            <param name="customLogFileName">name of the log file to parse, or null to use the one specified in the configuration</param>
+            <param name="filter">null for all or the filter range of interest</param>
+            <returns>
+            an enumerator that iterates through each log entry in the filter range
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader.ParseLogText(System.String,EntLibContrib.Logging.Parser.Filter)">
+            <summary>
+            Iterates through each log entry that matches the template.
+            </summary>
+            <param name="logFileText">log file text</param>
+            <param name="filter">null for all or the filter range of interest</param>
+            <returns>
+            an enumerator that iterates through each log entry in the filter range
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampFunctionLogFileReader.LogFileName">
+            <summary>
+            Log file name in the category configuration.
+            </summary>
+            <value>The name of the log file.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Install.LoggingInstaller">
+            <summary>
+            Logging Installer Class
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Install.LoggingInstaller.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Install.LoggingInstaller"/> class.
+            </summary>
+            <param name="configPath">The config path.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Install.LoggingInstaller.Install(System.Collections.IDictionary)">
+            <summary>
+            When overridden in a derived class, performs the installation.
+            </summary>
+            <param name="stateSaver">An <see cref="T:System.Collections.IDictionary"/> used to save information needed to perform a commit, rollback, or uninstall operation.</param>
+            <exception cref="T:System.ArgumentException">The <paramref name="stateSaver"/> parameter is null. </exception>
+            <exception cref="T:System.Exception">An exception occurred in the <see cref="E:System.Configuration.Install.Installer.BeforeInstall"/> event handler of one of the installers in the collection.-or- An exception occurred in the <see cref="E:System.Configuration.Install.Installer.AfterInstall"/> event handler of one of the installers in the collection. </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.Install.LoggingInstaller.Uninstall(System.Collections.IDictionary)">
+            <summary>
+            When overridden in a derived class, removes an installation.
+            </summary>
+            <param name="savedState">An <see cref="T:System.Collections.IDictionary"/> that contains the state of the computer after the installation was complete.</param>
+            <exception cref="T:System.ArgumentException">The saved-state <see cref="T:System.Collections.IDictionary"/> might have been corrupted. </exception>
+            <exception cref="T:System.Configuration.Install.InstallException">An exception occurred while uninstalling. This exception is ignored and the uninstall continues. However, the application might not be fully uninstalled after the uninstallation completes. </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.Install.LoggingInstaller.AddEventLogInstallers">
+            <summary>
+            Adds the event log installers.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener">
+            <summary>
+            Performs logging to a file and rolls the output file when either time or size thresholds are
+            exceeded.
+            </summary>
+            <remarks>
+            Logging always occurs to the configured file name, and when roll occurs a new rolled file name is calculated
+            by adding the timeStamp pattern to the configured file name.
+            <para/>
+            The need of rolling is calculated before performing a logging operation, so even if the thresholds are exceeded
+            roll will not occur until a new entry is logged.
+            <para/>
+            Both time and size thresholds can be configured, and when the first of them occurs both will be reset.
+            <para/>
+            The elapsed time is calculated from the creation date of the logging file.
+            </remarks>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener">
+            <summary>
+            A <see cref="T:System.Diagnostics.TraceListener"/> that writes to a flat file, formatting the output with an <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener">
+            <summary>
+            Extends <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener"/> to add formatting capabilities.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener">
+            <summary>
+            Alternative to <see cref="T:System.Diagnostics.TextWriterTraceListener"/> with No GUID in the file name.
+            </summary>
+            <remarks>
+            Does not need to inherit from <see cref="T:System.Diagnostics.TextWriterTraceListener"/>,
+            which would involve defining another private string fileName member.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor">
+            <summary>
+                Initializes a new instance.
+                with the default TextWriter as the output recipient.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance with a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance with a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.String)">
+            <summary>
+            Initializes a new named instance using the file name as the recipient.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.IO.Stream,System.String)">
+            <summary>
+            Initializes a new named instance with a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.IO.TextWriter,System.String)">
+            <summary>
+            Initializes a new named instance with a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new named instance with a file name.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.Close">
+            <summary>
+            Closes the <see cref="T:System.IO.TextWriter"/> so that it no longer receives tracing or debugging output.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.Flush">
+            <summary>
+            Flushes the output buffer for the <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.Write(System.String)">
+            <summary>
+            Writes a message to this instance's <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="message">A text message to write.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.WriteLine(System.String)">
+            <summary>
+            Writes a message to this instance's <see cref="T:System.IO.TextWriter"/>
+            followed by a line terminator. The default line terminator is a carriage
+            return followed by a line feed (\r\n).
+            </summary>
+            <param name="message">A message to write.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.Dispose(System.Boolean)">
+            <summary>
+            Disposes this object.
+            </summary>
+            <param name="disposing">true to release managed resources</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.EnsureWriter">
+            <summary>
+            Ensures the writer.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.MaxInstances">
+            <summary>
+            Max Instances in for loop appending count to file name, where 0 is no max
+            </summary>
+            <value>The max instances.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.ThrowMax">
+            <summary>
+            Throw Exception if Max Instances reached
+            </summary>
+            <value><c>true</c> if [throw max]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidTextWriterTraceListener.Writer">
+            <summary>
+            Gets or sets the text writer that receives the tracing or debugging output.
+            </summary>
+            <value>The writer.</value>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.Stream,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.Stream)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.TextWriter,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.TextWriter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a file name.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a file name.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.Stream,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.Stream,System.String)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a <see cref="T:System.IO.Stream"/>.
+            </summary>
+            <param name="stream">The stream to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.TextWriter,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.IO.TextWriter,System.String)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:System.IO.TextWriter"/>.
+            </summary>
+            <param name="writer">The writer to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.String,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a
+            <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> and a file name.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter to format the messages.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener"/> with a file name.
+            </summary>
+            <param name="fileName">The file name to write to.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.TraceData(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.Object)">
+            <summary>
+            Intercepts the tracing request to format the object to trace.
+            </summary>
+            <param name="eventCache">The context information.</param>
+            <param name="source">The trace source.</param>
+            <param name="eventType">The severity.</param>
+            <param name="id">The event id.</param>
+            <param name="data">The object to trace.</param>
+            <remarks>
+            Formatting is only performed if the object to trace is a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.LogEntry"/> and the formatter is set.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.GetSupportedAttributes">
+            <summary>
+            Declares "formatter" as a supported attribute name.
+            </summary>
+            <returns>
+            A string array naming the custom attributes supported by the trace listener, or null if there are no custom attributes.
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidFormattedTextWriterTraceListener.Formatter">
+            <summary>
+            Gets the <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/> used to format the trace messages.
+            </summary>
+            <value>The formatter.</value>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.FileStream,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.FileStream"/> and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="stream">The file stream writen to.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="stream">The file stream.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.StreamWriter,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.StreamWriter"/> and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="writer">The stream writer.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.StreamWriter"/>.
+            </summary>
+            <param name="writer">The stream writer.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="fileName">The file name.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name.
+            </summary>
+            <param name="fileName">The file name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String,System.String,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name, a header, a footer and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="fileName">The file stream.</param>
+            <param name="header">The header.</param>
+            <param name="footer">The footer.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String,System.String,System.String)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name, a header, and a footer.
+            </summary>
+            <param name="fileName">The file stream.</param>
+            <param name="header">The header.</param>
+            <param name="footer">The footer.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.FileStream,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.FileStream"/> and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="stream">The file stream.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.FileStream,System.String)">
+            <summary>
+            Initializes a new name instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.FileStream"/>.
+            </summary>
+            <param name="stream">The file stream.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.StreamWriter,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.StreamWriter"/> and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="writer">The stream writer.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.IO.StreamWriter,System.String)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a <see cref="T:System.IO.StreamWriter"/>.
+            </summary>
+            <param name="writer">The stream writer.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name and
+            a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter"/>.
+            </summary>
+            <param name="fileName">The file name.</param>
+            <param name="name">The name.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new named instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/> with a file name.
+            </summary>
+            <param name="fileName">The file name.</param>
+            <param name="name">The name.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.TraceData(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.Object)">
+            <summary>
+            Delivers the trace data to the underlying file.
+            </summary>
+            <param name="eventCache">The context information provided by <see cref="N:System.Diagnostics"/>.</param>
+            <param name="source">The name of the trace source that delivered the trace data.</param>
+            <param name="eventType">The type of event.</param>
+            <param name="id">The id of the event.</param>
+            <param name="data">The data to trace.</param>
+            <remarks>
+            Formatting is only performed if the object to trace is a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.LogEntry"/> and the formatter is set.
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener.GetSupportedAttributes">
+            <summary>
+            Declare the supported attributes for <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidFlatFileTraceListener"/>
+            </summary>
+            <returns>
+            A string array naming the custom attributes supported by the trace listener, or null if there are no custom attributes.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.#ctor(System.String,System.String,System.String,Microsoft.Practices.EnterpriseLibrary.Logging.Formatters.ILogFormatter,System.Byte,System.Boolean,System.Int32,System.String,EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior,Microsoft.Practices.EnterpriseLibrary.Logging.TraceListeners.RollInterval,System.Double)">
+            <summary>
+            Initializes a new instance of <see cref="T:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener"/>
+            </summary>
+            <param name="fileName">The filename where the entries will be logged.</param>
+            <param name="header">The header to add before logging an entry.</param>
+            <param name="footer">The footer to add after logging an entry.</param>
+            <param name="formatter">The formatter.</param>
+            <param name="maxInstances">Max Instances in for loop appending count to file name, where 0 is no max.</param>
+            <param name="throwMax">Throw Exception if Max Instances reached.</param>
+            <param name="rollSizeKB">The maxium file size (KB) before rolling.</param>
+            <param name="timeStampPattern">The date format that will be appended to the new roll file.</param>
+            <param name="rollFileExistsBehavior">Expected behavior that will be used when the rool file has to be created.</param>
+            <param name="rollInterval">The time interval that makes the file rolles.</param>
+            <param name="revolvingDays">The revolving days to increment before overwrite.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.TraceData(System.Diagnostics.TraceEventCache,System.String,System.Diagnostics.TraceEventType,System.Int32,System.Object)">
+            <summary>
+            Writes trace information, a data object and event information to the file, performing a roll if necessary.
+            </summary>
+            <param name="eventCache">A <see cref="T:System.Diagnostics.TraceEventCache"/> object that contains the current process ID, thread ID, and stack trace information.</param>
+            <param name="source">A name used to identify the output, typically the name of the application that generated the trace event.</param>
+            <param name="eventType">One of the <see cref="T:System.Diagnostics.TraceEventType"/> values specifying the type of event that has caused the trace.</param>
+            <param name="id">A numeric identifier for the event.</param>
+            <param name="data">The trace data to emit.</param>
+            <remarks>
+            Formatting is only performed if the object to trace is a <see cref="T:Microsoft.Practices.EnterpriseLibrary.Logging.LogEntry"/> and the formatter is set.
+            </remarks>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.RollingHelper">
+            <summary>
+            Gets the rolling helper.
+            </summary>
+            <value>The rolling helper.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.TimeStampPattern">
+            <summary>
+            Gets or sets the time stamp pattern.
+            </summary>
+            <value>The time stamp pattern.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.RollSizeInBytes">
+            <summary>
+            Gets or sets the roll size in bytes.
+            </summary>
+            <value>The roll size in bytes.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.RollInterval">
+            <summary>
+            Gets or sets the roll interval.
+            </summary>
+            <value>The roll interval.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.RevolvingDays">
+            <summary>
+            Gets or sets the revolving days.
+            </summary>
+            <value>The revolving days.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.NoGuidRollingFlatFileTraceListener.RollFileExistsBehavior">
+            <summary>
+            Gets or sets the roll file exists behavior.
+            </summary>
+            <value>The roll file exists behavior.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingTextFormatterNotFoundException">
+            <summary>
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingTextFormatterNotFoundException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingTextFormatterNotFoundException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingTextFormatterNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message"></param>
+            <param name="inner"></param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingTextFormatterNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.Tokenizer">
+            <summary>
+            It is a tokenizer but it could also be called LogEntry Deserializer. It does
+            try to "deserialize" form a given text fragment LogEntry objects using regular
+            expressions.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Tokenizer.#ctor(EntLibContrib.Logging.Parser.RegularExpressionBuilder)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.Tokenizer"/> class.
+            </summary>
+            <param name="builder">The builder.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Tokenizer.#ctor(EntLibContrib.Logging.Parser.RegularExpressionBuilder,EntLibContrib.Logging.Parser.ITimeStampParser)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.Tokenizer"/> class.
+            </summary>
+            <param name="builder">The builder.</param>
+            <param name="theTimeStampParser">The time stamp parser to use</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Tokenizer.GetDeserializedLogEntries(System.String,System.String)">
+            <summary>
+            Gets the parsed entries.
+            </summary>
+            <param name="messageText">The message text.</param>
+            <param name="fileName">Name of the file.</param>
+            <returns></returns>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.RollingFlatFileTraceListenerFile">
+            <summary>
+            Adds interface that exposes the preexisting properties of the class.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.FileTraceListenerData">
+            <summary>
+            Container for the file properties when the class does not implement <see cref="T:EntLibContrib.Logging.Configuration.IFileTraceListenerData"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.FileTraceListenerData.#ctor(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.FlatFileTraceListenerData)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="traceData">The trace data.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.FileTraceListenerData.#ctor(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.RollingFlatFileTraceListenerData)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="traceData">The trace data.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.FileTraceListenerData.GetFileData(Microsoft.Practices.EnterpriseLibrary.Logging.Configuration.TraceListenerData)">
+            <summary>
+            Get common file properties if the derived class has them.
+            </summary>
+            <param name="traceData">The trace data.</param>
+            <returns>common file properties</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.FileTraceListenerData.FileName">
+            <summary>
+            File name to write the log entry into.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.FileTraceListenerData.Footer">
+            <summary>
+            Footer to write after the log entry.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.FileTraceListenerData.Formatter">
+            <summary>
+            Name of the formatter that will format the log entry.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.FileTraceListenerData.Header">
+            <summary>
+            Header to write before the log entry.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.FileTraceListenerData.Name">
+            <summary>
+            Name of the trace listener instance.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingFileTraceListenerNotFoundException">
+            <summary>
+            Trace listener not found in the category that implements
+            <see cref="T:EntLibContrib.Logging.Configuration.IFileTraceListenerData"/>.
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileTraceListenerNotFoundException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileTraceListenerNotFoundException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileTraceListenerNotFoundException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFileTraceListenerNotFoundException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData">
+            <summary>
+            Represents the configuration data for a <see cref="T:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.#ctor(System.String,System.String,System.String,System.String,System.Byte,System.Boolean,System.Int32,System.String,EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior,Microsoft.Practices.EnterpriseLibrary.Logging.TraceListeners.RollInterval,System.Double,System.Diagnostics.TraceOptions,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData"/> class.
+            </summary>
+            <param name="name">The name for the configuration object.</param>
+            <param name="fileName">Name of the file.</param>
+            <param name="header">The header.</param>
+            <param name="footer">The footer.</param>
+            <param name="maxInstances">The max instances.</param>
+            <param name="throwMax">if set to <c>true</c> [throw max].</param>
+            <param name="rollSizeKB">The roll size KB.</param>
+            <param name="timeStampPattern">The time stamp pattern.</param>
+            <param name="rollFileExistsBehavior">The roll file exists behavior.</param>
+            <param name="rollInterval">The roll interval.</param>
+            <param name="revolvingDays">The revolving days to increment before overwrite.</param>
+            <param name="traceOutputOptions">The trace options.</param>
+            <param name="formatter">The formatter.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.GetCreationExpression">
+            <summary>
+            Returns a lambda expression that represents the creation of the trace listener described by this
+            configuration object.
+            </summary>
+            <returns>A lambda expression to create a trace listener.</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.FileName">
+            <summary>
+            FileName
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.MaxInstances">
+            <summary>
+            Max Instances in for loop appending count to file name, where 0 is no max
+            </summary>
+            <value>The max instances.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.ThrowMax">
+            <summary>
+            Throw Exception if Max Instances reached
+            </summary>
+            <value><c>true</c> if [throw max]; otherwise, <c>false</c>.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.RollSizeKB">
+            <summary>
+            Roll Size KB
+            </summary>
+            <value>The roll size KB.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.TimeStampPattern">
+            <summary>
+            Time stamp
+            </summary>
+            <value>The time stamp pattern.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.RollFileExistsBehavior">
+            <summary>
+            Exists Behavior
+            </summary>
+            <value>The roll file exists behavior.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.RollInterval">
+            <summary>
+            Roll Intervall
+            </summary>
+            <value>The roll interval.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.RevolvingDays">
+            <summary>
+            Revolving Days to increment before overwrite.
+            </summary>
+            <value>The revolving days.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.Formatter">
+            <summary>
+            Gets and sets the formatter name.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.Header">
+            <summary>
+            Gets and sets the header.
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Configuration.NoGuidRollingFlatFileTraceListenerData.Footer">
+            <summary>
+            Gets and sets the footer.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingSectionNotDefinedException">
+            <summary>
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingSectionNotDefinedException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingSectionNotDefinedException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingSectionNotDefinedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingSectionNotDefinedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.FilteredLogFileReader">
+            <summary>
+            This class is responsable for reading filtered LogEntry objects from a normal text file which has previously
+            been writtern by the Enterprise Library Logging Application Block.
+            You can use this class to read a text file which was written by the Rolling/File Sink which did use a TextFormatter
+            which format can be arbitrary.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.#ctor(System.String,System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.FilteredLogFileReader"/> class.
+            </summary>
+            <param name="logFileName">Name of the log file.</param>
+            <param name="entlibLogConfigFile">The entlib log CFG file.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.#ctor(System.String,System.String,EntLibContrib.Logging.Parser.ITimeStampParser)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.FilteredLogFileReader"/> class.
+            </summary>
+            <param name="logFileName">Name of the log file.</param>
+            <param name="entlibLogConfigFile">The entlib log config file.</param>
+            <param name="theTimeStampParser">The time stamp parser to use</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.#ctor(System.String,Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.FilteredLogFileReader"/> class.
+            </summary>
+            <param name="logFileName">Name of the log file.</param>
+            <param name="entLibLogConfig">The ent lib log config.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.#ctor(System.String,Microsoft.Practices.EnterpriseLibrary.Common.Configuration.IConfigurationSource,EntLibContrib.Logging.Parser.ITimeStampParser)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.FilteredLogFileReader"/> class.
+            </summary>
+            <param name="logFileName">Name of the log file.</param>
+            <param name="entLibLogConfig">The ent lib log config.</param>
+            <param name="theTimeStampParser">The time stamp parser to use</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.ParseLogFile(EntLibContrib.Logging.Parser.Filter)">
+            <summary>
+            Parses the log file.
+            </summary>
+            <param name="filter">The filter.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>
+            A <see cref="T:System.Collections.Generic.IEnumerator`1"/> that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.FilteredLogFileReader.System#Collections#IEnumerable#GetEnumerator">
+            <summary>
+            Gets the enumerator.
+            </summary>
+            <returns>
+            An <see cref="T:System.Collections.IEnumerator"/> object that can be used to iterate through the collection.
+            </returns>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.Filter">
+            <summary>
+            The filter is used with a Reader instance to get only the log events you are interested in. 
+            A log message does only match if all properties of the Filter do produce a positive match (logical and).
+            Empty or null properties (e.g. Messsages) are ignored and not considered in the match.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Filter.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.Filter"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Filter.#ctor(System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.Filter"/> class.
+            </summary>
+            <param name="startTime">The start time.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Filter.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Parser.Filter"/> class.
+            </summary>
+            <param name="startTime">The start time.</param>
+            <param name="stopTime">The stop time.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.Filter.Match(Microsoft.Practices.EnterpriseLibrary.Logging.LogEntry)">
+            <summary>
+            Checks if the LogEntry does pass the filter.
+            </summary>
+            <param name="entry">The log entry.</param>
+            <returns>
+            true if the entry has passed the filter. false otherwise.
+            </returns>
+            <exception cref="T:System.ArgumentNullException">If the entry argument is null.</exception>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.Filter.StartTime">
+            <summary>
+            All messages which where written after the start time do match. Use this property with StopTime to 
+            specify a time interval for the messages you are interested in.
+            </summary>
+            <value>The start time.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.Filter.StopTime">
+            <summary>
+            All messages which are younger than the stop time do match. Use this property with StartTime to 
+            specify a time interval for the messages you are interested in.
+            </summary>
+            <value>The stop time.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.Filter.Messages">
+            <summary>
+            Will match if a log message if one substring match with the string in the Messages array does succed.
+            A null or empty Messages array does always match.
+            </summary>
+            <value>The messages.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter">
+            <summary>
+            Tally Keeping File stream writer
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.#ctor(System.IO.FileStream)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.#ctor(System.IO.FileStream,System.Text.Encoding)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter"/> class.
+            </summary>
+            <param name="stream">The stream.</param>
+            <param name="encoding">The encoding.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.Write(System.Char)">
+            <summary>
+            Writes a character to the stream.
+            </summary>
+            <param name="value">The character to write to the text stream.</param>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and current writer is closed.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and the contents of the buffer cannot be written to the underlying fixed size stream because the <see cref="T:System.IO.StreamWriter"/> is at the end the stream.
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.Write(System.Char[])">
+            <summary>
+            Writes a character array to the stream.
+            </summary>
+            <param name="buffer">A character array containing the data to write. If <paramref name="buffer"/> is null, nothing is written.</param>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and current writer is closed.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and the contents of the buffer cannot be written to the underlying fixed size stream because the <see cref="T:System.IO.StreamWriter"/> is at the end the stream.
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.Write(System.Char[],System.Int32,System.Int32)">
+            <summary>
+            Writes a subarray of characters to the stream.
+            </summary>
+            <param name="buffer">A character array containing the data to write.</param>
+            <param name="index">The index into <paramref name="buffer"/> at which to begin writing.</param>
+            <param name="count">The number of characters to read from <paramref name="buffer"/>.</param>
+            <exception cref="T:System.ArgumentNullException">
+            	<paramref name="buffer"/> is null.
+            </exception>
+            <exception cref="T:System.ArgumentException">
+            The buffer length minus <paramref name="index"/> is less than <paramref name="count"/>.
+            </exception>
+            <exception cref="T:System.ArgumentOutOfRangeException">
+            	<paramref name="index"/> or <paramref name="count"/> is negative.
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+            <exception cref="T:System.ObjectDisposedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and current writer is closed.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and the contents of the buffer cannot be written to the underlying fixed size stream because the <see cref="T:System.IO.StreamWriter"/> is at the end the stream.
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.Write(System.String)">
+            <summary>
+            Writes a string to the stream.
+            </summary>
+            <param name="value">The string to write to the stream. If <paramref name="value"/> is null, nothing is written.</param>
+            <exception cref="T:System.ObjectDisposedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and current writer is closed.
+            </exception>
+            <exception cref="T:System.NotSupportedException">
+            	<see cref="P:System.IO.StreamWriter.AutoFlush"/> is true or the <see cref="T:System.IO.StreamWriter"/> buffer is full, and the contents of the buffer cannot be written to the underlying fixed size stream because the <see cref="T:System.IO.StreamWriter"/> is at the end the stream.
+            </exception>
+            <exception cref="T:System.IO.IOException">
+            An I/O error occurs.
+            </exception>
+        </member>
+        <member name="P:EntLibContrib.Logging.TraceListeners.TallyKeepingFileStreamWriter.Tally">
+            <summary>
+            Gets the tally.
+            </summary>
+            <value>The tally.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior">
+            <summary>
+            Defines the behavior when the rool file is created.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior.Overwrite">
+            <summary>
+            Overwrites the file if it already exists.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior.Increment">
+            <summary>
+            Use a secuence number at the end of the generated file if it already exists. If it fails again then increment the secuence until a non existent filename is found.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Logging.TraceListeners.NoGuidRollFileExistsBehavior.Revolving">
+            <summary>
+            Increment and Overwrite if older than the revolving date.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.TraceListeners.LoggingMaxInstancesException">
+            <summary>
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.LoggingMaxInstancesException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.LoggingMaxInstancesException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.LoggingMaxInstancesException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.TraceListeners.LoggingMaxInstancesException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingFormatterNotDefinedException">
+            <summary>
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFormatterNotDefinedException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFormatterNotDefinedException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFormatterNotDefinedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingFormatterNotDefinedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Logging.Properties.InternalResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.AddCategoryStoredProcNameDescription">
+            <summary>
+              Looks up a localized string similar to Gets or sets the stored procedure to add the category..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.CategoryGeneral">
+            <summary>
+              Looks up a localized string similar to General.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.DatabaseInstanceDescription">
+            <summary>
+              Looks up a localized string similar to Gets or sets the database instance to use..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.DefaultTextFormat">
+             <summary>
+               Looks up a localized string similar to Timestamp: {timestamp}
+            Message: {message}
+            Category: {category}
+            Priority: {priority}
+            EventId: {eventid}
+            Severity: {severity}
+            Title:{title}
+            Machine: {machine}
+            Application Domain: {appDomain}
+            Process Id: {processId}
+            Process Name: {processName}
+            Win32 Thread Id: {win32ThreadId}
+            Thread Name: {threadName}
+            Extended Properties: {dictionary({key} - {value}
+            )}.
+             </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerAddCategoryStoreProcPartName">
+            <summary>
+              Looks up a localized string similar to Add category store proc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerDatabasePartName">
+            <summary>
+              Looks up a localized string similar to Extended Database.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerName">
+            <summary>
+              Looks up a localized string similar to Extended Database Trace Listener.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerUICommandLongText">
+            <summary>
+              Looks up a localized string similar to Add a new Extended Database Trace Listener..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerUICommandText">
+            <summary>
+              Looks up a localized string similar to Extended Database Trace Listener.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.ExtendedDatabaseTraceListenerWriteStoreProcPartName">
+            <summary>
+              Looks up a localized string similar to Write store proc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.FormatterInstanceDescription">
+            <summary>
+              Looks up a localized string similar to Gets or sets the formatter instance to use..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.TemplatePlaceHolder">
+            <summary>
+              Looks up a localized string similar to &lt;template&gt;.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.TemplateTextFormatterNode">
+            <summary>
+              Looks up a localized string similar to Template Text Formatter.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.TemplateTextFormatterUICommandLongText">
+            <summary>
+              Looks up a localized string similar to Add a new Template Text Formatter..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.TemplateTextFormatterUICommandText">
+            <summary>
+              Looks up a localized string similar to Template Text Formatter.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Logging.Properties.InternalResources.WriteStoredProcNameDescription">
+            <summary>
+              Looks up a localized string similar to Gets or sets the stored procedure to write the log..
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampParser">
+            <summary>
+            Encapsulates the logic for parsing the time stamp text from a log file.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParser.#ctor">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            Sets <see cref="P:EntLibContrib.Logging.Parser.TimeStampParser.FormatProvider"/> to <see cref="P:System.Globalization.CultureInfo.CurrentCulture"/>,
+            which is used in <see cref="P:Microsoft.Practices.EnterpriseLibrary.Logging.LogEntry.TimeStampString"/>.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParser.#ctor(System.IFormatProvider)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParser.ParseTimeStamp(System.String)">
+            <summary>
+            Parse the time stamp text from a log file.
+            </summary>
+            <param name="timeStampText">time stamp text</param>
+            <returns>date and time</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampParser.FormatProvider">
+            <summary>
+            Specify time stamp format provider for month-day or day-month order, etc.
+            </summary>
+            <value>The format provider.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.TimeStampParserFormat">
+            <summary>
+            Encapsulates the logic for parsing the time stamp text from a log file.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFormat.#ctor(System.String)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="timeStampFormat">time stamp format for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFormat.#ctor(System.String,System.IFormatProvider)">
+            <summary>
+            Constructor to initialize a new instance of the class.
+            </summary>
+            <param name="timeStampFormat">time stamp format for month-day or day-month order, etc.</param>
+            <param name="formatProvider">time stamp format provider for month-day or day-month order, etc.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.TimeStampParserFormat.ParseTimeStamp(System.String)">
+            <summary>
+            Parse the time stamp text from a log file.
+            </summary>
+            <param name="timeStampText">time stamp text</param>
+            <returns>date and time</returns>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampParserFormat.TimeStampFormat">
+            <summary>
+            Gets or sets the time stamp format.
+            </summary>
+            <value>The time stamp format.</value>
+        </member>
+        <member name="P:EntLibContrib.Logging.Parser.TimeStampParserFormat.FormatProvider">
+            <summary>
+            Specify time stamp format for month-day or day-month order, etc.
+            </summary>
+            <value>The format provider.</value>
+        </member>
+        <member name="T:EntLibContrib.Logging.Parser.LoggingCategoryNotDefinedException">
+            <summary>
+            Exceptions are made serialisable, so they can cross remoting and application domain boundaries.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingCategoryNotDefinedException.#ctor">
+            <summary>
+            Contructor to initialize a new instance.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingCategoryNotDefinedException.#ctor(System.String)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message.
+            </summary>
+            <param name="message">The message that describes the error.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingCategoryNotDefinedException.#ctor(System.String,System.Exception)">
+            <summary>
+            Contructor to initialize a new instance with a specific error message and a reference to the inner exception that is the cause of this exception.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="inner">The inner.</param>
+        </member>
+        <member name="M:EntLibContrib.Logging.Parser.LoggingCategoryNotDefinedException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Contructor to initialize a new instance for serialization.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Logging.Install.LoggingConfigurationLoader.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Logging.Install.LoggingConfigurationLoader"/> class.
+            </summary>
+        </member>
+    </members>
+</doc>

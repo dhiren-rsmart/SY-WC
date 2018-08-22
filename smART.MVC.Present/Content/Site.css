@@ -1,0 +1,399 @@
+﻿/*----------------------------------------------------------
+The base color for this template is #5c87b2. If you'd like
+to use a different color start by replacing all instances of
+#5c87b2 with your new color.
+----------------------------------------------------------*/
+body
+{
+    background-color: #5c87b2;
+    font-size: 75%;
+    font-family: Verdana, Tahoma, Arial, "Helvetica Neue", Helvetica, Sans-Serif;
+    margin: 0;
+    padding: 0;
+    color: #696969;
+}
+
+/* HEADINGS   
+----------------------------------------------------------*/
+h1, h2, h3, h4, h5, h6
+{
+    font-size: 1.5em;
+    color: #000;
+}
+
+h1
+{
+    font-size: 2em;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+h2
+{
+    padding: 0 0 0 0;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+h3
+{
+    font-size: 1.2em;
+}
+h4
+{
+    font-size: 1.1em;
+}
+h5, h6
+{
+    font-size: 1em;
+}
+
+a
+{
+    color: #696969;
+}
+
+li
+{
+    line-height: 1.6;
+}
+
+/* this rule styles <h2> tags that are the 
+first child of the left and right table columns */
+.rightColumn > h1, .rightColumn > h2, .leftColumn > h1, .leftColumn > h2
+{
+    margin-top: 0;
+}
+
+/* PRIMARY LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+/* you can specify a greater or lesser percentage for the 
+page width. Or, you can specify an exact pixel width. */
+.page
+{
+    width: 98%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#header
+{
+    position: relative;
+    margin-bottom: 0px;
+    color: #000;
+    padding: 0;
+}
+
+#header h1
+{
+    font-weight: bold;
+    padding: 0px 0;
+    margin: 0;
+    color: #fff;
+    border: none;
+    line-height: 2em;
+    font-size: 32px !important;
+}
+
+#main
+{
+    background: #fff;
+    padding: 15px 30px 15px 15px;
+    margin-bottom: 30px;
+    _height: 1px;
+    min-height: 340px;
+    height: auto !important;
+    height: 300px;
+}
+
+#footer
+{
+    color: #999;
+    padding: 10px 0;
+    text-align: center;
+    line-height: normal;
+    margin: 0;
+    font-size: .9em;
+}
+
+/* MENU   
+----------------------------------------------------------*/
+#menu
+{
+    position: relative;
+    margin: 0;
+    text-align: right;
+}
+
+#menu .t-item
+{
+    border-width: 0 0 0 1px;
+}
+
+#menu .t-link
+{
+    padding: 5px 20px;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 1.8em;
+}
+
+/* FORM LAYOUT ELEMENTS   
+----------------------------------------------------------*/
+
+fieldset 
+{
+    border:1px solid #ddd;
+    padding:0 1.4em 1.4em 1.4em;
+    margin:0 0 1.5em 0;
+}
+
+legend 
+{
+    font-size:1.2em;
+    font-weight: bold;
+}
+
+textarea 
+{
+    min-height: 75px;
+}
+
+input[type="text"] 
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+input[type="text"] 
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+input[type="password"] 
+{
+    width: 200px;
+    border: 1px solid #CCC;
+}
+
+/* TABLE
+----------------------------------------------------------*/
+
+table 
+{
+  border: solid 1px #e8eef4;
+  border-collapse: collapse;
+}
+
+table td 
+{
+  padding: 5px;   
+  border: solid 1px #e8eef4;
+}
+
+table th
+{
+  padding: 6px 5px;
+  text-align: left;
+  background-color: #e8eef4; 
+  border: solid 1px #e8eef4;   
+}
+
+/* MISC  
+----------------------------------------------------------*/
+.clear
+{
+    clear: both;
+}
+
+.error
+{
+    color:Red;
+}
+
+div#title
+{
+    display:block;
+    text-align:right;
+}
+
+#logindisplay
+{
+    font-size:1.1em;
+    display:block;
+    text-align:right;
+    margin:10px;
+    color:White;
+}
+
+#logindisplay a:link
+{
+    color: white;
+    text-decoration: underline;
+}
+
+#logindisplay a:visited
+{
+    color: white;
+    text-decoration: underline;
+}
+
+#logindisplay a:hover
+{
+    color: white;
+    text-decoration: none;
+}
+
+/* Styles for validation helpers
+-----------------------------------------------------------*/
+.field-validation-error
+{
+    color: #ff0000;
+}
+
+.field-validation-valid
+{
+    display: none;
+}
+
+.input-validation-error
+{
+    border: 1px solid #ff0000;
+    background-color: #ffeeee;
+}
+
+.validation-summary-errors 
+{
+    font-weight: bold;
+    color: #ff0000;   
+}
+
+.validation-summary-valid
+{
+    display: none;
+}
+
+/* Styles for editor and display helpers
+----------------------------------------------------------*/
+.display-label,
+.editor-label
+{
+    margin: 1em 0 0 0;
+}
+
+.display-field,
+.editor-field
+{
+    margin:0.5em 0 0 0;
+}
+
+.text-box
+{
+    width: 30em;
+}
+
+.text-box.multi-line
+{
+    height: 6.5em;
+}
+
+.tri-state
+{
+    width: 6em;
+}
+li.last
+{
+    float:right;
+}
+div .editLeft
+{
+    float:left;
+    width:32%;
+}
+div .editClear
+{
+    clear:both;
+}
+
+TextBox_ID
+{
+    width:10;
+}
+
+div .red_head {
+  color:Green;
+   font-size:large;   
+}
+
+div .subHead_red {
+  color:Green;
+}
+
+div .content_red {
+  color:Green;
+}
+
+/*==============================Banner=========================*/
+.s4-title
+{
+  height: 64px;
+  padding: 0px;
+  margin: 0px;
+  background-position: right bottom;
+}
+.s4-ca
+{
+  min-height: 100%;
+  background-color: #CEE3FF;
+}
+
+/*
+.t-window-content
+ {
+    height: auto !important;
+    width: auto !important;
+ }
+*/
+
+.qs-blue-button .t-button
+{
+ height: 40px !important;
+ width: 120px !important;
+ background-color: #6F8BA1 !important;
+ background-image: url('/Content/2012.3.1018/Web20/sprite.png') !important;
+}
+
+.t-dropdown .t-input {
+
+      line-height:inherit;
+
+}
+
+/*==============================Process Indicator=========================*/
+div#spinner
+{
+    display: none;
+    width:50px;
+    height: 70px;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    background-color: #d1deb6;
+    background:url('/Content/Images/ajax-loader.gif') no-repeat center #fff;
+    text-align:center;
+    padding:5px;
+  font-weight:bold;
+    font:normal 12px Tahoma, Geneva, sans-serif; 
+    vertical-align:middle;
+    color:Green;
+    margin-left: -50px;
+    margin-top: -50px;
+    z-index:2;  
+    overflow: auto;
+}
+
+t-menu .t-highlighted
+ {
+         background-color: #e3f4fc;
+         border-color: #a7bac5;
+ }

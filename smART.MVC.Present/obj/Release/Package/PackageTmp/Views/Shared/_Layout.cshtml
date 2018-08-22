@@ -1,0 +1,129 @@
+@using smART.MVC.Present.Extensions;
+<!DOCTYPE html >
+<html>
+<head>
+  <title>@ViewBag.Title</title>
+  <link href="@Url.Content("~/Content/Site.css")" rel="stylesheet" type="text/css" />
+    @(Html.Telerik().StyleSheetRegistrar().DefaultGroup(group => group.Add("telerik.common.css").Add("telerik.Vista.css").Combined(true).Compress(true)))
+  <script src="@Url.Content("~/Scripts/jquery-1.4.4.js")"></script>
+   
+  <script type="text/javascript" >
+    var spinnerVisible = false;
+    function showProgress()
+    {
+      if (!spinnerVisible)
+      {
+        $("div#spinner").fadeIn("fast");
+        spinnerVisible = true;
+      }
+    }
+    function hideProgress()
+    {
+      if (spinnerVisible)
+      {
+        var spinner = $("div#spinner");
+        spinner.stop();
+        spinner.fadeOut("fast");
+        spinnerVisible = false;
+      }
+    }
+
+</script>
+
+</head>
+<body>
+  @*    <div id="message">
+        @Html.Partial("_Flash")
+    </div>*@
+
+    <div id="spinner">
+        Loading...
+    </div>   
+    <div class="page">
+    <div id="header">
+      <div id="title" class="s4-title s4-lp" style="background-image: url('/Content/Images/gradient_2pixel.png');
+        background-repeat: repeat-x; overflow: hidden;">
+@*        <div id="leftTitle" style="margin-left: -40px; float: left; background-repeat: no-repeat;
+          height: 60px; width: 200px; background-image: url('/Content/Images/Comp_Logo.png');">      
+        </div>*@
+        <div id="rightTitle" style="float: right; background-repeat: no-repeat; height: 60px;
+          width: 270px; background-image: url('/Content/Images/Prod_Logo.png');">          
+        </div>
+      </div>
+      @if (HttpContext.Current.Request.IsAuthenticated) {
+        @(Html.Telerik().Menu()
+                        .Name("mainMenu")
+                        .Items(menu => {
+                          menu.Add().Text("Master").ActionIf(
+                              new ActionDetails[] { 
+                                    new ActionDetails() { Action="New", Controller="Party", Feature=smART.Common.EnumFeatures.Master_Party},
+                                    new ActionDetails() { Action="New", Controller="Item", Feature=smART.Common.EnumFeatures.Master_Item},
+                                    new ActionDetails() { Action="New", Controller="Cash", Feature=smART.Common.EnumFeatures.Master_Item},
+                                    new ActionDetails() { Action="New", Controller="Employee", Feature=smART.Common.EnumFeatures.Master_Employee},
+                                    new ActionDetails() { Action="New", Controller="PriceList", Feature=smART.Common.EnumFeatures.Master_PriceList}
+                                });
+
+                          menu.Add().Text("Transaction").ActionIf(
+                              new ActionDetails[] {
+                                    new ActionDetails() { Action="Index_Qscale", Controller="QScale", Feature= smART.Common.EnumFeatures.Transaction_Scale},
+                                    new ActionDetails() { Action="New", Controller="Scale", Feature= smART.Common.EnumFeatures.Transaction_Scale }
+                                    ,new ActionDetails() { Action="New", Controller="SalesOrder", Feature= smART.Common.EnumFeatures.Transaction_SalesOrder }                                    
+                                    ,new ActionDetails() { Action="New", Controller="Invoice", Feature= smART.Common.EnumFeatures.Transaction_Invoice}
+                                    ,new ActionDetails() { Action="New", Controller="Receipt", Feature= smART.Common.EnumFeatures.Transaction_Receipt}
+                                }
+                              );
+                          //menu.Add().Text("Reports").Url(@smART.MVC.Present.ConfigurationHelper.GetsmARTReportServerUrl()).LinkHtmlAttributes(new {
+                          //  target = "_blank"
+                          //});
+
+                          menu.Add().Text("Reports").ActionIf(
+                           new ActionDetails[] {
+                                    new ActionDetails() { Action="Index", Controller="Reports/Index", Feature= smART.Common.EnumFeatures.Reports_Report}
+                                }); 
+                          //.ActionIf(
+                          //new ActionDetails[] {
+                          //      new ActionDetails(){ Action="Index", Controller="Reports/Index", Feature= smART.Common.EnumFeatures.Reports_Report }
+                          //  }
+                          //);
+                          menu.Add().Text("Charts").ActionIf(
+                              new ActionDetails[] {
+                                    new ActionDetails() { Action="Index", Controller="Chart/Index", Feature= smART.Common.EnumFeatures.Charts_Chart}
+                                }); 
+                          menu.Add().Text("Administration").ActionIf(
+                              new ActionDetails[] {                                   
+                                    new ActionDetails() { Action="New", Controller="LOVType", Feature= smART.Common.EnumFeatures.Master_LOVType }                                  
+                                });
+                          //Keep this as the last menu
+                          menu.Add().Text("Log Out").Action("LogOff", "Account").HtmlAttributes(new {
+                            @class = "last"
+                          });
+
+                          menu.Add().Text("About Rsmart").Action("About", "Home").HtmlAttributes(new {
+                            @class = "last"
+                          });
+                          menu.Add().Text("Help").Action("Help", "Home").HtmlAttributes(new {
+                            @class = "last"
+                          });
+
+                          menu.Add().Text("Search").HtmlAttributes(new {@class = "last"}).ActionIf(
+                              new ActionDetails[] {
+                                    new ActionDetails() { Action="Search", Controller="GlobalSearch", Feature= smART.Common.EnumFeatures.Searches_Search}
+                                });                         
+
+                        }))
+        }
+    </div>
+    <div id="main">
+      @RenderBody()
+      <div id="footer">
+      </div>
+    </div>
+  </div>
+  @(Html.Telerik().ScriptRegistrar().DefaultGroup(group => group.Combined(true).Compress(true)
+      .Add("Lookup.js")
+      .Add("smART.Telerik.js")
+      .Add("jQuery.tabSlideOut.v1.3.js")    
+    )
+  )
+ </body>
+</html>

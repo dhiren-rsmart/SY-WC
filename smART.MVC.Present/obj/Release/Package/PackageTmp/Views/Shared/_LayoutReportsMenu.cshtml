@@ -1,0 +1,27 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Extensions
+@model BaseEntity
+           
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="masterMenu">
+          @(Html.Telerik().Menu()
+                    .Name("menuReportsMenu")
+                    .Items(menu => {
+                      menu.Add().Text("Reports").Visible(false).ActionIf(
+                              new ActionDetails[] {
+                                    new ActionDetails() { Action="Index", Controller="Reports"
+                                        , Feature= smART.Common.EnumFeatures.Reports_Report }
+                                }
+                              );  //.Selected(Model.MenuSelect.Master_ItemSelected);
+               
+                      //menu.Add().Text("LOVType").Action("New", "LOVType").Selected(Model.MenuSelect.Administration_LOVTypeSelected);                        
+                    }))
+</div>
+
+
+<div>
+    @RenderBody()
+</div>

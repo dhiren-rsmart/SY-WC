@@ -1,0 +1,41 @@
+﻿@model smART.ViewModel.Bin
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(o => o.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Bin_Value)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Bin_Value)
+            </td>
+        </tr>
+        @*
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Active_Ind)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Active_Ind)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Party)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Party)
+            </td>
+        </tr>
+        *@
+    </table>
+</div>

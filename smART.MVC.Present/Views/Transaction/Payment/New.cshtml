@@ -1,0 +1,977 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model PaymentReceipt
+@{
+   ViewBag.Title = "Payments";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Payment";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Payment";
+
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+   ViewBag.PrintID = Model.ID;
+   ViewBag.PrintAction = "Payment";
+   ViewBag.PrintController = "Reports";
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+
+   ViewBag.SearchUnPaidSettledTicketsAction = "_UnPaidSettledTickets";
+   ViewBag.UnPaidSettledTicketsController = "Settlement";
+
+   ViewBag.SearchSettledExpensesAction = "_SettledExpenses";
+   ViewBag.SettledExpensesController = "GenericExpensesRequest";
+
+   Model.Transaction_Type = "Payments";   
+}
+@section ButtonSection{
+  @* @Html.AuthorizedButton("SettledTickets", "Settled Tickets", "button", new { onclick = "ShowUnPaidSettledTicketsWindow()", @class = "t-button" })
+   @Html.AuthorizedButton("SettledExpenses", "Settled Expenses", "button", new { onclick = "ShowSettledExpensesWindow()", @class = "t-button" })*@
+   @Html.AuthorizedButton("SettledTickets", "Settled Tickets", "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.UnPaidSettledTicketsController, ViewBag.SearchUnPaidSettledTicketsAction),
+                                   @class = "t-button"
+                                 }
+                          )
+   @Html.AuthorizedButton("SettledExpenses", "Settled Expenses", "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.SettledExpensesController, ViewBag.SearchSettledExpensesAction),
+                                   @class = "t-button"
+                                 }
+                          )
+   @Html.AuthorizedButton("QBBankBalance", "Bank Bal. from QB", "button", new { onclick = "UpdateQBBankBalance()", @class = "t-button" })
+}
+@section MasterSection
+{
+  @* <div>
+      @(Html.Telerik().Window().BuildWindow("UnPaidSettledTicketsWindow")
+        .LoadContentFrom((string)ViewBag.SearchUnPaidSettledTicketsAction, (string)ViewBag.UnPaidSettledTicketsController)
+        )
+      @(Html.Telerik().Window().BuildWindow("SettledExpensesWindow")
+                      .LoadContentFrom((string)ViewBag.SearchSettledExpensesAction, (string)ViewBag.SettledExpensesController)
+        )
+   </div>*@
+   <script language="javascript" type="text/javascript">
+
+      //#region Local Members
+
+      var _partyId = 0;
+      var _bookingId = 0;
+      var _locationId = 0;
+      var _paymentType = "Tickets";
+      var _gridName = "Grid_PaymentDetails";
+
+      //endregion Local Members
+
+      //#region Events
+
+      function TabStrip_onLoad(e) {
+         _paymentType = $("#Payment_Receipt_Type").val();
+         if (_paymentType === null)
+            _paymentType = "Tickets";
+         EnableDisableTabs();
+      }
+
+
+      function onTabStrib_Select(e)
+      {
+        var item = $(e.item);
+        var selectedIndex = item.index();
+        if (selectedIndex == 3) // Scale Tickets
+          refreshGrid("#Grid_Expense_List");
+        else if (selectedIndex == 4) // Notes
+          refreshGrid("#Grid_Payment_Notes");
+        else if (selectedIndex == 5) // Attachments
+          refreshGrid("#Grid_Payment_Attachments");
+      }
+
+      function PaymentType_onChange(e) {
+         _paymentType = e.value;
+         EnableDisableTabs();
+         BindPartyLookupByPaymentType()
+         Party_onChange();
+      }
+
+      function Party_onChange(e) {
+         if (e != null) {
+            $("#Party_ID").val(e.ID);
+            _partyId = e.ID;
+         }
+         if (_paymentType === "Expenses") {
+            _bookingId = 0;
+            BindBooking(_partyId);
+            BindExpensePaymentDetailsGrid();
+         }
+         else {
+            _locationId = 0;
+            BindLocation(_partyId);
+            BindScalePaymentDetailsGrid();
+         }
+      }
+
+      function Booking_onChange(e) {
+         if (e != null) {
+            $("#Booking_ID").val(e.ID);
+            _bookingId = e.ID;
+         }
+         if (_paymentType === "Expenses")
+            BindExpensePaymentDetailsGrid();
+      }
+
+      function PartyAddress_onChange(e) {
+         if (e != null) {
+            $("#Party_Address_ID").val(e.ID);
+            _locationId = e.ID;
+         }
+         if (_paymentType === "Tickets")
+            BindScalePaymentDetailsGrid();
+      }
+
+
+      function CashBankAmount_onChange() {
+         $("#Total_Amount_Paid").val(GetAmountToBePaid());
+         $("#Applied_Amount_To_Be").val(GetAmountToBeApplied());
+         $("#Net_Amt").val(GetNetAmount());
+      }
+
+      function Expense_Grid_onDataBound(e) {
+         $("#Expenses_Amt").val(GetTotalExpensePaidByParty());
+         $("#Net_Amt").val(GetNetAmount());
+      }
+
+      function Settled_Ticket_Grid_onEdit_Local(e) {
+         if (e.mode == "edit") {
+            $('#Settlement_Scale_ID').attr('readonly', 'readonly');
+            $('#Settlement_Scale_Purchase_Order_ID').attr('readonly', 'readonly');
+            $('#Settlement_Amount').attr('readonly', 'readonly');
+            $('#Settlement_Amount_Paid_Till_Date').attr('readonly', 'readonly');
+            $('#Balance_Amount').attr('readonly', 'readonly');
+            $('#Paid_In_Full').attr('readonly', 'readonly');
+         }
+      }
+
+      function Settled_Exp_Grid_onEdit_Local(e) {
+
+         if (e.dataItem["Paid_Party_To"] != null) {
+            $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+         }
+         if (e.mode == "edit") {
+            $('#ExpenseRequest_ID').attr('readonly', 'readonly');
+            $('#ExpenseRequest_EXPENSE_TYPE').attr('readonly', 'readonly');
+            $('#ExpenseRequest_EXPENSE_Sub_TYPE').attr('readonly', 'readonly');
+            $('#ExpenseRequest_Booking_No').attr('readonly', 'readonly');
+            $('#ExpenseRequest_Container_No').attr('readonly', 'readonly');
+            $('#ExpenseRequest_Scale_ID').attr('readonly', 'readonly');
+            $('#ExpenseRequest_Amount_Paid').attr('readonly', 'readonly');
+            $('#ExpenseRequest_Amount_Paid_Till_Date').attr('readonly', 'readonly');
+            $('#Balance_Amount').attr('readonly', 'readonly');
+            $('#Paid_In_Full').attr('readonly', 'readonly');
+         }
+      }
+
+      function Expense_Grid_onEdit_Local(e) {
+         Expense_Grid_onEdit(e);
+      }
+
+      function Child_Grid_onSave(e) {
+         Grid_onSave(e);
+         e.values["Parent.ID"] = eval('@Model.ID');
+         e.values["Reference_ID"] = eval('@Model.ID');
+       }
+
+      function Validate_Child_Grid_onSave(e) {
+         if (parseFloat(e.values["Apply_Amount"]) > parseFloat(e.values["Balance_Amount"])) {
+            alert("Eenter amount can not be larger than amount due.");
+            e.preventDefault();
+            return false;
+         }
+
+         if (e.values["Paid_In_Full"] === true) {
+            e.values["Apply_Amount"] = e.values["Balance_Amount"];
+         }
+         else if (e.values["Apply_Amount"] === e.values["Balance_Amount"]) {
+            e.values["Paid_In_Full"] == true;
+         }
+         return true;
+      }
+
+      function Settled_Exp_Grid_onSave_Local(e) {
+         if (Validate_Child_Grid_onSave(e) == false) return;
+
+         Child_Grid_onSave(e);
+
+         e.values["ExpenseRequest.Dispatcher_Request_Ref.Order_No"] = eval('@Model.ID');
+         e.values["ExpenseRequest.ID"] = e.dataItem.ExpenseRequest.ID;
+         e.values["ExpenseRequest.EXPENSE_TYPE"] = e.dataItem.ExpenseRequest.EXPENSE_TYPE;
+         e.values["ExpenseRequest.EXPENSE_Sub_TYPE"] = e.dataItem.ExpenseRequest.EXPENSE_Sub_TYPE;
+         if (e.dataItem.ExpenseRequest.Dispatcher_Request_Ref != null) {
+            if (e.dataItem.ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No != null) {
+               e.values["ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.ID"] = e.dataItem.ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.ID;
+               e.values["ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.Booking_Ref_No"] = e.dataItem.ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.Booking_Ref_No;
+            }
+            if (e.dataItem.ExpenseRequest.Dispatcher_Request_Ref.Container != null) {
+               e.values["ExpenseRequest.Dispatcher_Request_Ref.Container.Container_No"] = e.dataItem.ExpenseRequest.Dispatcher_Request_Ref.Container.Container_No;
+            }
+         }
+         if (e.dataItem.ExpenseRequest.Scale_Ref != null)
+            e.values["ExpenseRequest.Scale_Ref.ID"] = e.dataItem.ExpenseRequest.Scale_Ref.ID;
+      }
+
+      function Settled_Tickets_Grid_onSave(e)
+      {
+        if (Validate_Child_Grid_onSave(e) == false) return;
+
+
+        Grid_onSave(e);
+
+        if (e.dataItem.Settlement.Scale != null)
+          e.values["Settlement.Scale.ID"] = e.dataItem.Settlement.Scale.ID;
+        if (e.dataItem.Settlement.Scale.Purchase_Order != null)
+          e.values["Settlement.Scale.Purchase_Order.ID"] = e.dataItem.Settlement.Scale.Purchase_Order.ID;
+
+        if (e.values["Paid_In_Full"] === true)
+        {
+          e.values["Apply_Amount"] = e.values["Balance_Amount"]
+        }
+
+        var id = eval('@Model.ID');
+        var scaleId = e.dataItem["Settlement"].Scale.ID;
+        var amountApplied = e.values["Apply_Amount"]; //  $("#Apply_Amount").val();
+        e.values["Reference_ID"] = eval('@Model.ID');
+
+        if (id === 0)
+        {
+          var postData = { scaleId: scaleId.toString() };
+
+          if (amountApplied != null && amountApplied > 0)
+          {
+            $.ajax({
+              url: '@(Url.Action("AddUnPaidPurchaseExpenses", "PaymentExpense"))',
+              type: "POST",
+              dataType: "json",
+              data: postData,
+              cache: false,
+              success: function (data)
+              {
+                var tGrid = $('#Grid_Expense_List').data('tGrid');
+                var params = { id: id.toString() };
+                tGrid.rebind(params);
+              },
+              error: function ()
+              {
+                alert('An error occured due to AddUnPaidPurchaseExpenses.')
+              }
+            });
+          }
+          else
+          {
+            $.ajax({
+              url: '@(Url.Action("RemoveUnPaidPurchaseExpenses", "PaymentExpense"))',
+              type: "POST",
+              dataType: "json",
+              data: postData,
+              cache: false,
+              success: function (data)
+              {
+                $("#Expenses_Amt").val(0.00);
+                $("#Net_Amt").val(GetNetAmount());
+
+                var tGrid = $('#Grid_Expense_List').data('tGrid');
+                var params = { id: id.toString() };
+                tGrid.rebind(params);
+              },
+              error: function ()
+              {
+                alert('An error occured due to RemoveUnPaidPurchaseExpenses.')
+              }
+            });
+
+          }
+        }
+      }
+
+      function Settled_Exp_Grid_onDataBound(e) {
+         var grid = $("#Grid_ExpensePaymentDetails").data("tGrid");
+         Child_Grid_onDataBound(grid)
+      }
+
+      function Settled_Ticket_Grid_onDataBound(e) {
+         var grid = $("#Grid_PaymentDetails").data("tGrid");
+         Child_Grid_onDataBound(grid)
+      }
+
+      function Child_Grid_onDataBound(grid) {
+         SetAmountApplied();
+      }
+
+      //#endregion Events
+
+      //#region Methods
+
+      function BindLocation(id) {
+         var tGrid = $('#SearchWindowGrid_Party_Address').data('tGrid');
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../AddressBook/_PartyAddresses?partyId=" + id };
+
+         tGrid.rebind({ partyId: id });
+
+         //clear driver data
+         $('#LabelID_Party_Address').val('');
+         $("#HiddenID_Party_AddressID").val(0);
+      }
+
+      function BindBooking(id) {
+         var tGrid = $('#SearchWindowGrid_Booking').data('tGrid');
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../Booking/_UnPaidExpBookings?partyId=" + id.toString() };
+
+         tGrid.rebind({ partyId: id.toString() });
+
+         //clear booking data
+         $('#LabelID_Booking_Ref_No').val('');
+         $("#HiddenID_BookingID").val(0);
+      }
+
+      function BindPartyLookupByPaymentType() {
+         var tGrid = $('#SearchWindowGrid_Party').data('tGrid');
+         tGrid.ajax = { selectUrl: "../Party/" + GetActionByPaymentType() };
+         tGrid.rebind();
+         // Clear party data
+         // $('#LabelID_Party').val('');
+         // $("#HiddenID_PartyID").val(0);
+      }
+
+      function GetActionByPaymentType() {
+         if (_paymentType === "Expenses") {
+            return "_Index";
+         }
+         else {
+            return "_PartyForPayment";
+         }
+      }
+
+      function EnableDisableTabs() {
+         if (_paymentType == "Tickets") {
+            TabEnable("#PaymentReceipt_TabStrip", 0);
+            TabSelect("#PaymentReceipt_TabStrip", 0);
+            TabEnable("#PaymentReceipt_TabStrip", 3);
+            TabDisable("#PaymentReceipt_TabStrip", 1);
+            VisibleTicektSection(true);
+            VisibleExpenseSection(false);
+         }
+         else if (_paymentType == "Expenses") {
+            TabDisable("#PaymentReceipt_TabStrip", 0);
+            TabDisable("#PaymentReceipt_TabStrip", 3);
+            TabEnable("#PaymentReceipt_TabStrip", 1);
+            TabSelect("#PaymentReceipt_TabStrip", 1);
+            VisibleTicektSection(false);
+            VisibleExpenseSection(true);
+         }
+         else {
+            TabDisable("#PaymentReceipt_TabStrip", 0);
+            TabDisable("#PaymentReceipt_TabStrip", 3);
+            TabDisable("#PaymentReceipt_TabStrip", 1);
+            TabSelect("#PaymentReceipt_TabStrip", 2);
+            VisibleTicektSection(false);
+            VisibleExpenseSection(false);
+         }
+      }
+
+      function ShowUnPaidSettledTicketsWindow() {
+         var window = $("#UnPaidSettledTicketsWindow").data("tWindow");
+         window.center().open();
+      }
+
+      function ShowSettledExpensesWindow() {
+         var window = $("#SettledExpensesWindow").data("tWindow");
+         window.center().open();
+      }
+
+      //      function Child_Grid_onEdit_Local(e) {
+      //         //         Child_Grid_onEdit(e);
+      //         //         EnableDisableApplyAmountTextBox(e.dataItem["Paid_In_Full"]);
+      //         //         Child_Grid_onEdit(e);
+      //         if (e.dataItem["Paid_Party_To"] != null) {
+      //            $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+      //         }
+      //        
+      //      }
+
+      // Cash Amount + Cehque Amount
+      function GetAmountToBePaid() {
+         var sum = 0;
+         var cashAmount = $("#Cash_Amount").val();
+         var bankAmount = $("#Bank_Amount").val();
+
+         //add only if the value is number
+         if (!isNaN(cashAmount) && cashAmount.length != 0) {
+            sum += parseFloat(cashAmount);
+         }
+
+         //add only if the value is number
+         if (!isNaN(bankAmount) && bankAmount.length != 0) {
+            sum += parseFloat(bankAmount);
+         }
+         sum = sum.toFixed(2);
+         return sum;
+      }
+
+      function SetAmountApplied(grid) {
+         var total = 0;
+         var postData = { id: eval('@Model.ID').toString() };
+         $.ajax({
+            url: '@(Url.Action("_GetTotalAppliedAmount", "PaymentDetails"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data) {
+               if (data != null) {
+                  total = parseFloat(data);
+                  total = total.toFixed(2);
+                  $("#Applied_Amount").val(total);
+                  $("#Applied_Amount_To_Be").val(GetAmountToBeApplied());
+                  $("#Net_Amt").val(GetNetAmount);
+               }
+            },
+            error: function () {
+               alert('An error occured due to Get Total Due Amount.')
+            }
+         });
+      }
+
+      function GetAmountToBeApplied() {
+         var amtToBeApplied = 0;
+         var amtPaid = $("#Total_Amount_Paid").val();
+         if (!isNaN(amtPaid) && amtPaid.length != 0) {
+            amtToBeApplied += parseFloat(amtPaid);
+         }
+         var amtApplied = $("#Applied_Amount").val();
+         if (!isNaN(amtApplied) && amtApplied.length != 0) {
+            amtToBeApplied -= parseFloat(amtApplied);
+         }
+         amtToBeApplied = amtToBeApplied.toFixed(2);
+         return amtToBeApplied;
+      }
+
+      function GetTotalExpensePaidByParty() {
+         var totalExp = 0;
+         var grid = $("#Grid_Expense_List").data("tGrid");
+         var Rows = grid.$rows();
+         var masterRow;
+         if (grid != null && Rows.length > 0) {
+            for (var i = 0; i < Rows.length; i++) {
+               var row = Rows[i];
+               if (row != null) {
+                  if (row.cells[3].innerHTML === 'PARTY') {
+                     totalExp += parseFloat(row.cells[4].innerHTML);
+                  }
+               }
+            }
+         }
+         return totalExp.toFixed(2);
+      }
+      function GetNetAmount() {
+         var netAmt = 0;
+
+         var amountToBePaid = $("#Total_Amount_Paid").val();
+         //add only if the value is number
+         if (!isNaN(amountToBePaid) && amountToBePaid.length != 0) {
+            netAmt += parseFloat(amountToBePaid);
+         }
+
+         var amtExp = $("#Expenses_Amt").val();
+         //add only if the value is number
+         if (!isNaN(amtExp) && amtExp.length != 0) {
+            netAmt -= parseFloat(amtExp);
+         }
+
+         netAmt = netAmt.toFixed(2);
+         return netAmt;
+      }
+
+      function SetTotalDueAmt() {
+         var total = 0;
+         var postData = { id: _partyId.toString(), paymentType: _paymentType, bookingId: _bookingId.toString(), locationId: _locationId.toString() };
+         $.ajax({
+            url: '@(Url.Action("_GetTotalDueAmount", "PaymentDetails"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data) {
+               if (data != null) {
+                  total = parseFloat(data);
+                  $("#Total_Amount_Due").val(total.toFixed(2));
+               }
+            },
+            error: function () {
+               alert('An error occured due to Get Total Due Amount.')
+            }
+         });
+      }
+
+      function BindScalePaymentDetailsGrid(partyId, paymentType) {
+         var tGrid = $('#Grid_PaymentDetails').data('tGrid');
+         var params = {
+            id: '0',
+            partyId: _partyId.toString(),
+            paymentType: _paymentType,
+            bookingId: '0',
+            locationId: _locationId,
+            isNew: 'true'
+         };
+         tGrid.rebind(params);
+
+         // Set total due amount.
+         SetTotalDueAmt();
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../PaymentDetails/_BindPaymentDetails/?id=0&partyId=" + _partyId + "&paymentType=" + _paymentType + "&locationId=" + _locationId + "&isNew=false",
+            updateUrl: "../PaymentDetails/_Update/?isNew=true"
+         };
+      }
+
+      function BindExpensePaymentDetailsGrid() {
+         var tGrid = $('#Grid_ExpensePaymentDetails').data('tGrid');
+         var params = {
+            id: '0',
+            partyId: _partyId.toString(),
+            paymentType: _paymentType,
+            bookingId: _bookingId.toString(),
+            isNew: 'true'
+         };
+         tGrid.rebind(params);
+
+         // Set total due amount.
+         SetTotalDueAmt();
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../PaymentDetails/_BindPaymentDetails/?id=0&partyId=" + _partyId + "&paymentType=" + _paymentType + "&bookingId=" + _bookingId + "&isNew=false",
+            updateUrl: "../PaymentDetails/_Update/?isNew=true"
+         };
+      }
+
+      function BindBankLookup() {
+         var tGrid = $('#SearchWindowGrid_Account_Name').data('tGrid');
+         tGrid.ajax = { selectUrl: "../Bank/_BankByPartyType?partytype=Organization" };
+         tGrid.rebind({ partytype: "Organization" });
+         $("#LabelID_Account_Name").val("");
+         $("#HiddenID_Account_Name").val(0);
+      }
+
+      function VisibleExpenseSection(value) {
+         if (value === true) {
+            document.getElementById("ExpenseSection").style.display = '';
+         }
+         else {
+            document.getElementById("ExpenseSection").style.display = 'none';
+         }
+      }
+
+      function VisibleTicektSection(value) {
+         if (value === true) {
+            document.getElementById("TicketSection").style.display = '';
+         }
+         else {
+            document.getElementById("TicketSection").style.display = 'none';
+         }
+      }
+
+      //#endregion Methods  
+
+   </script>
+   @* QuickBook *@
+   <script type="text/javascript" language="javascript">
+      function UpdateQBBankBalance() {
+         $.ajaxSetup({ cache: false });
+         $.getJSON('@(Url.Action("GetQBBankBalanceUpdateBatchFilePath", "Bank"))', function (data) {
+            var items = [];
+            $.each(data, function (key, val) {
+               if (val != '') {
+                  RunEXE(val);
+                  BindBankLookup();
+               }
+               else
+                  alert("UpdateBankBalance.bat file not found.");
+            });
+         });
+      }
+
+      function RunEXE(path) {
+         var oShell = new ActiveXObject("WScript.Shell");
+         var prog = path;
+         oShell.Run('"' + prog + '"');
+      }
+
+   </script>
+   @* Attachment *@
+   <script type="text/javascript" language="javascript">
+      function OnShowHideImage_Clicked(e) {
+         var grid = $("#Grid_Payment_Attachments").data('tGrid');
+         var Rows = grid.$rows();
+         for (var i = 0; i < Rows.length; i++) {
+            var row = Rows[i];
+            ShowHideAttchmentImage(row, grid);
+         }
+      }
+      function Attachment_Grid_onRowDataBound(e) {
+         var grid = $("#Grid_Payment_Attachments").data('tGrid');
+         ShowHideAttchmentImage(e.row, grid);
+      }
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+
+      function ValidatePrint() {
+         if (eval('@Model.ID') === '0') {
+            alert('There is nothing to print.');
+            return false;
+         }
+
+         if ($("#Transaction_Mode").val() != "Check")
+            return false;
+
+         return true;
+      }
+   </script>
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+               @Html.HiddenFor(m => m.Transaction_Type)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Payment_Receipt_Type, "Payment Type")
+            </td>
+            <td>
+               @if (@Model.ID > 0) {
+                  @Html.TextBoxFor(m => m.Payment_Receipt_Type, new { @readonly = "readonly" })
+               }
+               else {
+                  @Html.AuthorizedEditorFor(m => m.Payment_Receipt_Type, new { LovType = "Payment_Type", OnChange = "PaymentType_onChange", selectedItem = "Tickets" })
+               }
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Party)
+            </td>
+            <td>
+               @if (Model.ID == 0) {
+                  @Html.LookupHtml(m => m.Party, "PartyLookup", "ID", "Party_Name", @Model.Payment_Receipt_Type != null && Model.Payment_Receipt_Type == "Expenses" ? "_Index" : "_PartyForPayment", "Party", null, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "Party_onChange")                                                                
+               }
+               else {
+                  @Html.TextBoxFor(m => m.Party.Party_Name, new { @readonly = "readonly" })                        
+               }
+               @Html.HiddenFor(m => m.Party.ID)
+            </td>
+         </tr>
+         <tr id="ExpenseSection">
+            <td>@Html.AuthorizedLabelFor(m => m.Booking)
+            </td>
+            <td>
+               @if (@Model.ID > 0) {
+                  @Html.TextBoxFor(m => m.Booking.Booking_Ref_No, new { @readonly = "readonly" })   
+                  @Html.HiddenFor(m => m.Booking.ID)                              
+               }
+               else {
+                  @Html.LookupHtml(m => m.Booking, "BookingLookup", "ID", "Booking_Ref_No", "_UnPaidExpBookings", "Booking", new { partyId = @Model.Party != null ? @Model.Party.ID : 0 }, "_GetJson", "Booking", new string[] { "Booking_Ref_No", "Sales_Order_No.Sales_Order_No", "Sales_Order_No.Party.Party_Name", "Booking_Status" }, "Booking_onChange")
+               }
+            </td>
+         </tr>
+         <tr id="TicketSection">
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Address)
+            </td>
+            <td>
+               @if (@Model.ID > 0) { 
+                  @Html.TextBoxFor(m => m.Party_Address.ID, new { @readonly = "readonly" })   
+                  @Html.HiddenFor(m => m.Party_Address.ID)                                       
+               }
+               else { 
+                  @Html.LookupHtml(m => m.Party_Address, "LocationLookup", "ID", "Address1", "_PartyAddresses", "AddressBook", new { partyId = @Model.Party != null ? @Model.Party.ID : 0 }, "_GetJson", "AddressBook", new string[] { "ID", "Address1", "City", "State", "Country" }, "PartyAddress_onChange")
+               }
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Mode, "Payment Mode")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Mode, new { LovType = "Tran_mode", selectedItem = "Check" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Date, "Payment Date")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Date)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Status, "Payment Status")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Status, new { LovType = "STATUS", selectedItem = "Open" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Override_Name)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Override_Name)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Total_Amount_Due)
+            </td>
+            <td>
+               @Html.TextBox("Total_Amount_Due", String.Format("{0:0.00}", Model.Total_Amount_Due), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Cash_Amount)
+            </td>
+            <td>
+               @Html.Telerik().NumericTextBoxFor(m => m.Cash_Amount).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("CashBankAmount_onChange"))
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Bank_Amount)
+            </td>
+            <td>
+               @Html.Telerik().NumericTextBoxFor(m => m.Bank_Amount).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("CashBankAmount_onChange"))
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Total_Amount_Paid)
+            </td>
+            <td>
+               @Html.TextBox("Total_Amount_Paid", String.Format("{0:0.00}", Model.Total_Amount_Paid), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Applied_Amount)
+            </td>
+            <td>
+               @Html.TextBox("Applied_Amount", String.Format("{0:0.00}", Model.Applied_Amount), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td style="border-bottom: 1px solid black;">
+               @Html.AuthorizedLabelFor(m => m.Applied_Amount_To_Be)
+            </td>
+            <td style="border-bottom: 1px solid black;">
+               @Html.TextBox("Applied_Amount_To_Be", String.Format("{0:0.00}", Model.Applied_Amount_To_Be), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Expenses_Amt)
+            </td>
+            <td>
+               @Html.TextBox("Expenses_Amt", String.Format("{0:0.00}", Model.Expenses_Amt), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Net_Amt)
+            </td>
+            <td>
+               @Html.TextBox("Net_Amt", String.Format("{0:0.00}", Model.Net_Amt), new { @readonly = "readonly" })
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @* =============================Settled Tickets===============================================*@
+   @(Html.Telerik().TabStrip().Name("PaymentReceipt_TabStrip")
+         .ClientEvents(events => events.OnLoad("TabStrip_onLoad").OnSelect("onTabStrib_Select"))
+         .Items(items => {
+            items.Add().Text("Settled Tickets").Enabled(true).Selected(false)
+               .Content(Html.Telerik().Grid<PaymentReceiptDetails>()
+                 .Columns(columns => {
+                    columns.Bound(o => o.ID).ReadOnly(true);
+                    columns.Bound(o => o.Settlement.Scale.ID).ClientTemplate("<#= Settlement &&  Settlement.Scale ? Settlement.Scale.ID : '' #>").Title("Ticket#").ReadOnly();
+                    columns.Bound(o => o.Settlement.Scale.Purchase_Order.ID).ClientTemplate("<#= Settlement &&  Settlement.Scale && Settlement.Scale.Purchase_Order? Settlement.Scale.Purchase_Order.ID : '' #>").Title("Purchase Order#").ReadOnly();
+                    columns.Bound(o => o.Settlement.Amount).Title("Settlement Amount").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                    columns.Bound(o => o.Settlement.Amount_Paid_Till_Date).Title("Amount Paid Till Date").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                    columns.Bound(o => o.Settlement.ID).ClientTemplate("<#= Settlement ? Settlement.ID : '0' #>").Hidden(true);
+                    columns.Bound(o => o.PaymentReceipt.ID).Hidden(true);
+                 })
+               .BuildGrid(gridName: "Grid_PaymentDetails", ajaxController: "PaymentDetails", action: "_BindPaymentDetails",
+                 routedValue: new { id = Model.Payment_Receipt_Type == "Expenses" ? "0" : Model.ID.ToString(), partyId = '0', paymentType = "Tickets" },
+                 indexID: Model.ID.ToString(),
+                 hiddenColumns: new string[] { "ID" },
+                 allowInsert: false,
+                 allowDelete: false,
+                 allowEdit: true,
+                 feature: smART.Common.EnumFeatures.Transaction_PaymentDetails
+                )
+              .ClientEvents(events => events.OnDataBound("Settled_Ticket_Grid_onDataBound").OnSave("Settled_Tickets_Grid_onSave").OnEdit("Settled_Ticket_Grid_onEdit_Local").OnError("Grid_onError"))
+              .Pageable(paging => paging.PageSize(20))
+              .Editable(editing => editing.Mode(GridEditMode.InLine))
+              .ToHtmlString()
+             );            
+
+   @* =============================Settled Expenses===============================================*@
+            items.Add().Text("Settled Expenses").Enabled(true).Selected(false).Content(Html.Telerik().Grid<PaymentReceiptDetails>()
+               .Columns(columns => {
+                  columns.Bound(o => o.ID).ReadOnly(true).Width("70px");
+                  columns.Bound(o => o.ExpenseRequest.ID).Title("Expense#").Width("70px").ReadOnly();
+                  columns.Bound(p => p.ExpenseRequest.EXPENSE_TYPE).ReadOnly();
+                  columns.Bound(o => o.ExpenseRequest.EXPENSE_Sub_TYPE).ReadOnly();
+                  columns.Bound(p => p.ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.Booking_Ref_No).ClientTemplate("<#= ExpenseRequest != null && ExpenseRequest.Dispatcher_Request_Ref !=null && ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No != null ? ExpenseRequest.Dispatcher_Request_Ref.Booking_Ref_No.Booking_Ref_No : '' #>").Title("Booking#").ReadOnly(true).Width("140px");
+                  columns.Bound(p => p.ExpenseRequest.Dispatcher_Request_Ref.Container.Container_No).ClientTemplate("<#= ExpenseRequest != null && ExpenseRequest.Dispatcher_Request_Ref !=null && ExpenseRequest.Dispatcher_Request_Ref.Container != null ? ExpenseRequest.Dispatcher_Request_Ref.Container.Container_No : '' #>").Title("Container#").ReadOnly(true).Width("140px");                  
+                  columns.Bound(p => p.ExpenseRequest.Scale_Ref.ID).ClientTemplate("<#= ExpenseRequest != null && ExpenseRequest.Scale_Ref !=null  ? ExpenseRequest.Scale_Ref.ID : '' #>").Title("Scale#").ReadOnly(true);
+                  columns.Bound(o => o.ExpenseRequest.Amount_Paid).Title("Amount Due").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                  columns.Bound(o => o.ExpenseRequest.Amount_Paid_Till_Date).Title("Amount paid till date").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");                  
+                  columns.Bound(o => o.PaymentReceipt.ID).Hidden(true);                    
+
+               })
+              .BuildGrid(gridName: "Grid_ExpensePaymentDetails",
+                          ajaxController: "PaymentDetails",
+                          action: "_BindPaymentDetails",
+                          routedValue: new { id = Model.Payment_Receipt_Type == "Tickets" ? "0" : Model.ID.ToString(), partyId = '0', paymentType = "Expenses" },
+                          indexID: Model.ID.ToString(),
+                          hiddenColumns: new string[] { "ID" },
+                          allowInsert: false,
+                          allowDelete: false,
+                          allowEdit: true,
+                          feature: smART.Common.EnumFeatures.Transaction_PaymentDetails
+                         )
+              .ClientEvents(events => events.OnDataBound("Settled_Exp_Grid_onDataBound").OnSave("Settled_Exp_Grid_onSave_Local").OnEdit("Settled_Exp_Grid_onEdit_Local").OnError("Grid_onError"))
+              .Pageable(paging => paging.PageSize(20))
+              .Editable(editing => editing.Mode(GridEditMode.InLine))
+              .ToHtmlString()
+              );            
+     @* =============================Bank/Cash Details===============================================*@
+            items.Add()
+              .Text("Bank/Cash Details")
+              .Enabled(true)
+             .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Account_Name)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Account_Name, "BankLookup", "ID", "Account_Name", "_BankByPartyType", "Bank", new { partytype = "Organization" }, "_GetJson", "Bank", new string[] { "Bank_Name", "Account_Name", "Account_No", "Closing_Balance" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Check_Wire_Transfer)
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Check_Wire_Transfer)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Cash_Drawer)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Cash_Drawer, new { LovType = "Drawer" })
+         </td>
+      </tr>
+   </table>
+   </text>);     
+    
+    @* ========================Expense TAB ============================================================*@
+            items.Add()
+                .Text("Expenses")
+                .Enabled(true)
+                .Content(Html.Telerik().Grid<PaymentReceiptExpense>()
+                                     .Columns(columns => {
+                                        columns.Bound(p => p.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+                                        //columns.Bound(p => p.Paid_Party_To.ID).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.ID  : '' #>").Hidden();
+                                     })
+                                    .BuildGrid(
+                                        gridName: "Grid_Expense_List",
+                                        ajaxController: "PaymentExpense",
+                                        hiddenColumns: new string[] { "Paid_Party_To" },
+                                        indexID: Model.ID.ToString(),
+                                        feature: smART.Common.EnumFeatures.Transaction_PaymentExpense
+                                    )
+                                    .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Expense_Grid_onEdit_Local").OnRowDataBound("Expense_Grid_onDataBound").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                                    .Pageable(paging => paging.PageSize(100))
+                                    .ToHtmlString()
+                        );
+                            
+    @* ========================Notes TAB ============================================================*@
+            items.Add()
+                .Text("Notes")
+                .Enabled(true)
+                .Content(Html.Telerik().Grid<PaymentReceiptNotes>()
+                                    .BuildGrid(
+                                        gridName: "Grid_Payment_Notes",
+                                        ajaxController: "PaymentNotes",
+                                        indexID: Model.ID.ToString(),
+                                        feature: smART.Common.EnumFeatures.Transaction_PaymentNote
+                                    )
+
+                                    .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                                    .ToHtmlString()
+                        );
+                   
+   @* ======================Attachment TAB =========================================================*@
+            items.Add().Text("Attachments").Content(
+                        Html.Telerik().Grid<PaymentReceiptAttachments>()
+                        .BuildGrid(
+                        gridName: "Grid_Payment_Attachments",
+                        ajaxController: "PaymentReceiptAttachments",
+                        indexID: Model.ID.ToString(),
+                        hiddenColumns: new string[] { "ID" },
+                        allowEdit: false,
+                        allowInsert: true,
+                        allowDelete: true,
+                        feature: smART.Common.EnumFeatures.Transaction_PaymentAttachment
+                       )
+                          .ToolBar(toolBar => toolBar.Template(
+                          @<text> <a class='t-button t-grid-add'>Add new record</a>
+   <label class="customer-label" for="Customers-input">
+      Show Images</label>
+   <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Payment_Attachments")' />
+   </text>))
+                       .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("Attachment_Grid_onRowDataBound").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                       .ToHtmlString()
+                    );
+
+         })
+                   )
+}

@@ -1,0 +1,90 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.ReportFilter
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutReportsDetails.cshtml";
+  ViewBag.Feature = smART.Common.EnumFeatures.Reports_Report;
+
+  ViewBag.SearchAction = "_GetAllItems";
+  ViewBag.SearchController = "SalesOrderItem";
+  ViewBag.Transaction = true;
+}
+<script type="text/javascript">
+
+  function onChange(e)
+  {
+    $("#PartyID").val(e.value);
+  }
+
+  function onItemChange(e)
+  {
+    $("#ItemID").val(e.value);
+  }
+
+  function RefreshReport()
+  {
+    var item = new Object();
+    item = new Object({ FocusAreaID: $("#FocusAreaID").val(), ReportName: $("#ReportName").val(), FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val(), PartyID: $("#PartyID").val(), DataSet_Name: $("#DataSet_Name").val(), Parameters: $("#Parameters").val()
+    , ID: $("#ID").val(), ItemID: $("#ItemID").val(), Status: $("#Status").val()
+    });
+    Refresh(item)
+  }
+
+
+</script>
+<table>
+  <tr>
+    <td>
+      @Html.AuthorizedLabelFor(m => m.FromDate)
+    </td>
+    <td>
+      @Html.Telerik().DatePickerFor(m => m.FromDate)
+    </td>
+    <td>
+      @Html.AuthorizedLabelFor(m => m.ToDate)
+    </td>
+    <td>
+      @Html.Telerik().DatePickerFor(m => m.ToDate)
+    </td>
+    <td>
+      @Html.AuthorizedLabelFor(m => m.ID,"PO#")
+    </td>
+    <td>
+      @Html.Telerik().NumericTextBoxFor(m => m.ID).DecimalDigits(0).DecimalDigits(0).NumberGroupSeparator("").Spinners(false)
+    </td>
+    <td>
+      @Html.AuthorizedLabelFor(m => m.ItemID)
+    </td>
+    <td>
+      @(Html.Telerik().ComboBox().Name("Item").DropDownHtmlAttributes(new {
+    style = "height: 200px; width:250px;"
+  })
+              .BindTo(ItemHelper.ItemList("")).ClientEvents(events => events.OnChange("onItemChange")).SelectedIndex(0))
+    </td>
+  </tr>
+  <tr>
+    <td>@Html.Label("Party")
+    </td>
+    <td>
+      @(Html.Telerik().ComboBox().Name("Party").DropDownHtmlAttributes(new {style = "height: 200px; width:250px;"
+  }).BindTo(PartyHelper.PartyList("")).ClientEvents(events => events.OnChange("onChange")).SelectedIndex(0))
+    </td>
+    <td>
+      @Html.AuthorizedLabelFor(m => m.Status)
+    </td>
+    <td>
+      @Html.AuthorizedEditorFor(m => m.Status, new {LovType = "ORDER_STATUS"})
+    </td>
+    <td>
+      <button type="submit" class="t-button" onclick="RefreshReport()">
+        Refresh</button>
+      @Html.HiddenFor(m => m.PartyID)
+      @Html.HiddenFor(m => m.FocusAreaID)
+      @Html.HiddenFor(m => m.ReportName)
+      @Html.HiddenFor(m => m.DataSet_Name)
+      @Html.HiddenFor(m => m.Parameters)
+      @Html.HiddenFor(m => m.ItemID)
+    </td>
+  </tr>
+</table>

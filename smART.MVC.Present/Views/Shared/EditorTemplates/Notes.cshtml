@@ -1,0 +1,80 @@
+﻿@using smART.ViewModel;
+@using smART.MVC.Present.Helpers;
+@using smART.ViewModel
+@using smART.MVC.Present.Extensions
+@model BaseNotes
+@if (Model != null) {
+   <div class="editor">
+      @* <a href="#" onclick="loadPartialView()">Load partial view</a>*@
+      <script type="text/javascript">
+         function loadPartialView(e) {
+            //          alert('sanjeev');
+         }
+      </script>
+      @Html.ValidationSummary()
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+               @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(l => l.Notes)
+            </td>
+            <td style="width: 450px;">
+               @(Html.Telerik().EditorFor(l => l.Notes).Name("Notes").Encode(false).Tools(tools =>
+                                                    tools.Clear()
+                                                         .Bold()
+                                                         .Italic()
+                                                         .Separator()
+                                                         .BackColor()
+                                                         .FontColor()
+                                                         .Separator()
+                                                         .FontName()
+                                                         .FontSize()
+      //.Separator()
+      //.InsertImage()
+      //.Separator()
+      //.Indent()
+      //.JustifyCenter()
+      //.JustifyFull()
+      //.JustifyLeft()
+      //.JustifyRight()
+      //.InsertUnorderedList()
+
+                                                  )
+                )
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(l => l.Note_Type)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(l => l.Note_Type, new { LovType = "Note_TYPE", selectedItem = "General Notes" })
+            </td>
+         </tr>
+         @* <tr>
+                <td>
+                    @Html.AuthorizedLabelFor(l => l.Print)
+                </td>
+                <td>
+                    @Html.AuthorizedEditorFor(l => l.Print, new { OnChecked = "loadPartialView" })
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.AuthorizedLabelFor(l => l.Print_Area)
+                </td>
+                <td>
+                    @Html.AuthorizedEditorFor(l => l.Print_Area, new { LovType = "Print_Area" })
+                </td>
+            </tr>*@
+      </table>
+   </div>
+
+}

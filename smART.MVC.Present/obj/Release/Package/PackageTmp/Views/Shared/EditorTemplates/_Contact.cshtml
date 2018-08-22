@@ -1,0 +1,81 @@
+﻿@model smART.ViewModel.Contact
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.First_Name)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.First_Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Last_Name)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Last_Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Email)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Email)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Home_Phone)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Home_Phone)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Mobile)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Mobile)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Work_Phone)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Work_Phone)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Fax_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Fax_No)
+            </td>
+        </tr>
+        @*
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Party)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Party)
+            </td>
+        </tr>
+        *@
+    </table>
+</div>

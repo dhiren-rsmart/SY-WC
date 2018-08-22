@@ -1,0 +1,60 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Extensions
+@model BaseEntity
+           
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="masterMenu">
+            @(Html.Telerik().Menu()
+                    .Name("menuAdministrationMenu")
+                    .Items(menu => {                      
+                      //menu.Add().Text("Price List").ActionIf(
+                      //     new ActionDetails[] {
+                      //              new ActionDetails() { Action="New", Controller="PriceList"
+                      //                  , Feature= smART.Common.EnumFeatures.Master_PriceList }
+                      //          }
+                      //     );//.Selected(Model.MenuSelect.Master_PriceListSelected);
+                        menu.Add().Text("LOV").ActionIf(
+                                new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="LOVType"
+                                        , Feature= smART.Common.EnumFeatures.Master_LOVType }
+                                }
+                                );  //.Selected(Model.MenuSelect.Master_ItemSelected);
+
+                        menu.Add().Text("Camera Setup");
+                        menu.Add().Text("Scale Setup");
+                        menu.Add().Text("Law Enforcement  Setup");
+                          //.ActionIf(
+                          //          new ActionDetails[] {
+                          //          new ActionDetails() { Action="New", Controller="LOVType"
+                          //              , Feature= smART.Common.EnumFeatures.Master_LOVType }
+                          //      }
+                          //          );  //.Selected(Model.MenuSelect.Master_ItemSelected);
+                        //menu.Add().Text("UOM Conversion").ActionIf(
+                        //       new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="UOMConversion"
+                        //                , Feature= smART.Common.EnumFeatures.Master_UOMConversion }
+                        //        }
+                        //       );
+                        //menu.Add().Text("QB Log").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="Index", Controller="QBLog"
+                        //                , Feature= smART.Common.EnumFeatures.Administration_QBLog }
+                        //          }
+                        //        );
+                        //menu.Add().Text("Cycle").ActionIf(
+                        //         new ActionDetails[] {
+                        //            new ActionDetails() { Action="Index", Controller="Cycle"
+                        //                , Feature= smART.Common.EnumFeatures.Administration_Cycle }
+                        //          }
+                        //         );
+                        //menu.Add().Text("LOVType").Action("New", "LOVType").Selected(Model.MenuSelect.Administration_LOVTypeSelected);                        
+                    }))
+</div>
+
+
+<div>
+    @RenderBody()
+</div>

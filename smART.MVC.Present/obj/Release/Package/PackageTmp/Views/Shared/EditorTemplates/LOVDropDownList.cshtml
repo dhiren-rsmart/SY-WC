@@ -1,0 +1,17 @@
+﻿@model string
+@using smART.MVC.Present.Helpers;
+
+@{
+    Telerik.Web.Mvc.UI.Fluent.DropDownListBuilder list = null;
+    string style = !string.IsNullOrEmpty(ViewBag.Style) ? ViewBag.Style : "width:200px;";
+    list = Html.Telerik().DropDownListFor(o => o)
+        .BindTo(LOVHelper.LOVList(ViewBag.LovType, ViewBag.selectedItem,ViewBag.ParentValue))
+        .HtmlAttributes(new { style = style });
+
+    if (ViewBag.OnChange != null)
+    {
+        list.ClientEvents(events => events.OnChange(ViewBag.OnChange));
+    }
+    
+    @list
+}

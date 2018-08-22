@@ -1,0 +1,5 @@
+﻿@model  smART.ViewModel.PurchaseOrderAttachments
+@using smART.MVC.Present.Extensions  
+ <div class="editor">  
+   @Html.Partial("EditorTemplates/Attachment", Model, new ViewDataDictionary { { "ContName", "PurchaseOrderAttachments" } })
+</div>

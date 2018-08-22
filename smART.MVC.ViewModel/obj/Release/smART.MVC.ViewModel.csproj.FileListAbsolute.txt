@@ -1,0 +1,8 @@
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\bin\Release\smART.MVC.ViewModel.dll
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\bin\Release\smART.MVC.ViewModel.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\bin\Release\DataAnnotationsExtensions.ClientValidation.dll
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\bin\Release\DataAnnotationsExtensions.dll
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\bin\Release\WebActivator.dll
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\obj\Release\smART.MVC.ViewModel.dll
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\obj\Release\smART.MVC.ViewModel.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.MVC.ViewModel\obj\Release\smART.MVC.ViewModel.csprojResolveAssemblyReference.cache

@@ -1,0 +1,36 @@
+﻿@model IEnumerable<smART.ViewModel.Scale>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+ @(
+ Html.Telerik().Grid<Scale>()
+        .Name("Grid_Scale_List")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "Scale"))
+        .Columns(columns =>
+            {
+                columns.Bound(o => o.ID).Title("Ticket No #");
+                columns.Bound(o => o.Ticket_Type).Filterable(true);
+                columns.Bound(o => o.Scale_Type_Party.Party_Name).ClientTemplate("<#= Scale_Type_Party ? Scale_Type_Party.Party_Name  : '' #>").Filterable(false);             
+                //columns.Bound(p => p.Party_ID.Party_Name)
+                //.ClientTemplate("<#= Party_ID? Party_ID.Party_Name  : '' #>");
+                columns.Bound(p => p.Container_No.Container_No).ClientTemplate("<#= Container_No? Container_No.Container_No : '' #>");                
+                //columns.Bound(o => o.Party_ID != null  ? o.Party_ID.Party_Name : o.Party_Name);
+                //columns.Bound(o => o.Container_No.Container_No);
+                columns.Bound(p => p.Asset.Asset_No).ClientTemplate("<#= Asset ? Asset.Asset_No : '' #>");     
+                columns.Bound(o => o.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "Scale", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false); 
+            })
+          .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+         .Sortable(sorting => sorting.Enabled(true).SortMode(GridSortMode.SingleColumn).OrderBy(order => { order.Add(o => o.ID).Descending(); }))
+         
+
+)
+</div>

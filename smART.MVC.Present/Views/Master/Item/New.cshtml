@@ -1,0 +1,211 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.Item
+@{
+   ViewBag.Title = "Material Master";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Item";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Item";
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+   <script language="javascript" type="text/javascript">
+
+      function Child_Grid_onSave(e)
+      {
+         // Set Party.ID to the Parent ID
+         e.values["Parent.ID"] = eval('@Model.ID');
+
+         // The following are "required" fields for thr Party object; 
+         // setting them to ANY value has no effect, 
+         // as these values are overwritten based on the ID
+         // set in the "Party.ID" field above
+         e.values["Parent.Item_Category"] = 'Test';
+         e.values["Parent.Item_Group"] = 'Test';
+         //e.values["Item.Short_Name"] = 'Test';
+         //e.values["Item.Long_Name"] = 'Test';
+      }     
+
+      function onWeightChange()
+      {
+         var sum = 0;
+         var inputNetBalance = $("#Net_Balance").data("tTextBox");
+         var Opening_Balance = $("#Opening_Balance").val();
+         var Current_Balance = $("#Current_Balance").val();
+
+         //add only if the value is number
+         if (!isNaN(Opening_Balance) && Opening_Balance.length != 0)
+         {
+            sum += parseFloat(Opening_Balance);
+         }
+
+         //add only if the value is number
+         if (!isNaN(Current_Balance) && Current_Balance.length != 0)
+         {
+            sum += parseFloat(Current_Balance);
+         }
+
+         sum = sum.toFixed(2);
+         inputNetBalance.value(sum);
+      }
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Item_Category)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Item_Category, new { LovType = "ITEM_CATEGORY" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Item_Group)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Item_Group, new { LovType = "ITEM_GROUP" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Short_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Short_Name)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Long_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Long_Name)
+            </td>
+         </tr>         
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.IsActive)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.IsActive)
+            </td>
+         </tr>
+      </table>
+   </div>
+ @*  <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Opening_Balance)
+            </td>
+            <td>
+               @(Html.Telerik().NumericTextBoxFor(m => m.Opening_Balance).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("onWeightChange")))
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Current_Balance)
+            </td>
+            <td>             
+               @(Html.Telerik().NumericTextBoxFor(m => m.Current_Balance).Spinners(false).Enable(false))
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Net_Balance)
+            </td>
+            <td>
+               @(Html.Telerik().NumericTextBoxFor(m => m.Net_Balance).Spinners(false).Enable(false))
+            </td>
+         </tr>
+      </table>
+   </div>*@
+   <div class="editClear">
+   </div>
+   <hr />
+   @(Html.Telerik().TabStrip()
+    .Name("Item_TabStrip")
+    .Items(items => {
+       items.Add()
+           .Text("Additional Info")
+           .Selected(true)
+           .Enabled(true)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Priced)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Priced)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Regulated_Item)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Regulated_Item)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Require_VIN)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Require_VIN)
+         </td>
+      </tr>
+   </table>
+   </text>);
+       items.Add()
+      .Text("Notes")
+      .Enabled(true)
+      .Content(Html.Telerik().Grid<ItemNotes>()
+                        .BuildGrid(
+                            gridName: "Grid_Item_Notes",
+                            ajaxController: "ItemNotes",
+                            indexID: Model.ID.ToString(),
+                            feature: smART.Common.EnumFeatures.Master_ItemNotes
+                            )
+
+                        .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit"))
+                        .ToHtmlString()
+               );
+
+       items.Add()
+           .Text("Inventory")
+           .Enabled(true)
+           .Content(Html.Telerik().Grid<InventoryAudit>()
+                             .Sortable(s => s.Enabled(true))
+                             .Filterable(f => f.Enabled(true)) 
+                             .BuildGrid(
+                                 gridName: "Grid_Item_Inventory",
+                                 ajaxController: "InventoryAudit",
+                                 indexID: Model.ID.ToString(),
+                                 hiddenColumns: new String[]{"ID"},
+                                 allowInsert:false,
+                                 allowEdit:false,
+                                 allowDelete:false,
+                                 feature: smART.Common.EnumFeatures.Transaction_InventoryAudit
+                                 )                                                       
+                             .ToHtmlString()
+                    );
+
+
+    })
+
+    )
+}
+@section DetailsSection
+{
+   <div />
+}

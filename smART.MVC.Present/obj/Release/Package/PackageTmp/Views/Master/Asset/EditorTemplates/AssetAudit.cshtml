@@ -1,0 +1,57 @@
+﻿@model smART.ViewModel.AssetAudit
+@using smART.MVC.Present.Extensions
+<script type="text/javascript" language="javascript">
+
+   function OnParty_Change(e)
+   {
+      var tGrid = $("#SearchWindowGrid_Location").data('tGrid');
+      tGrid.rebind({ partyId: e.ID });
+
+      //set the refresh button ID value
+      tGrid.ajax = { selectUrl: "../AddressBook/_PartyAddresses?partyId" + e.ID };
+
+      //clear driver data
+      $('#LabelID_Location').val('');
+      $("#HiddenID_LocationID").val(0);
+
+      $.ajaxSetup({ cache: false });
+   }   
+  
+</script>
+<div id="AssetAuditValidSum" class="validation-summary-errors">
+   @Html.ValidationSummary()
+</div>
+<div class="editor">
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.ID)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.ID, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Party)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Party, "PartyLookup", "ID", "Party_Name", "_PartyByTypes", "Party", new { partyTypes = "Organization,Supplier" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnParty_Change")
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Location)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Location, "LocationLookup", "ID", "FullAddress", "_PartyAddresses", "AddressBook", new { partyId = @Model.Party != null ? @Model.Party.ID : 0 }, "_GetJson", "AddressBook", new string[] { "ID", "Address1", "City", "State", "Country" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Date)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Date)
+         </td>
+      </tr>
+   </table>
+</div>

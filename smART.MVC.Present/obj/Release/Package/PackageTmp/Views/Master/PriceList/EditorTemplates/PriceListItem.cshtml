@@ -1,0 +1,46 @@
+﻿@model smART.ViewModel.PriceListItem
+@using smART.MVC.Present.Extensions
+<div class="editor">
+  <div id="PriceLitItemValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>  
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Item)
+            </td>
+            <td>
+                @Html.LookupHtml(l => l.Item, "ItemLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" })
+                @*@Html.TextBoxFor(l => l.Item.Short_Name, new { @readonly = "readonly" })
+                @Html.HiddenFor(l => l.Item.ID)
+                @Html.HiddenFor(l => l.Item.Item_Category)
+                @Html.HiddenFor(l => l.Item.Item_Group)*@
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Price)
+            </td>
+            <td>              
+                @(Html.Telerik().NumericTextBoxFor(l => l.Price).Spinners(false).MinValue(0).DecimalDigits(4))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Comments)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Comments)
+            </td>
+        </tr>
+        
+    </table>
+</div>

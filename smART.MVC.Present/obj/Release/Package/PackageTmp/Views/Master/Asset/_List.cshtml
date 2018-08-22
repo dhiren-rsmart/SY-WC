@@ -1,0 +1,30 @@
+﻿@model IEnumerable<smART.ViewModel.Asset>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+   @(
+ Html.Telerik().Grid<Asset>()
+        .Name("Grid_Asset_List")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "Asset"))
+        .Columns(columns => {
+           columns.Bound(o => o.ID).Filterable(false);
+           columns.Bound(o => o.Asset_No);
+           columns.Bound(o => o.Asset_Type);
+           columns.Bound(o => o.Asset_Sub_Type);
+           columns.Bound(o => o.Purchase_Date);
+           columns.Bound(o => o.Purchase_Aamount);
+           columns.Bound(o => o.Current_Value);
+           columns.Bound(o => o.ID).ClientTemplate(Ajax.ActionLink("Select", "Index", "Asset", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+        })
+        .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+)
+</div>

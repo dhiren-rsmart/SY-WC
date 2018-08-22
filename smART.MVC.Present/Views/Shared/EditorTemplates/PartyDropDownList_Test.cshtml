@@ -1,0 +1,40 @@
+﻿@model smART.ViewModel.Party
+@using Omu.Awesome.Mvc
+
+@if(Model != null)
+{
+    @{
+        var o = AwesomeTools.MakeId(Model.ID.ToString(), "Party_");
+        var sel = Settings.Lookup.SelectedRowCssClass;
+    }
+
+    <script type="text/javascript">
+
+        function lgc() {
+            $('li', $(this).parent()).removeClass('@sel').unbind('click').click(lgc);
+            $(this).addClass('@sel').click(function () { $ae.lookupChoose('@o', '@Url.Action("_Index", "Party")', '@sel'); });
+        }
+
+        $(function () {
+            var o = '@o';
+            $("#ld" + o).addClass("ae-lookup-textbox");
+            $ae.loadLookupDisplay(o, '@Url.Action("_Index", "Party")');
+            $("." + o + "ie8").remove();
+            $("#lp" + o).addClass(o + "ie8");
+
+            $ae.popup('lp' + o, 400, 600, '@AwesomeTools.JsEncode(Model.Party_Name)', true, 'center', true, { '@AwesomeTools.JsEncode(Model.Party_Name)': function () { $ae.lookupChoose('@o', '@Url.Action("Get", "_INdex", "Party")', '@sel'); }, '@AwesomeTools.JsEncode(Model.Party_Name)': function () { $(this).dialog('close'); } }, '');
+
+            var lck = null;
+            $ae.lookupPopupOpenClick(o, lck,
+            '@Url.Action("_Index", "Party")',
+             'true',
+            'false');
+        });    
+    </script>
+
+    <div id="lp@o">
+    </div>
+    <input type="hidden" id="@o" name="@Model.Party_Name" value="@Model.ID" />
+    <input type="text" id="ld@o" disabled="disabled" />
+    <a class="ae-lookup-openbtn" id="lpo@o" ></a>
+}

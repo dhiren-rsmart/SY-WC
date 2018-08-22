@@ -1,0 +1,285 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="smART.Library.LOVLibrary" Collapsed="true">
+    <Position X="0.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAgYBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Administration\LOVLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.LOVTypeLibrary" Collapsed="true">
+    <Position X="9.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Administration\LOVTypeLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.AttachmentLibrary&lt;TEntityBusiness, TEntityModel, TParentEntityBusiness, TParentEntityModel&gt;" Collapsed="true">
+    <Position X="24" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAYBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>AttachmentLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.GenericLibrary&lt;TEntityBusiness, TEntityModel&gt;" Collapsed="true">
+    <Position X="30.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIFICQAABFAAQAAIJgAEUAAAAEEAIAAAgAEiAACAAA=</HashCode>
+      <FileName>GenericLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.AddressBookLibrary" Collapsed="true">
+    <Position X="29.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\AddressBookLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.BankLibrary" Collapsed="true">
+    <Position X="34.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\BankLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.BinLibrary" Collapsed="true">
+    <Position X="36.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\BinLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ContactLibrary" Collapsed="true">
+    <Position X="38.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAABAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\ContactLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ItemAttachmentLibrary" Collapsed="true">
+    <Position X="25.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\ItemAttachmentLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ItemLibrary" Collapsed="true">
+    <Position X="56.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\ItemLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ItemNotesLibrary" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\ItemNotesLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.NoteLibrary" Collapsed="true">
+    <Position X="32" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\NoteLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PartyChildLibrary&lt;TEntityBusiness, TEntityModel&gt;" Collapsed="true">
+    <Position X="34.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\PartyChildLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.PartyLibrary" Collapsed="true">
+    <Position X="45.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\PartyLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PriceListChildLibrary&lt;TEntityBusiness, TEntityModel&gt;" Collapsed="true">
+    <Position X="50" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\PriceListChildLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.PriceListItemLibrary" Collapsed="true">
+    <Position X="50" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\PriceListItemLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PriceListLibrary" Collapsed="true">
+    <Position X="59" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\PriceListLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.EmployeeLibrary" Collapsed="true">
+    <Position X="2.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAAAQAQAAAAAgAAAAAAAAAAAAAACAAAAAAAA=</HashCode>
+      <FileName>Master\Security\EmployeeLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.NotesLibrary&lt;TEntityBusiness, TEntityModel, TParentEntityBusiness, TParentEntityModel&gt;" Collapsed="true">
+    <Position X="15" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAYBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>NotesLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.BookingAttachmentsLibrary" Collapsed="true">
+    <Position X="23" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\Booking\BookingAttachmentsLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.BookingLibrary" Collapsed="true">
+    <Position X="47.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAgAAAAAA=</HashCode>
+      <FileName>Transaction\Booking\BookingLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.BookingNotesLibrary" Collapsed="true">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\Booking\BookingNotesLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ContainerLibrary" Collapsed="true">
+    <Position X="54.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAQCEAAAYBAAAAIAAAAAAAAAAAAAAAQgEAAAAA=</HashCode>
+      <FileName>Transaction\Booking\ContainerLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.DispatcherRequestLibrary" Collapsed="true">
+    <Position X="61.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\DispatcherRequestLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.ExpensesRequestLibrary" Collapsed="true">
+    <Position X="5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\ExpensesRequestLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PurchaseOrderAttachmentsLibrary" Collapsed="true">
+    <Position X="20.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\PurchaseOrder\PurchaseOrderAttachmentsLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PurchaseOrderChildLibrary&lt;TEntityBusiness, TEntityModel&gt;" Collapsed="true">
+    <Position X="41" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\PurchaseOrder\PurchaseOrderChildLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.PurchaseOrderItemLibrary" Collapsed="true">
+    <Position X="41" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\PurchaseOrder\PurchaseOrderItemLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PurchaseOrderLibrary" Collapsed="true">
+    <Position X="52.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\PurchaseOrder\PurchaseOrderLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.PurchaseOrderNotesLibrary" Collapsed="true">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\PurchaseOrder\PurchaseOrderNotesLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.SalesOrderAttachmentsLibrary" Collapsed="true">
+    <Position X="27.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\SalesOrderAttachmentsLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.SalesOrderChildLibrary&lt;TEntityBusiness, TEntityModel&gt;" Collapsed="true">
+    <Position X="7.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\SalesOrderChildLibrary.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.Library.SalesOrderItemLibrary" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\SalesOrderItemLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.SalesOrderLibrary" Collapsed="true">
+    <Position X="43.25" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\SalesOrderLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.Library.SalesOrderNotesLibrary" Collapsed="true">
+    <Position X="14" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Transaction\SalesOrderNotesLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="smART.Library.ILibrary&lt;TEntityBusiness&gt;" Collapsed="true">
+    <Position X="63.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAIAIAAAAAAAAQAAAAAAAAAAAAEAAAAAAgAAgAACAAA=</HashCode>
+      <FileName>ILibrary.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="smART.Library.IParentChildLibrary&lt;TEntityBusiness&gt;" Collapsed="true">
+    <Position X="65.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIBAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IParentChildLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="smART.Library.IPriceListChildLibrary&lt;TEntityBusiness&gt;" Collapsed="true">
+    <Position X="63.75" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>IPriceListChildLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="smART.Library.ISalesOrderChildLibrary&lt;TEntityBusiness&gt;" Collapsed="true">
+    <Position X="65.5" Y="1.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ISalesOrderChildLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

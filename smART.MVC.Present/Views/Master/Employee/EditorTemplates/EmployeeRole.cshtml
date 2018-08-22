@@ -1,0 +1,24 @@
+﻿@model smART.ViewModel.EmployeeRole
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Role)
+            </td>
+            <td>
+                @Html.LookupHtml(l => l.Role, "RoleLookup", "ID", "Role_Description", "_Index", "Role", null, "_GetJson", "Role", new string[] { "ID", "Role_Description" })
+            </td>
+        </tr>
+        
+    </table>
+</div>

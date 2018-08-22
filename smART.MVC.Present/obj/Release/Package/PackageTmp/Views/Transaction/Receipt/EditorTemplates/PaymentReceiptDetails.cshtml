@@ -1,0 +1,106 @@
+﻿@model smART.ViewModel.PaymentReceiptDetails 
+@using smART.MVC.Present.Extensions
+<div class="editor">
+   <script language="javascript" type="text/javascript">  
+     
+     $("#Paid_In_Full").click
+     ( 
+            function()
+            {    
+             
+              if( $(this).is(':checked') )
+              {
+                 var balAmount = $("#Balance_Amount").val();
+                 setApplyAmount(balAmount);
+                 EnableDisableApplyAmountTextBox(true);
+              }
+              else
+               {
+                  setApplyAmount(0);
+                  EnableDisableApplyAmountTextBox(false);
+               }
+             }
+      ); 
+
+     function setApplyAmount(amount){
+        var txtBoxApplyAmount = $("#Apply_Amount").data("tTextBox");
+        txtBoxApplyAmount.value(amount);
+     }
+
+       function EnableDisableApplyAmountTextBox(value)
+      {       
+         if (value === true)
+         {
+            $("#Apply_Amount").attr('readonly', true); 
+         }
+         else
+         {
+            $("#Apply_Amount").attr('readonly', false); 
+         }
+      }    
+
+   </script>
+   @Html.ValidationSummary()
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Invoice.Booking.Booking_Ref_No)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.Invoice.Booking.Booking_Ref_No, new { @readonly = "readonly" })
+            @Html.HiddenFor(l => l.ID, new { id = "Child_ID" })
+            @Html.HiddenFor(l => l.Invoice.ID)
+            @Html.HiddenFor(l => l.PaymentReceipt.ID)
+            @Html.HiddenFor(l => l.PaymentReceipt.Party.ID)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Invoice.Booking.Sales_Order_No.ID, "Sales Order#")
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.Invoice.Booking.Sales_Order_No.ID, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Invoice.Net_Amt)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.Invoice.Net_Amt, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Invoice.Amount_Paid_Till_Date)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.Invoice.Amount_Paid_Till_Date, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Balance_Amount)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.Balance_Amount, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Paid_In_Full)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Paid_In_Full)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Apply_Amount)
+         </td>
+         <td>
+            @(Html.Telerik().NumericTextBoxFor(l => l.Apply_Amount).Spinners(false).MinValue(0))
+         </td>
+      </tr>
+   </table>
+</div>

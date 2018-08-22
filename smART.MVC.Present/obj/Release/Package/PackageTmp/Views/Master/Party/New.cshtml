@@ -1,0 +1,236 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model Party
+@{
+   ViewBag.Title = "Party Master";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Party";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Party";
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+
+   ViewBag.Feature = smART.Common.EnumFeatures.Master_Party;
+
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Type)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Type, new { LovType = "PARTY_TYPE" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Name)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Short_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Short_Name)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Phone1)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Phone1)
+            </td>
+         </tr>
+          <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.License_No)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.License_No)
+            </td>
+         </tr>       
+      </table>
+   </div>
+   <div class="editRight">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Fax_No)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Fax_No)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Email)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Email)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Currency)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Currency, new { LovType = "CURRENCY_TYPE" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Credit_Limit)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Credit_Limit)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party_Insurance_Limit)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Insurance_Limit)
+            </td>
+         </tr>
+            <tr>
+            <td >
+               @Html.AuthorizedLabelFor(m => m.State)
+            </td>
+            <td>                 
+              @Html.AuthorizedEditorFor(m => m.State, new {LovType = "State", selectedItem = ""})
+              </td>
+           </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.IsActive)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.IsActive)
+            </td>
+         </tr>
+      </table>
+   </div>
+}
+@section DetailsSection
+{
+   <script language="javascript" type="text/javascript">
+      function Child_Grid_onSave(e)
+      {
+         // Set Party.ID to the Parent ID
+         e.values["Party.ID"] = eval('@Model.ID');
+      }
+
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+   <hr />
+   @(              
+ Html.Telerik().TabStrip()
+                .Name("Tab_Party_Contact")
+                .SelectedIndex(0)
+                .Items(items => {
+                        @* The following section needs to be duplicated for more tabs *@
+                      
+                        @* The above section needs to be duplicated for more tabs *@
+
+                        @* Address Book TAB *@
+                   items.Add().Text("Address").ContentIf(new ActionDetails() {
+                      Feature = smART.Common.EnumFeatures.Master_AddressBook,
+                      Content =
+                      Html.Telerik().Grid<AddressBook>()
+                          .BuildGrid(
+                              gridName: "Grid_Party_AddressBook",
+                              ajaxController: "AddressBook",
+                              indexID: Model.ID.ToString(),
+                              feature: smART.Common.EnumFeatures.Master_AddressBook
+                          )
+                          .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnError("Grid_onError"))
+                          .ToHtmlString()
+                   }
+                       );
+
+                         @* Contacts TAB *@
+                   items.Add().Text("Contacts").ContentIf(new ActionDetails()
+                   {
+                       Feature = smART.Common.EnumFeatures.Master_Contact,
+                       Content =
+                           Html.Telerik().Grid<Contact>()
+                           .BuildGrid(
+                           gridName: "Grid_Party_Contact",
+                           ajaxController: "Contact",
+                           indexID: Model.ID.ToString(),
+                           feature: smART.Common.EnumFeatures.Master_Contact
+                           )
+                           .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnError("Grid_onError"))
+                           .ToHtmlString()
+                   }
+                       );
+                        @* Bank Master TAB *@
+                   items.Add().Text("Bank Info").ContentIf(new ActionDetails()
+                   {
+                       Feature = smART.Common.EnumFeatures.Master_BankBook,
+                       Content =
+                       Html.Telerik().Grid<Bank>()
+                           .BuildGrid(
+                               gridName: "Grid_Party_BankMaster",
+                               ajaxController: "Bank",
+                               indexID: Model.ID.ToString(),
+                               hiddenColumns: new string[] { "ID", "Fax_No", "Email" },
+                               feature: smART.Common.EnumFeatures.Master_BankBook
+                           )
+                           .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnError("Grid_onError"))
+                           .ToHtmlString()
+                   }
+                       );
+
+                        @* Bin Master TAB *@
+        
+                        @*
+                        ** Defect #62
+                        ** Bin tab to be removed from Party Master 
+                        **
+                        items.Add().Text("BinMaster").ContentIf(new ActionDetails()
+                        {
+                            Feature = smART.Common.EnumFeatures.Master_Bin,
+                            Content =
+                            Html.Telerik().Grid<Bin>()
+                                .BuildGrid(
+                                    gridName: "Grid_Party_BinMaster",
+                                    ajaxController: "Bin",
+                                    indexID: Model.ID.ToString()
+                                )
+                                .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit"))
+                                .ToHtmlString()
+                        }
+                            ); 
+                        ** End Defect #62
+                        *@
+        
+                        @* Notes Master TAB *@
+                   items.Add().Text("Notes").ContentIf(new ActionDetails() {
+                      Feature = smART.Common.EnumFeatures.Master_NotesAppointment,
+                      Content =
+                      Html.Telerik().Grid<Note>()
+                          .BuildGrid(
+                              gridName: "Grid_Party_NotesMaster",
+                              ajaxController: "Note",
+                              indexID: Model.ID.ToString(),
+                              feature: smART.Common.EnumFeatures.Master_NotesAppointment
+                          )
+                          .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit"))
+                          .ToHtmlString()
+                   }
+                       );
+
+                }
+                )
+        )
+}

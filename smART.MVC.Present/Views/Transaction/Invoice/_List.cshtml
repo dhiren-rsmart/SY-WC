@@ -1,0 +1,38 @@
+﻿@model IEnumerable<smART.ViewModel.Invoice>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@{
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+   @(
+ Html.Telerik().Grid<Invoice>()
+        .Name("Grid_Invoice_List")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "Invoice"))
+        .Columns(columns => {
+           columns.Bound(o => o.ID).Filterable(true).Title("Invoice#");
+           columns.Bound(o => o.Invoice_Type);           
+           columns.Bound(o => o.Booking.Booking_Ref_No).ClientTemplate("<#= Booking!= null ? Booking.Booking_Ref_No : '' #>").Filterable(true);
+           columns.Bound(o => o.Booking.Sales_Order_No.ID).ClientTemplate("<#= Booking!= null && Booking.Sales_Order_No !=null ? Booking.Sales_Order_No.ID : '' #>").Title("SO#").Filterable(true);
+           columns.Bound(o => o.Booking.Sales_Order_No.Party.Party_Name).ClientTemplate("<#= Booking!= null && Booking.Sales_Order_No !=null && Booking.Sales_Order_No.Party!=null ? Booking.Sales_Order_No.Party.Party_Name : '' #>").Filterable(true);
+           columns.Bound(o => o.Sales_Order_No.ID).ClientTemplate("<#= Sales_Order_No!= null ? Sales_Order_No.ID: '' #>").Title("Local Sales SO#").Filterable(true);
+           columns.Bound(o => o.Net_Amt);
+           columns.Bound(o => o.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "Invoice", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+        })
+       //.CellAction(cell => {
+       //   if (cell.Column.Title == "SO#") {
+       //      if (cell.DataItem.Invoice_Type == "Trading") {
+       //         cell.HtmlAttributes["style"] = "visibility:hidden";
+       //      }
+       //   }
+       //})
+       .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+)
+</div>

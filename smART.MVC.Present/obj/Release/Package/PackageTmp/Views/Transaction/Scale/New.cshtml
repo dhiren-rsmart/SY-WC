@@ -1,0 +1,1271 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model Scale
+@{
+  ViewBag.Title = "Scale";
+
+  ViewBag.AjaxFormSubmitMethod = "Save";
+  ViewBag.NewUrl = "New";
+
+  ViewBag.DeleteAction = "_Delete";
+  ViewBag.DeleteController = "Scale";
+  ViewBag.DeleteData = Model.ID.ToString();
+
+  ViewBag.SearchAction = "_Index";
+  ViewBag.SearchController = "Scale";
+
+  ViewBag.Transaction = true;
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+  ViewBag.SearchOpenTicketsAction = "_OpenTickets";
+
+  ViewBag.SearchOpenBookingAction = "_OpenBookingContainers";
+  ViewBag.OpenBookingController = "Container";
+
+  ViewBag.SearchOpenPOItemsAction = "_OpenPurchaseOrderItems";
+  ViewBag.OpenPOItemsController = "PurchaseOrderItem";
+
+
+  ViewBag.TicketType = "Shipping Ticket";
+
+  ViewBag.PrintAction = "Scale";
+  ViewBag.PrintController = "Reports";
+  ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+  ViewBag.PrintID = Model.ID;
+
+  ViewBag.CameraAction = "_OpenCamera";
+  ViewBag.CameraController = "Camera";
+}
+@section ButtonSection{
+  @Html.AuthorizedButton("OpenTickets"
+                           , "Open Tickets"
+                           , "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.SearchController, ViewBag.SearchOpenTicketsAction),
+                             @class = "t-button"
+                           }
+                          )
+  @*====For Small Scall ======*@
+ @* @Html.AuthorizedButton("OpenBookings"
+                           , "Open Bookings"
+                           , "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.OpenBookingController, ViewBag.SearchOpenBookingAction),
+                             @class = "t-button"
+                           }
+                         )
+  @Html.AuthorizedButton("OpenPOItems"
+                           , "Open PO's"
+                           , "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.OpenPOItemsController, ViewBag.SearchOpenPOItemsAction),
+                             @class = "t-button"
+                           }
+                          )*@
+  @*@Html.AuthorizedButton("Email", "Send Email", "button", new {
+  onclick = "SendEmail()",
+  @class = "t-button"
+})*@
+}
+@section MasterSection
+{
+  @*<div id="divOpenCamera">
+    @(Html.Telerik().Window().Name("OpenCamera").Buttons(buttons => buttons.Close()).Visible(false).ClientEvents(e => e.OnClose("On_CameraClose"))
+                    .LoadContentFrom((string) ViewBag.CameraAction, (string) ViewBag.CameraController, new {
+                      cameraInitiator = EnumCameraInitiator.Scale,
+                      Id = @Model.ID
+                    }).Width(600)
+                                                  .Height(600)
+        )
+  </div>*@
+  <div>
+    @*  @Html.Partial(Url.Content("~/Views/Integration/WeighingScale/_WeighingScale.cshtml"), new ViewDataDictionary { { "fieldName", "#Scale_Reading" } })*@
+  </div>
+  <script type="text/javascript" language="javascript">
+
+      //#region Local Members
+
+      /// Scale reading auto refresh interval.
+      var scaleRefreshRate = 3000;
+
+      // Ticket Type
+      var _ticketType= "Local Sales";
+
+      //#endregion Local Members
+
+      //#region Document Ready
+
+      $(document).ready(function ()
+      {
+                         
+         // Assigned ID=0 when   
+         if (("True" == "@ViewBag.IsFromOpneBooking") || ("True" == "@ViewBag.IsFromOpnePOItem"))
+         {
+            $("#ID").val(0)
+         }
+
+         // Show notification message for settled ticket.
+         var settled = $("#Ticket_Settled").val();
+         if (settled == 'True')
+         {
+            ShowNotification("This ticket is settled");
+         }
+
+         // Calculate Weight.
+         var sum = 0;
+         var grossWeight = $("#Gross_Weight").val();
+         var tareWeight = $("#Tare_Weight").val();
+         var diffNetWeight = 0; // $("#Settlement_Diff_NetWeight").val();
+
+         //add only if the value is number
+         if (!isNaN(grossWeight) && grossWeight.length != 0)
+         {
+            sum += parseFloat(grossWeight);
+         }
+
+         //add only if the value is number
+         if (!isNaN(tareWeight) && tareWeight.length != 0)
+         {
+            sum -= parseFloat(tareWeight);
+         }
+
+         //add only if the value is number
+         if (!isNaN(diffNetWeight) && diffNetWeight.length != 0)
+         {
+            sum += parseFloat(diffNetWeight);
+         }
+         sum = sum.toFixed(2);
+         $("#Net_Weight").val(sum);   
+         
+          initCamera();     
+      });
+
+      //#endregion Document Ready
+
+      //#region Scale Reading
+
+  window.setInterval(ShowAutomaticWeight, scaleRefreshRate);
+
+  function ShowAutomaticWeight() {
+      var date = new Date();
+      $.ajax({
+            //url: 'http://localhost:8000/WeightService/service/web/GetWeightJSON?data=' + date.toUTCString(),
+            url:'http://192.168.1.51:8000/WeightService/service/web/GetWeightJSON?data='+date.toUTCString(),
+            type: 'GET',            
+            // contentType: 'application/json;',
+            // dataType: 'json',
+            dataType: 'jsonp',
+            success: function (data,result)
+            {
+               $.each(data, function(key, val) {                      
+                	 $("#Scale_Reading").data("tTextBox").value(val);
+		           });
+            },
+            error: function(xhr, status, error) {
+               // alert("An AJAX error occured: " + status + "\nError: " + error + "\nError detail: " + xhr.responseText);
+                $("#Scale_Reading").data("tTextBox").value('0');
+            } 
+        });
+    }
+
+	function OLD_ShowAutomaticWeight() {
+            var date = new Date();
+            $.getJSON('@(Url.Action("GetWeight", "Scale"))'+'?data='+date.toUTCString(), function(data) {
+              var items = [];
+
+              $.each(data, function(key, val) {
+                $("#Scale_Reading").data("tTextBox").value(val);
+              });
+
+            });
+        }
+
+      //#endregion Scale Reading
+
+      //#region Camera
+
+      function On_CameraClose(){
+        // refresh Invoice grid
+         var tItemGrid = $('#Grid_Scale_Attachments').data('tGrid');
+//         tItemGrid.rebind({ id: 0, isNew: true });
+         tItemGrid.rebind();
+       }
+
+
+        //function initCamera2() {
+        //    var $browserWidth = $(window).width();
+        //    var $initTop = $('#tdOperateCamera').position().top;
+        //    //var $initLeft = $('#tdOperateCamera').position().left;   
+        //    var $initHeight = $('#tdOperateCamera').height();
+        //    var $initWidth = $initHeight * 3;
+        //    var $windowHeaderHeight = $('#OpenCamera').find('div.t-header').height();
+        //    var $initLeft = ($browserWidth-$initWidth) / 2;
+
+        //    $('#OpenCamera').css({"position":"absolute","top":$initTop,"left":$initLeft});
+        //    $('#OpenCamera').height($initHeight + $windowHeaderHeight + 10);
+        //    $('#OpenCamera').width($initWidth + 10);
+
+        //    $('#OpenCamera').find('div.t-window-content').height($initHeight);
+        //    $('#OpenCamera').find('div.t-window-content').width($initWidth);
+
+        //    $('#OpenCamera').tabSlideOut({
+        //    tabHandle: '.handle',                              //class of the element that will be your tab
+        //    pathToTabImage: '../../Content/Images/final_logo.jpg',          //path to the image for the tab *required*
+        //    imageHeight: '122px',                               //height of tab image *required*
+        //    imageWidth: '40px',                               //width of tab image *required*    
+        //    tabLocation: 'left',                               //side of screen where tab lives, top, right, bottom, or left
+        //    speed: 300,                                        //speed of animation
+        //    action: 'click',                                   //options: 'click' or 'hover', action to trigger animation
+        //    topPos: '200px',                                   //position from the top
+        //    fixedPosition: true                               //options: true makes it stick(fixed position) on scroll
+        //    });
+        //}
+
+        function initCamera() {
+            // DO NOT PROCESS FOR CLOSED tickets
+            
+            var ticketStatus = 'open';
+            @if (@Model != null) {
+                <text>
+                ticketStatus = '@Model.Ticket_Status';
+                </text>
+            }
+
+            if(ticketStatus.toLowerCase().indexOf('close') != -1)
+                return;
+
+//            $('#btnOperateCamera').html($('#btnOperateCamera').text().replace(/(.)/g,"$1<br />"));
+            //$('#tdOperateCamera').css({"background-color":"green","color":"black", "display":""});
+
+            ////Set Camera Window position
+            //var $browserWidth = $(window).width();
+            //var $initTop = $('#tdOperateCamera').position().top;
+            //var $initLeft = $('#tdOperateCamera').position().left;    //$browserWidth;	// < 50 ? 0 : ($browserWidth-50);
+            //var $initHeight = $('#tdOperateCamera').height();
+            //var $initWidth = $initHeight * 3;
+            //var $windowHeaderHeight = $('#OpenCamera').find('div.t-header').height();
+
+            //$('#OpenCamera').css({"position":"absolute","top":$initTop,"left":$initLeft});
+            //$('#OpenCamera').height($initHeight + $windowHeaderHeight + 100);
+            //$('#OpenCamera').width($initWidth + 10);
+
+            //$('#OpenCamera').find('div.t-window-content').height($initHeight+90);
+            //$('#OpenCamera').find('div.t-window-content').width($initWidth);
+
+            //// Set Camera Button Click function
+            //$("#tdOperateCamera").click(function () {
+            //    //var $newTop = 0;
+            //    var $browserWidth = $(window).width();
+            //    var $telerikWindowWidth = $('#OpenCamera').width();
+            //    var $newLeft = ($browserWidth-$telerikWindowWidth) / 2;
+
+            //    if ($newLeft < 0) $newLeft = 0;
+
+            //    //var $initTop = 200;
+            //    var $initLeft = $('#tdOperateCamera').position().left;	// < 50 ? 0 : ($browserWidth-50);
+            //    $('#OpenCamera').css({"position":"absolute","left":$initLeft, "display":"block"});
+
+            //    $('#silverlightControlHost').hide();
+
+            //    // animate window
+            //    $('#OpenCamera').animate({ left: $newLeft }, 'slow', function() {
+		    //      $('#imgSnapShot').attr('src', '../../../Content/Images/blank.gif');
+            //        $('#silverlightControlHost').show();
+            //    });
+            //});
+       }
+
+           function ShowCamera() {
+                    var window = $("#OpenCamera").data("tWindow");
+                    $("#OpenCamera").slideUp();
+                    window.center().open();
+          }
+
+      //#endregion
+
+      //#region Functions
+
+      function ShowOpenTicketsWindow()
+      {
+         var window = $("#OpenTicketsWindow").data("tWindow");
+         window.center().open();
+      }
+
+      function ShowOpenBookingsWindow()
+      {
+         var window = $("#OpenBookingsWindow").data("tWindow");
+         window.center().open();
+      }
+
+      function ShowOpenPOItemsWindow()
+      {
+         var window = $("#OpenPOItemsWindow").data("tWindow");
+         window.center().open();
+      }
+
+      function SendEmail()
+      {   
+          var id =  eval('@Model.ID');
+          if ( id != '0' && '@Model.Ticket_Status' === 'Close' && '@Model.Ticket_Type' === 'Receiving Ticket' ) {
+            ShowProcessIndicator();
+           $.ajaxSetup({ cache: false });
+            $.getJSON('@(Url.Action("SendEmail", "Scale"))'+'?id='+ id.toString(), function(data) {
+              var items = [];
+              $.each(data, function(key, val) {       
+                 HideProcessIndicator();         
+                  alert(val.toString());                
+              });
+            });            
+         }
+      }
+
+      function SelectTab(selectedValue)
+      {
+
+//         if (selectedValue == "Receiving Ticket")
+//         {
+//            TabEnable("#Scale_TabStrip", 0);
+//            TabEnable("#Scale_TabStrip", 1);
+//            TabSelect("#Scale_TabStrip", 0);
+//            TabDisable("#Scale_TabStrip", 2);
+//            TabDisable("#Scale_TabStrip", 3);
+//            TabDisable("#Scale_TabStrip", 4);
+//            EnableDisableCommandButton("OpenBookings",true);
+//            EnableDisableCommandButton("OpenPOItems",true);
+//         }
+//         else if (selectedValue == "Shipping Ticket")
+//         {
+//            TabEnable("#Scale_TabStrip", 0);
+//            TabSelect("#Scale_TabStrip", 0);
+//            TabDisable("#Scale_TabStrip", 1);
+//            TabEnable("#Scale_TabStrip", 2);
+//            TabDisable("#Scale_TabStrip", 3);
+//            TabDisable("#Scale_TabStrip", 4);
+//            EnableDisableCommandButton("OpenBookings",true);
+//            EnableDisableCommandButton("OpenPOItems",true);
+//         }
+//         else if (selectedValue == "Local Sales")
+//         {
+//            TabEnable("#Scale_TabStrip", 0);
+//            TabDisable("#Scale_TabStrip", 1);
+//            TabDisable("#Scale_TabStrip", 2);
+//            TabDisable("#Scale_TabStrip", 3);
+//            TabEnable("#Scale_TabStrip", 4);
+//            TabSelect("#Scale_TabStrip", 0);
+//            EnableDisableCommandButton("OpenBookings",true);
+//            EnableDisableCommandButton("OpenPOItems",true);
+//         }
+//         else if (selectedValue == "Brokerage")
+//         {
+//            TabEnable("#Scale_TabStrip", 0);
+//            TabDisable("#Scale_TabStrip", 1);
+//            TabDisable("#Scale_TabStrip", 2);
+//            TabEnable("#Scale_TabStrip", 3);
+//            TabDisable("#Scale_TabStrip", 4);
+//            TabSelect("#Scale_TabStrip", 0);
+//            EnableDisableCommandButton("OpenBookings",false);
+//            EnableDisableCommandButton("OpenPOItems",false);
+//         }
+//         else if (selectedValue == "Trading")
+//         {
+//            TabEnable("#Scale_TabStrip", 0);
+//            TabEnable("#Scale_TabStrip", 1);
+//            TabDisable("#Scale_TabStrip", 2);
+//            TabDisable("#Scale_TabStrip", 3);
+//            TabEnable("#Scale_TabStrip", 4);
+//            TabSelect("#Scale_TabStrip", 0);
+//            EnableDisableCommandButton("OpenBookings",true);
+//            EnableDisableCommandButton("OpenPOItems",true);
+//         }
+//         else
+//         {
+//            TabDisable("#Scale_TabStrip", 0);
+//            TabDisable("#Scale_TabStrip", 1);
+//            TabDisable("#Scale_TabStrip", 2);
+//            TabDisable("#Scale_TabStrip", 3);
+//            TabDisable("#Scale_TabStrip", 4);
+//            TabSelect("#Scale_TabStrip", 5);
+//            EnableDisableCommandButton("OpenBookings",true);
+//            EnableDisableCommandButton("OpenPOItems",true);
+//         }
+      }
+
+      function onTabStrib_Select(e) {
+         var item = $(e.item);
+         var selectedIndex = item.index();         
+         if (selectedIndex == 2) // Scale Expense
+            refreshGrid("#Grid_Scale_Expense");            
+         else if (selectedIndex == 3) // Scale Notes
+            refreshGrid("#Grid_Scale_Notes");
+         else if (selectedIndex == 4) // Scale Attachments
+            refreshGrid("#Grid_Scale_Attachments");
+          else if (selectedIndex == 5) // Audit Log
+            refreshGrid("#Grid_Scale_AuditLog");
+       }
+
+      function BindLocation(id)
+      {
+         var tGrid = $('#SearchWindowGrid_Party_Address').data('tGrid');
+         tGrid.rebind({ partyId: id });
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../AddressBook/_PartyAddresses?partyId=" + id };
+
+         //clear driver data
+         $('#LabelID_Location').val('');
+         $("#HiddenID_LocationID").val(0);
+      }
+
+      function UpdateBookingOnContainerChange(bookingRefNo)
+      {
+         $("#Container_No_Booking_Booking_Ref_No").val(bookingRefNo);
+      }
+
+      function UpdatePartyOnContainerChange(party)
+      {
+         $("#Container_No_Booking_Sales_Order_No_Party_Party_Name").val(party);
+      }
+
+      //#endregion Functions  
+
+      //#region Events
+
+      function Child_Grid_onEdit_Local(e)
+      {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Item_Received"] != null)
+         {
+            $("#LabelID_Item_Received").val(e.dataItem["Item_Received"].Short_Name);
+         }
+         if (e.dataItem["Apply_To_Item"] != null)
+         {
+            $("#LabelID_Apply_To_Item").val(e.dataItem["Apply_To_Item"].Short_Name);
+         }
+         onScaleDetailsItemWeightChange();
+      }
+
+      function Child_Grid_onSave(e)
+      {
+         Grid_onSave(e);
+
+         // Set Party.ID to the Parent ID     
+         e.values["Parent.ID"] = @Model.ID;
+         e.values["Scale.ID"]= @Model.ID;
+         e.values["Reference_ID"] = @Model.ID;          
+
+         e.values["Item_Received.Category"] = 'Test';
+         e.values["Item_Received.Group"] = 'Test';
+         e.values["Apply_To_Item.Category"] = 'Test';
+         e.values["Apply_To_Item.Group"] = 'Test';
+      }
+
+      function OnTabStrip_Load(e)
+      {
+         var selectedValue = $("#Ticket_Type").val();
+         SelectTab(selectedValue);    
+      }
+
+      function OnTicketType_Change(e)
+      {
+         var selectedValue = e.value;
+         _ticketType = selectedValue;
+//         SelectTab(selectedValue);
+//         BindDispathcerLookup();
+//         BindPartyLookup()
+//         BindLocalSalesPartyLookup()
+      }
+
+      function OnDriver_Change(e)
+      {
+         $("#Driver_Name").val(e.ListText);
+      }
+
+      function OnPO_Change(e)
+      {
+         $("#LabelID_Party_ID").val(e.Party.Party_Name);
+         BindLocation(e.Party.ID);
+      }
+
+      function OnParty_Change(e)
+      {
+         BindLocation(e.ID);
+         var tGrid = $('#SearchWindowGrid_Purchase_Order').data('tGrid');
+         tGrid.rebind({ partyId: e.ID });
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../PurchaseOrder/_OpenPurchaseOrders?partyId=" + e.ID  };
+
+         $("#LabelID_Purchase_Order").val('');
+         $("#HiddenID_Purchase_OrderID").val(0);
+      }
+
+       function OnBrokeragePO_Change(e)
+      {
+         $("#LabelID_Brokerage_Party").val(e.Party.Party_Name);        
+      }
+
+      function OnBrokerageParty_Change(e)
+      {
+         BindLocation(e.ID);
+         var tGrid = $('#SearchWindowGrid_Brokerage_Purchase_Order').data('tGrid');
+//         tGrid.rebind({ status: 'Open', partyId: e.ID });
+         tGrid.rebind({ partyId: e.ID });
+
+           //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../PurchaseOrder/_OpenBrokeragePurchaseOrders?partyId=" + e.ID  };
+
+         $("#LabelID_Brokerage_Purchase_Order").val("");
+         $("#HiddenID_Brokerage_Purchase_OrderID").val(0);
+      }
+      function OnContainer_Change(e)
+      {
+         if (e.Booking != null)
+         {
+            UpdateBookingOnContainerChange(e.Booking.Booking_Ref_No);
+         }
+         if (e.Booking != null && e.Booking.Sales_Order_No != null && e.Booking.Sales_Order_No.Party != null)
+         {
+            UpdatePartyOnContainerChange(e.Booking.Sales_Order_No.Party.Party_Name);
+         }
+      }
+
+      function OnWeight_Change()
+      {
+         var sum = 0;
+         var inputNetWeight = $("#Net_Weight").data("tTextBox");
+
+         var grossWeight = $("#Gross_Weight").val();
+         var tareWeight = $("#Tare_Weight").val();
+         var diffNetWeight = 0 ; // $("#Settlement_Diff_NetWeight").val();
+
+         //add only if the value is number
+         if (!isNaN(grossWeight) && grossWeight.length != 0)
+         {
+            sum += parseFloat(grossWeight);
+         }
+
+         //add only if the value is number
+         if (!isNaN(tareWeight) && tareWeight.length != 0)
+         {
+            sum -= parseFloat(tareWeight);
+         }
+
+         //add only if the value is number
+         if (!isNaN(diffNetWeight) && diffNetWeight.length != 0)
+         {
+            sum += parseFloat(diffNetWeight);
+         }
+
+         sum = sum.toFixed(2);
+         inputNetWeight.value(sum);
+      }
+
+      function OnGWReadingBtn_Click()
+      {
+         var grossWeightReading = $("#Scale_Reading").val();
+
+         //add only if the value is number
+         if (!isNaN(grossWeightReading) && grossWeightReading.length != 0)
+         {
+            grossWeightReading = parseFloat(grossWeightReading);
+         }
+
+         var grossWeight = $("#Gross_Weight").val();
+         //add only if the value is number
+         if (!isNaN(grossWeight) && grossWeight.length != 0)
+         {
+            grossWeight = parseFloat(grossWeight);
+         }
+
+         if (grossWeight>0 && grossWeightReading>0){
+            if (confirm("Are you sure you want to update Gross Weight.")) {
+               $("#Gross_Weight").data("tTextBox").value(grossWeightReading);
+               OnWeight_Change();
+             }
+         }
+         else if (grossWeight===0 && grossWeightReading>0){
+           $("#Gross_Weight").data("tTextBox").value(grossWeightReading);
+           OnWeight_Change();
+         }         
+      }
+
+      function OnTWReadingBtn_Click()
+      {
+         var tareWeightReading = $("#Scale_Reading").val();
+
+          //add only if the value is number
+         if (!isNaN(tareWeightReading) && tareWeightReading.length != 0)
+         {
+            tareWeightReading = parseFloat(tareWeightReading);
+         }
+
+          var tareWeight = $("#Tare_Weight").val();
+         //add only if the value is number
+         if (!isNaN(tareWeight) && tareWeight.length != 0)
+         {
+            tareWeight = parseFloat(tareWeight);
+         }
+
+         if (tareWeight>0 && tareWeightReading>0){
+            if (confirm("Are you sure you want to update Tare Weight.")) {
+               $("#Tare_Weight").data("tTextBox").value(tareWeightReading);
+               OnWeight_Change();
+             }
+         }
+         else if (tareWeight===0 && tareWeightReading>0){
+           $("#Tare_Weight").data("tTextBox").value(tareWeightReading);
+           OnWeight_Change();
+         }            
+      }
+
+
+      function OnSO_Change(e)
+      {
+         $("#LabelID_Local_Sales_AND_Trading_Party").val(e.Party.Party_Name);
+         $("#HiddenID_Local_Sales_AND_Trading_PartyID").val(e.Party.ID);
+      }
+
+      function OnLocalSaleParty_Change(e)
+      {
+         var tGrid = $('#SearchWindowGrid_Sales_Order').data('tGrid');
+         tGrid.rebind({ partyId: e.ID });
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../SalesOrder/_OpenSalesOrders?partyId=" + e.ID  };
+
+         $("#LabelID_Sales_Order").val("");
+         $("#HiddenID_Sale_OrderID").val(0);
+      }
+      
+       function OnAsset_Change(e) {
+         $("#Asset_Asset_No").val(e.Asset.Asset_No);
+         $("#Asset_ID").val(e.Asset.ID);
+         $("#Asset_Asset_Sub_Type").val(e.Asset.Asset_Sub_Type);
+      }
+
+       function OnBooking_Change(e) {       
+        if (e.Sales_Order_No!=null)       
+          $("#Booking_Sales_Order_No_ID").val(e.Sales_Order_No.ID);         
+        if (e.Sales_Order_No!=null && e.Sales_Order_No.Party!= null )
+          $("#Booking_Sales_Order_No_Party_Party_Name").val(e.Sales_Order_No.Party.Party_Name);
+        }
+
+      function BindDispathcerLookup(){
+          var category;
+          if (_ticketType === "Receiving Ticket")
+            category ="Bin";
+          else if (_ticketType === "Shipping Ticket")
+            category ="Container";
+          else 
+            category ="";
+
+         var tGrid = $('#SearchWindowGrid_Dispatch_Request_No').data('tGrid');
+         tGrid.ajax = { selectUrl: "../DispatcherRequest/_DispatcherRequestByCategory?category=" + category };
+         tGrid.rebind({ category: category});
+         $("#LabelID_Dispatch_Request_No").val("");
+         $("#HiddenID_Dispatch_Request_NoID").val(0);
+      }     
+      
+       function BindPartyLookup(){
+          var partyTypes;
+          if (_ticketType === "Brokerage" || _ticketType === "Trading")
+            partyTypes ="Trading,Brokerage";
+          else 
+            partyTypes ="Industrial,Supplier";            
+         var tGrid = $('#SearchWindowGrid_Party_ID').data('tGrid');
+         tGrid.ajax = { selectUrl: "../Party/_PartyByTypes?partyTypes=" + partyTypes};
+         tGrid.rebind({ partyTypes: partyTypes});
+         $("#LabelID_Party_ID").val("");
+         $("#HiddenID_Party_ID").val(0);
+      }    
+
+     function BindLocalSalesPartyLookup(){
+          var partyTypes;
+          if (_ticketType === "Trading")
+            partyTypes ="Trading,Brokerage";
+          else 
+            partyTypes ="Buyer";            
+         var tGrid = $('#SearchWindowGrid_Local_Sales_AND_Trading_Party').data('tGrid');
+         tGrid.ajax = { selectUrl: "../Party/_PartyByTypes?partyTypes=" + partyTypes};
+         tGrid.rebind({ partyTypes: partyTypes});
+         $("#LabelID_Local_Sales_AND_Trading_Party").val("");
+         $("#HiddenID_Local_Sales_AND_Trading_Party").val(0);
+      }    
+     //#endregion Events
+
+  </script>
+  @* Expense *@
+  <script type="text/javascript" language="javascript">
+    function Expense_Grid_onEdit_Local(e)
+    {
+      Child_Grid_onEdit(e);
+      if (e.dataItem["Paid_Party_To"] != null)
+      {
+        $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+      }
+    }
+ 
+  </script>
+  @* Attachment *@
+  <script type="text/javascript" language="javascript">
+    function OnShowHideImage_Clicked(e)
+    {
+      var grid = $("#Grid_Scale_Attachments").data('tGrid');
+      var Rows = grid.$rows();
+      for (var i = 0; i < Rows.length; i++)
+      {
+        var row = Rows[i];
+        ShowHideAttchmentImage(row, grid);
+      }
+    }
+    function Attachment_Grid_onRowDataBound(e)
+    {
+      var grid = $("#Grid_Scale_Attachments").data('tGrid');
+      ShowHideAttchmentImage(e.row, grid);
+
+    }
+  </script>
+  @* Print *@
+  <script type="text/javascript" language="javascript">
+
+    function ValidatePrint()
+    {
+      if (eval('@Model.ID') === '0')
+      {
+        alert('There is nothing to print.');
+        return false;
+      }
+      return true;
+    }
+  </script>
+  @Html.ValidationSummary()
+  <table style="width: 100%;">
+    <tr>
+      <td class="editLeft">
+        <table>
+          <tr>
+            <td style="width: 25%">
+              @Html.AuthorizedLabelFor(m => m.Scale_Ticket_No)
+            </td>
+            <td style="width: 75%">
+              @Html.TextBoxFor(m => m.Scale_Ticket_No, new {
+           @readonly = "readonly"
+         })
+              @Html.HiddenFor(m => m.Ticket_Settled)
+              @Html.HiddenFor(m => m.ID)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Ticket_Type)
+            </td>
+            <td>
+              @if (@Model.ID > 0) {@Html.TextBoxFor(m => m.Ticket_Type, new {
+                                @readonly = "readonly"
+                              })                                
+              }
+              else {
+                @Html.AuthorizedEditorFor(m => m.Ticket_Type, new {
+             LovType = "TICKET_TYPE",
+             OnChange = "OnTicketType_Change",
+             selectedItem = "Local Sales"
+           })
+              }
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Ticket_Status)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Ticket_Status, new {
+           LovType = "TICKET_STATUS",
+           selectedItem = "Open"
+         })
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Other_Details)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Other_Details)
+            </td>
+          </tr>
+          @*<tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Dispatch_Request_No)
+            </td>
+            <td>
+              @Html.LookupHtml(m => m.Dispatch_Request_No, "DispatcherRequestLookup", "ID", "ID", "_DispatcherRequestByCategory", "DispatcherRequest", new {
+           category = (@Model.Ticket_Type == null || @Model.Ticket_Type == "Receiving Ticket") ? "Bin" : (@Model.Ticket_Type == "Shipping Ticket" ? "Container" : "")
+         }, "_GetJson", "DispatcherRequest", new string[] { "ID", "TruckingCompany.Party_Name", "Driver.ListText", "Asset_No", "Booking_No", "Container_No" }, null, true, new Dictionary<string, string>() { { "TruckingCompany.Party_Name", "Trucking Co" }, { "Driver.ListText", "Driver Name" } })
+            </td>
+          </tr>*@
+        </table>
+      </td>
+      <td class="editLeft">
+        <table>
+          <tr>
+            <td style="width: 30%">
+              @Html.AuthorizedLabelFor(m => m.Contact)
+            </td>
+            <td style="width: 70%">
+              @Html.AuthorizedEditorFor(m => m.Driver_Name)
+              @Html.LookupHtml(m => m.Contact, "ContactEnteredByLookup", "ID", "ListText", "_DriverRoleContactByPartyType", "Contact", null, "_GetJson", "Contact", new string[] { "ID", "ListText", "Email" }, "OnDriver_Change", false)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Vehicle_Type)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Vehicle_Type)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Truck_No)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Truck_No)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Vehicle_Plate_No)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Vehicle_Plate_No)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Trailer_Chasis_No)
+            </td>
+            <td>
+              @Html.AuthorizedEditorFor(m => m.Trailer_Chasis_No)
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td class="editLeft">
+        <table>
+          <tr>
+            <td style="border-bottom: 1px solid black; width: 30%;">
+              @Html.AuthorizedLabelFor(m => m.Scale_Reading)
+            </td>
+            <td style="border-bottom: 1px solid black; width: 70%;">
+              @Html.Telerik().NumericTextBoxFor(m => m.Scale_Reading).Spinners(false).Enable(false).HtmlAttributes(new {
+           style = "width:205px;"
+         })
+              @Html.AuthorizedButton("btnGW", "GW", "button", new {
+           //@readonly = "readonly",
+           onclick = "OnGWReadingBtn_Click()",
+           @class = "t-button",
+           @style = "width:25px;height:20px;padding:1px 0px 0px 0px;margin-right:2px;"
+         })
+              @Html.AuthorizedButton("btnTW", "TW", "button", new {
+           //@readonly = "readonly",
+           onclick = "OnTWReadingBtn_Click()",
+           @class = "t-button",
+           @style = "width:25px;height:20px;padding:1px 0px 0px 0px;float:right;"
+         })
+            </td>
+          </tr>
+          <tr>
+            <td style="width: 30%">
+              @Html.AuthorizedLabelFor(m => m.Gross_Weight)
+            </td>
+            <td style="width: 70%">
+              @Html.Telerik().NumericTextBox().Name("Gross_Weight").Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("OnWeight_Change"))
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Tare_Weight)
+            </td>
+            <td>
+              @Html.Telerik().NumericTextBoxFor(m => m.Tare_Weight).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("OnWeight_Change"))
+            </td>
+          </tr>
+          @*<tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Settlement_Diff_NetWeight)
+            </td>
+            <td>
+              @Html.Telerik().NumericTextBoxFor(m => m.Settlement_Diff_NetWeight).Spinners(false).Enable(false)
+            </td>
+          </tr>*@
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Net_Weight)
+            </td>
+            <td>
+              @Html.Telerik().NumericTextBoxFor(m => m.Net_Weight).Spinners(false).Enable(false)
+            </td>
+          </tr>
+        </table>
+      </td>
+      @*<td>
+        <div class="editLeft" id="tdOperateCamera" style="height: 170px; width: 20px; text-align: center;">
+          <label style="color: White; text-align: center;" id="btnOperateCamera">
+            C </br> a</br> m</br> e</br> r</br> a
+          </label>
+        </div>
+      </td>*@
+      @*        <td class="editClear" id="tdOperateCamera" style="background-color:green;display: none; height: 100px; width: 15px;
+            text-align: center;">
+            <label style="color: White;height: 0px; width: 15px;" id="btnOperateCamera">
+               Camera</label>
+         </td>*@
+    </tr>
+  </table>
+  <hr />
+  @* =============================Scale Item ===============================================*@
+  @(Html.Telerik().TabStrip()
+    .Name("Scale_TabStrip")
+         .ClientEvents(events => events.OnLoad("OnTabStrip_Load").OnSelect("onTabStrib_Select"))
+    .Items(items => {
+
+      items.Add()
+          .Text("Item Details")
+          .Enabled(true)
+          .Selected(true)
+          .Content(Html.Telerik().Grid<ScaleDetails>()
+                           .Columns(columns => {
+                             columns.Bound(o => o.Item_Received.Short_Name).Title("Item");
+                             columns.Bound(o => o.Apply_To_Item.Short_Name).Title("Apply to Inventory");
+                           })
+                            .BuildGrid(
+                                gridName: "Grid_ScaleDetails",
+                                ajaxController: "ScaleDetails",
+                                indexID: Model.ID.ToString(),
+                                hiddenColumns: new string[] { "Item_Received", "Apply_To_Item" },
+                                feature: smART.Common.EnumFeatures.Transaction_ScaleDetails
+                            )
+                            .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+                            .ToHtmlString()
+         );
+
+            
+@* =============================Receiving  Ticket Additional Info ===============================================*@
+   @*   items.Add()
+          .Text("Receiving")
+          .Enabled(false)
+          .Selected(false)
+          .Visible(false)
+          .Content(@<text>
+                    <table>
+    <tr>
+      <td>
+        @Html.Label("PO#")
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Purchase_Order, "PurchaseOrderLookup", "ID", "ID", "_OpenPurchaseOrders", "PurchaseOrder", new {
+     partyId = (@Model.Party_ID != null ? @Model.Party_ID.ID : 0)
+   }, "_GetJson", "PurchaseOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnPO_Change")
+        @Html.HiddenFor(m => m.Purchase_Order.ID)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Party_ID)
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Party_ID, "PartyLookup", "ID", "Party_Name", "_PartyByTypes", "Party", new {
+     partyTypes = @Model.Ticket_Type == "Brokerage" ? "Trading,Brokerage" : "Industrial,Supplier"
+   }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnParty_Change")
+      </td>
+    </tr>
+    <tr>
+      <td>@Html.AuthorizedLabelFor(m => m.Party_Address)
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Party_Address, "LocationLookup", "ID", "Address1", "_PartyAddresses", "AddressBook", new {
+     partyId = @Model.Party_ID != null ? @Model.Party_ID.ID : 0
+   }, "_GetJson", "AddressBook", new string[] { "ID", "Address1", "City", "State", "Country" })
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Supplier_Scale_Ticket_No)
+      </td>
+      <td>
+        @Html.AuthorizedEditorFor(m => m.Supplier_Scale_Ticket_No)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Asset)
+      </td>
+      <td>
+        @Html.TextBoxFor(m => m.Asset.Asset_No, new {
+     @readonly = "readonly"
+   })
+        @Html.HiddenFor(m => m.Asset.ID)
+        @Html.LookupHtml(m => m.AssetAuditLookup, "AssetAuditLookup", "ID", "ID", "_AssetsByDispatcherType", "AssetAudit", new {
+     dispatcherType = ""
+   }, "_GetJSonLookup", "AssetAudit", new string[] { "Party.Party_Name", "Asset.Asset_No", "Asset.Asset_Sub_Type", "Location.FullAddress" }, "OnAsset_Change", false)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Send_Mail)
+      </td>
+      <td>
+        @Html.DisplayTextFor(m => m.Send_Mail)
+      </td>
+    </tr>
+  </table>
+                  </text>);    *@   
+  @* =============================Shipping Ticket Details===============================================*@
+      @*items.Add()
+        .Text("Shipping")
+        .Enabled(true)
+        .Content(@<text>
+                    <table>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Container_No)
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Container_No, "ContainerLookup", "ID", "Container_No", "_OpenContainers", "Container", null, "_GetJson", "Container", new string[] { "ID", "Container_No", "Seal1_No" }, "OnContainer_Change")
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Container_No.Booking.Booking_Ref_No)
+      </td>
+      <td>
+        @Html.TextBoxFor(m => m.Container_No.Booking.Booking_Ref_No, new {
+     @readonly = "readonly"
+   })
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.Label("Party")
+      </td>
+      <td>
+        @Html.TextBoxFor(m => m.Container_No.Booking.Sales_Order_No.Party.Party_Name, new {
+     @readonly = "readonly"
+   })
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Seal_No)
+      </td>
+      <td>
+        @Html.AuthorizedEditorFor(m => m.Seal_No)
+      </td>
+    </tr>
+  </table>
+                </text>);*@     
+@* =============================Brokerage===============================================*@
+   @*   items.Add()
+          .Text("Brokerage")
+          .Enabled(false)
+          .Selected(false)
+          .Visible(false)
+          .Content(@<text>
+                    <table>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td>
+              @Html.Label("PO#")
+            </td>
+            <td>
+              @Html.LookupHtml(m => m.Brokerage_Purchase_Order, "BrokeragePurchaseOrderLookup", "ID", "ID", "_OpenBrokeragePurchaseOrders", "PurchaseOrder", new {
+           partyId = (@Model.Party_ID != null ? @Model.Party_ID.ID : 0)
+         }, "_GetJson", "PurchaseOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnBrokeragePO_Change")
+              @Html.HiddenFor(m => m.Brokerage_Purchase_Order.ID)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Party_ID)
+            </td>
+            <td>
+              @Html.LookupHtml(m => m.Brokerage_Party, "BrokeragePartyLookup", "ID", "Party_Name", "_PartyByTypes", "Party", new {
+           partyTypes = @Model.Ticket_Type == "Brokerage" ? "Trading,Brokerage" : "Industrial,Supplier"
+         }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnBrokerageParty_Change")
+            </td>
+          </tr>
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td>
+              @Html.AuthorizedLabelFor(m => m.Booking)
+            </td>
+            <td>
+              @if (Model.ID == 0) {
+                @Html.LookupHtml(m => m.Booking, "Booking_Ref_NoLookup", "ID", "Booking_Ref_No", "_OpenBrokerageBookings", "Booking", null, "_GetJson", "Booking", new string[] { "ID", "Booking_Ref_No", "No_Of_Containers" }, "OnBooking_Change")
+              }
+              else { 
+                @Html.TextBoxFor(m => m.Booking.Booking_Ref_No, new {
+             @readonly = "readonly"
+           })                  
+              }
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.Label("SO#")
+            </td>
+            <td>
+              @Html.TextBoxFor(m => m.Booking.Sales_Order_No.ID, new {
+           @readonly = "readonly"
+         })
+              @Html.HiddenFor(m => m.Booking.Sales_Order_No.ID)
+            </td>
+          </tr>
+          <tr>
+            <td>
+              @Html.Label("Party")
+            </td>
+            <td>
+              @Html.TextBoxFor(m => m.Booking.Sales_Order_No.Party.Party_Name, new {
+           @readonly = "readonly"
+         })
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+                   </text>);    *@         
+@* =============================Local Sales===============================================*@
+      items.Add()
+        .Text("Local Sales")
+        .Enabled(true)
+        .Selected(false)
+        .Visible(true)
+        .Content(@<text>
+                     <table>
+    <tr>
+      <td>
+        @Html.Label("SO#")
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Sales_Order, "SalesOrderLookup", "ID", "ID", "_OpenSalesOrders", "SalesOrder", new {
+     partyId = (@Model.Party_ID != null ? @Model.Party_ID.ID : 0)
+   },
+                                                     "_GetJson", "SalesOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnSO_Change")
+        @Html.HiddenFor(m => m.Sales_Order.ID)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.Local_Sales_AND_Trading_Party)
+      </td>
+      <td>  
+        @Html.LookupHtml(m => m.Local_Sales_AND_Trading_Party, "PartyLookup", "ID", "Party_Name", "_PartyByType", "Party", new {
+     partyType = "Buyer"
+   },
+                      "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnLocalSaleParty_Change")
+      </td>
+    </tr>
+  </table>
+                </text>); 
+     @* ========================Expense TAB ============================================================*@
+      items.Add()
+         .Text("Expenses")
+         .Enabled(true)
+         .Content(Html.Telerik().Grid<ScaleExpense>()
+                            .Columns(columns => {
+                              columns.Bound(p => p.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+                            })
+                             .BuildGrid(
+                                 gridName: "Grid_Scale_Expense",
+                                 ajaxController: "ScaleExpense",
+                                 hiddenColumns: new string[] { "Paid_Party_To" },
+                                 indexID: Model.ID.ToString(),
+                                 feature: smART.Common.EnumFeatures.Transaction_ScaleExpense
+                             )
+                             .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Expense_Grid_onEdit_Local").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                             .ToHtmlString()
+                 );
+                            
+    @* ========================Notes TAB ============================================================*@
+      items.Add()
+          .Text("Notes")
+          .Enabled(true)
+          .Content(Html.Telerik().Grid<ScaleNotes>()
+                              .BuildGrid(
+                                  gridName: "Grid_Scale_Notes",
+                                  ajaxController: "ScaleNotes",
+                                  indexID: Model.ID.ToString(),
+                                  feature: smART.Common.EnumFeatures.Transaction_ScaleNote
+                              )
+
+                            .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                            .ToHtmlString()
+                );
+                   
+   @* ======================Attachment TAB =========================================================*@
+      items.Add().Text("Attachments").Content(
+                  Html.Telerik().Grid<ScaleAttachments>()
+                      .BuildGrid(
+                          gridName: "Grid_Scale_Attachments",
+                          ajaxController: "ScaleAttachments",
+                          indexID: Model.ID.ToString(),
+                          hiddenColumns: new string[] { "ID" },
+                          allowEdit: false,
+                          allowInsert: true,
+                          allowDelete: true,
+                          feature: smART.Common.EnumFeatures.Transaction_ScaleAttachment
+                          
+                      )
+                       .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new
+                          record</a>
+  
+  <label class="customer-label" for="Customers-input">
+    Show Images</label>
+  <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Scale_Attachments")' />
+  </text>))
+  
+  
+                      .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("Attachment_Grid_onRowDataBound").OnDataBinding("LookupGrid_onDataBinding"))
+                      .ToHtmlString()
+                      
+                      
+                  );
+
+       @* ========================Audit TAB ============================================================*@
+      items.Add()
+          .Text("Audit")
+          .Enabled(true)
+          .Content(Html.Telerik().Grid<AuditLog>()
+                          .BuildGrid(
+                                  gridName: "Grid_Scale_AuditLog",
+                                  ajaxController: "AuditLog",
+                                  action: "_GetAuditLogByEntity",
+                                  routedValue: new {
+                                    entityName = "Scale",
+                                    entityId = @Model.ID.ToString()
+                                  },
+                                  indexID: Model.ID.ToString(),
+                                  hiddenColumns: new string[] { "ID" },
+                                  allowEdit: false,
+                                  allowInsert: false,
+                                  allowDelete: false,
+                                  feature: smART.Common.EnumFeatures.Transaction_AuditLog
+                              )
+                             .Columns(columns => {
+                               columns.Bound(o => o.Last_Updated_Date).Title("Updated Date");
+                               columns.Bound(o => o.Updated_By).Title("Updated By");
+                             })
+                            .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                            .ToHtmlString()
+                );
+
+
+    })
+   )
+}

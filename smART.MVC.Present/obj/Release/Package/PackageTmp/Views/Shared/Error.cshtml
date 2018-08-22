@@ -1,0 +1,25 @@
+﻿@model System.Exception
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+    if (Model != null)
+    {
+    <!--Exception follows below
+    
+    @Model.ToString() <br/><br/> @Model.StackTrace <br /> @Model.Message
+    -->
+    }
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Error</title>
+</head>
+<body>
+    <div id="MainContainer">
+        An error occured
+        @*<span>@Html.UIF().MicroContentString("eSupport_Drivers_Messaging", "DnDError_GenericErrorMessage")</span>*@
+    </div>
+</body>
+</html>

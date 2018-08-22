@@ -1,0 +1,4 @@
+﻿@model string
+
+@Html.Raw(System.Web.HttpUtility.HtmlDecode(Model))
+HI How Are YOu

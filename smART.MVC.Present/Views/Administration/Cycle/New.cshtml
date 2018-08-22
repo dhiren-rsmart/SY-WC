@@ -1,0 +1,149 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model Cycle
+@{
+  ViewBag.Title = "Cycle";
+
+  ViewBag.AjaxFormSubmitMethod = "Save";
+  ViewBag.NewUrl = "New";
+
+  ViewBag.DeleteAction = "_Delete";
+  ViewBag.DeleteController = "Cycle";
+  ViewBag.DeleteData = Model.ID.ToString();
+
+  ViewBag.PrintParams = "{ID: " + Model.ID + "}";
+
+  ViewBag.SearchAction = "_Index";
+  ViewBag.SearchController = "Cycle";
+  ViewBag.Administration = true;
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+  @Html.ValidationSummary()
+  <table>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(m => m.ID)
+      </td>
+      <td>@Html.TextBoxFor(m => m.ID, new {
+       @readonly = "readonly"
+     })
+      </td>
+    </tr>
+    <tr>
+      <td>@Html.AuthorizedLabelFor(m => m.Start_Date)
+      </td>
+      <td>
+        @Html.Telerik().DatePickerFor(m => m.Start_Date)
+      </td>
+    </tr>
+    <tr>
+      <td>@Html.AuthorizedLabelFor(m => m.End_Date)
+      </td>
+      <td>
+        @Html.Telerik().DatePickerFor(m => m.End_Date)
+      </td>
+    </tr> 
+  </table>
+}
+@section DetailsSection
+{
+  <script language="javascript" type="text/javascript">
+
+    //#region Events
+
+    function Child_Grid_onEdit_Local(e)
+    {
+
+      Child_Grid_onEdit(e);
+
+      if (e.dataItem["Item"] != null)
+        $("#LabelID_Item").val(e.dataItem["Item"].Short_Name);
+    }
+
+    function Child_Grid_onSave(e)
+    {
+      // Set PriceList.ID to the Parent ID
+      e.values["Cycle.ID"] = eval('@Model.ID');
+    }
+
+    function OnRecalcAvgCost_Clicked(e)
+    {    
+      var id = $("#ID").val();
+      var startDt = $("#Start_Date").val();
+      var endDt = $("#End_Date").val();    
+      $.ajax({
+        url: '/CycleDetails/_RecalculateAvgCost',
+        type: 'POST',
+        contentType: 'application/json;',
+        data: JSON.stringify({
+          id: id,
+          startDt: startDt.toString(),
+          endDt: endDt.toString()
+        }),  
+        dataType: 'json',      
+        success: function (data, result)
+        {
+          var tGrid = $('#Grid_CycleDetails').data('tGrid');
+          tGrid.rebind({ Id: id });
+          //set the refresh button ID value
+          tGrid.ajax = { selectUrl: "../CycleDetails/_Index/" + id };
+        }
+      });
+    }
+
+    //#endregion Evetns      
+  </script>
+  @* Print *@
+  <script type="text/javascript" language="javascript">
+    function ValidatePrint()
+    {
+      alert('Printing function not available for this module.');
+      return false;
+    }
+  </script>
+  <hr />
+  @( Html.Telerik().TabStrip()
+                .Name("Tab_CycleDetails")
+                .SelectedIndex(0)
+                .Items(items => {
+                  items.Add()
+                       .Text("Cycle Details")
+                       .Enabled(true)
+                       .Content(Html.Telerik().Grid<CycleDetails>()
+                                          .Columns(columns => {
+                                            columns.Bound(p => p.ID);
+                                            columns.Bound(p => p.Item.Short_Name);
+                                            columns.Bound(p => p.Purchase_Qty).Title("Opening Qty");
+                                            columns.Bound(p => p.Average_Cost).Title("Opening Cost");
+                                            columns.Bound(p => p.Purchase_Amount).Title("Opening Amount");
+                                          })
+                                         .BuildGrid(
+                                             gridName: "Grid_CycleDetails",
+                                             ajaxController: "CycleDetails",
+                                             indexID: Model.ID.ToString(),
+                                             hiddenColumns: new string[] { "ID" },
+                                             allowDelete: true,
+                                             allowInsert: true,
+                                             allowEdit: true,
+                                             feature: smART.Common.EnumFeatures.Administration_CycleDetails
+                                           )
+                    //.ToolBar(commands => commands.Custom().Text("Recalculate Average Cost").Action("RecalcAvgCost", "CycleDetails", new {
+                    //  StartDate = Model.Start_Date.ToString(), EndDate = Model.End_Date.ToString()
+                    //}))
+                                            .ToolBar(toolBar => toolBar.Template(@<text>
+  <a class='t-button t-grid-add'>Add new record</a>
+  <input type="button" class='t-button' id='btnRecalcAvgCost' value="Recalculate Average Cost"
+    name='RecalcAvgCost' onclick='OnRecalcAvgCost_Clicked()' />
+  </text>))
+
+.ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+                         .ToHtmlString()
+                   );
+
+                })
+
+       )
+}

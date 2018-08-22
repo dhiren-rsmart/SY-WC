@@ -1,0 +1,125 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@{
+ 
+  ViewBag.AjaxFormSubmitMethod = "Save";
+  ViewBag.NewUrl = "New";
+
+  ViewBag.DeleteAction = "_Delete";
+  ViewBag.DeleteController = "QScale";
+  ViewBag.DeleteData = "0";
+
+  ViewBag.SearchAction = "_Index";
+  ViewBag.SearchController = "QScale";
+
+  ViewBag.Transaction = true;
+  Layout =  "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+  ViewBag.SearchOpenTicketsAction = "_OpenTickets";
+
+  ViewBag.SearchOpenBookingAction = "_OpenBookingContainers";
+  ViewBag.OpenBookingController = "Container";
+
+  ViewBag.SearchOpenPOItemsAction = "_OpenPurchaseOrderItems";
+  ViewBag.OpenPOItemsController = "PurchaseOrderItem";
+
+
+  ViewBag.TicketType = "Receiving Ticket";
+
+  //ViewBag.PrintAction = "Scale";
+  //ViewBag.PrintController = "Reports";
+  //ViewBag.PrintParams = "{ID: " + 0 + "}";
+  //ViewBag.PrintID = "0";
+
+  ViewBag.CameraAction = "_OpenCamera";
+  ViewBag.CameraController = "Camera";
+  //ViewBag.PageCSS = "~/Content/QScale.css";
+}
+
+ @Html.Telerik().StyleSheetRegistrar().DefaultGroup(group => group.Combined(true).Compress(true).Add("QScale.css"));
+ @Html.Telerik().ScriptRegistrar().DefaultGroup(group => group.Combined(true).Compress(true).Add("QScale.js"));
+ @Html.Telerik().ScriptRegistrar().DefaultGroup(group => group.Combined(true).Compress(true).Add("smART.js"));
+     
+@*=========== Top  Buttons===================================*@  
+@section ButtonSection{
+
+  <div style="margin-left: 10px; margin-right: 10px; white-space:nowrap; height:15px; width:100%;">
+
+    @Html.AuthorizedButton("New", "New", "button", new { onclick = "NewTicket()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Save", "Save", "button", new { onclick = "ValidateAndSaveScaleEntity()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Close", "Close", "button", new {onclick = "CloseTicket()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Pay", "Pay", "button", new { onclick = "ValidateAndPayTicket()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Search", "Open Tickets", "button", new { onclick = string.Format("openSearch('{0}','{1}')", ViewBag.SearchController, ViewBag.SearchOpenTicketsAction) , @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Print", "Print", "button", new { onclick = "openQScalePrintWindow()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Web20/sprite.png')" })
+    &nbsp;
+    @Html.AuthorizedButton("Delete", "Delete Ticket", "button", new { onclick = "DeleteTicket()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Sunset/sprite.png')"})
+    &nbsp;
+    @Html.AuthorizedButton("Refresh", "Refresh Ticket", "button", new { onclick = "RefreshTicket()", @class = "t-button", @style = "height:35px;width:110px;background-image: url('/Content/2012.3.1018/Sunset/sprite.png')" })
+    &nbsp;
+ 
+@*   <div style="float:right;">
+      <div style="float:left; margin-right:20px;">  @(Html.Telerik().ComboBox().Name("ReadingMenu").DropDownHtmlAttributes(new {style = ""}).BindTo(QScaleHelper.ScaleReaders("")).ClientEvents(events => events.OnChange("onRadingSelectionChange")))</div>
+   <div style="overflow:hidden;">  @Html.TextBox("Reading")</div>*@
+     @*  <table style= "border:2px solid black; height:30px;  ">
+      <tr>
+        <td style= "border-right:2px solid black;">
+         @(Html.Telerik().ComboBox().Name("ReadingMenu").DropDownHtmlAttributes(new {style = ""}).BindTo(QScaleHelper.ScaleReaders("")).ClientEvents(events => events.OnChange("onRadingSelectionChange")))
+        </td>
+        <td>
+         @Html.TextBox("Reading")
+        </td>
+      </tr>
+    </table>*@
+  </div>
+ @* </div>*@
+
+ @* <div>
+    @(Html.Telerik().Window().BuildWindow("SearchWindow").Resizable())
+</div>*@
+}
+
+
+@section MasterSection
+{
+
+ <script type ="text/javascript" language="javascript">
+
+   var baseURL = '@Url.Action("QScale")';
+     // #region Document.Ready -vivek
+     //$(document).ready(function () {
+     //    $("#lineSection").attr('style', 'display:block; margin-top:10px;');
+     //});
+     //  #endregion 
+ </script>
+ 
+
+
+  <div style="height: 100%; width: 100%; padding-left: 0px; padding-right: 0px; margin-left: 0px; border:2px solid green; border-radius: 10px; border-collapse:separate !important;" cellpadding="0" cellspacing="0">
+
+      @{ Html.Telerik().Splitter()
+		    .Name("Splitter")
+		    .Orientation(SplitterOrientation.Horizontal)
+        .HtmlAttributes( new { style = "height:535px; border-radius: 10px; border-collapse:separate !important;"})
+		    .Panes(hpanes =>
+		    {
+			    // Navigation Panel
+          hpanes.Add()
+                .Size("270px")
+                .MinSize("270px")
+                .HtmlAttributes( new { style = "height:535px;"})
+                .Collapsible(false)
+                .LoadContentFrom("Navigation", "QScale");           
+			    // Content Panel
+			    hpanes.Add()         
+                .LoadContentFrom("New", "QScale");
+		    }).Render();
+      }
+      
+ </div>
+}

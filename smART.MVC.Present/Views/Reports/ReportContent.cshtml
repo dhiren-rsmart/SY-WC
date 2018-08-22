@@ -1,0 +1,11 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.ReportFilter
+
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutReportsDetails.cshtml";
+}
+<iframe id="rptReports" src="../../../Reports/Report.aspx" style="height:98%; width:99%;" runat="server">
+    @*<iframe id="rptReports" src="../../../Reports/ScaleReceiveTicket.aspx?ID=108" height="100%" width="100%" runat="server">*@
+</iframe>

@@ -1,0 +1,201 @@
+﻿@using smART.ViewModel;
+@using smART.MVC.Present.Extensions;
+@model BaseEntity
+@{
+  if (ViewBag.Transaction != null) {
+    Layout = "~/Views/Shared/_LayoutTransactionMenu.cshtml";
+  }
+  else if (ViewBag.Administration != null) {
+    Layout = "~/Views/Shared/_LayoutAdministrationMenu.cshtml";
+  }
+  else {
+    Layout = "~/Views/Shared/_LayoutMasterMenu.cshtml";
+  }
+}
+<h2>@ViewBag.Title</h2>
+<div>
+  @(Html.Telerik().Window().BuildWindow("SearchWindow").Resizable())
+</div>
+<div>
+  @(Html.Telerik().Window().BuildWindow("PrintWindow")
+        .Buttons(buttons => buttons.Refresh().Close())
+        .Draggable(true)
+        .Title((string) ViewBag.PrintAction != null ? (string) ViewBag.PrintAction : "Print")
+    )
+</div>
+@*<iframe id="rptReports" src="../../../Reports/@ViewBag.PrintAction/@ViewBag.PrintData"  scrolling = "auto" height="550px" width="100%" runat="server">
+                    </iframe>*@
+<script language="javascript" type="text/javascript">
+
+   function openSearchWindow(controller,action,params) {
+//      var controller = '@ViewBag.SearchController';
+//      var action = '@ViewBag.SearchAction';
+      var params = null;
+      openWindow("#SearchWindow", controller, action, params);
+   }
+
+   function openWindow(windowID, controller, action, params) {
+      var window = $(windowID).data("tWindow");
+      if (params == null || params==''){      
+        window.ajaxRequest("/" + controller + "/" + action);
+      }
+      else
+        window.ajaxRequest("/" + controller + "/" + action, params);
+      var overlay = $('.t-overlay');
+      $(windowID).css('zIndex', 20001)
+                        .data("tWindow")
+                        .center()
+                        .open();
+   }
+  
+   function closeWindow() {
+      var window = $("#SearchWindow").data("tWindow");
+      window.close();
+   }
+   function newEntity() {
+      window.location = '@ViewBag.NewUrl';
+   }
+
+  function openPrintWindow() 
+   {
+     if (ValidatePrint() === true)
+      {
+         if ('0' == '@ViewBag.PrintID' || '' == '@ViewBag.PrintID')
+            alert('There is nothing to print.');
+         else
+         {
+            var controller = '@ViewBag.PrintController';
+            var action = '@ViewBag.PrintAction';
+            var params = '@ViewBag.PrintParams';            
+            openWindow("#PrintWindow", controller,action,params);             
+         }
+      }
+   }
+
+   function closePrintWindow() {
+      var window = $("#PrintWindow").data("tWindow");
+      window.close();
+   }
+
+   function deleteEntity() {
+      var choice = confirm('Do you really want to delete?');
+      if (choice == true) {
+
+         $.ajax({
+            url: '@(Url.Action((string) ViewBag.DeleteAction, (string) ViewBag.DeleteController))',
+            type: 'POST',
+            contentType: 'application/json;',
+            data: "{id: @(ViewBag.DeleteData)}",
+            success: function (data, result) {
+               $('#newForm').trigger('click');
+               if (data != null && data.redirect != null)
+                  window.location.href = data.redirect;
+            }
+         });
+      }
+      return false;
+   }
+
+   function ShowNotification(msg) {
+      var notificationLbl = $("#lblNotification");
+      $("#divNotificationSection").attr('style', 'display:block; width:100%; background-color:Yellow;').html(msg);
+   }
+
+   function EnableDisablePrintButton(value) {
+      if (value)
+         document.getElementsByName("printForm")[0].disabled = false;
+      else
+         document.getElementsByName("printForm")[0].disabled = true;
+   }
+
+    function HideStandardButtonSection() {     
+      document.getElementById("ButtonSection").style.visibility = "hidden";
+      document.getElementById("StandardButtonSection").style.visibility = "hidden";
+      document.getElementById("CustomButtonSection").style.visibility = "hidden";
+   }
+
+   function HideLineSection() {  
+      document.getElementById("LineSection").style.visibility = "hidden";
+   }
+
+   function ShowProcessIndicator() {
+      $("#divLoading").html('<image src="/Content/Images/loading.gif"  alt="Loading, please wait" />');
+   }
+
+   function HideProcessIndicator() {
+      $("#divLoading").html("");
+   }
+
+   function EnableDisableCommandButton(name, value) {
+      if (value)
+         $(name).removeAttr("disabled");
+//         document.getElementsByName(name)[0].disabled = false;
+      else
+         $(name).attr("disabled", "disabled");
+//         document.getElementsByName(name)[0].disabled = true;
+   }
+
+  
+</script>
+<div>
+  @using (Ajax.BeginForm((string) ViewBag.AjaxFormSubmitMethod, new AjaxOptions {
+    HttpMethod = "Post",
+    UpdateTargetId = "divMasterSection"
+  })) {
+
+@* Button Section *@ 
+    <div id="ButtonSection" style="border-bottom-style: none; display: block;">
+      @* Default Button Section *@
+      <div id="StandardButtonSection" style="display: block; float: left; width: 270px">@Html.AuthorizedButton("submitForm", "Save", "Submit", new {
+                                                                                     onclick = "this.disabled=1; this.form.submit();",
+                                                                                     @class = "t-button"
+                                                                                   }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Save)
+        @Html.AuthorizedButton("searchForm", "Search", "button", new {
+     onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.SearchController, ViewBag.SearchAction),
+     @class = "t-button"
+   }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Search)
+        @Html.AuthorizedButton("newForm", "New", "button", new {
+     onclick = "newEntity()",
+     @class = "t-button"
+   }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Add)
+        @Html.AuthorizedButton("deleteForm", "Delete", "button", new {
+     onclick = "deleteEntity()",
+     @class = "t-button"
+   }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Delete)
+        @Html.AuthorizedButton("printForm", "Print", "button", new {
+     onclick = "openPrintWindow()",
+     @class = "t-button"
+   }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Print)
+      </div>
+      @* Dynamic Button Section *@
+      <div id="CustomButtonSection" style="float: left; padding-left: 0px; border-bottom-style: none;">
+        @RenderSection("ButtonSection", false)
+      </div>
+      @* Wait Indicator *@
+      <div id="divLoading" style="margin-left: 20px; float: left; padding-top: 0px; padding-bottom: 0px;
+        background-position: top;">
+      </div>
+    </div> 
+
+@* Two Line Space *@
+    <br /> <br />   
+      
+@* Line *@
+    <div id="lineSection">
+      <hr />
+    </div>      
+                  
+@* Notification Section *@
+    <div id="divNotificationSection" style="width: 100%; background-color: Yellow; visibility: hidden;">
+    </div>        
+
+@* Master Section *@
+    <div id="divMasterSection">
+      @RenderSection("MasterSection", false)
+    </div>
+  }
+</div>
+@* Detail Section *@
+<div>
+  @RenderSection("DetailsSection", false)
+</div>

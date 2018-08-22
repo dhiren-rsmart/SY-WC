@@ -1,0 +1,24 @@
+﻿@model smART.ViewModel.SalesOrderItem
+@using smART.MVC.Present.Extensions
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary(true)
+    <fieldset>
+        <legend>Expense Detail</legend>
+        <div class="editor">
+            @Html.ValidationSummary()
+            <div class="editor-label">
+                @Html.AuthorizedLabelFor(model => model.Payment_Method_UOM)
+            </div>
+            <div class="editor-field">
+                @Html.AuthorizedEditorFor(model => model.Payment_Method_UOM)
+            </div>
+            <p>
+                <input type="submit" value="Save" />
+            </p>
+        </div>
+    </fieldset>
+}
+<div>
+    @Html.ActionLink("Cancel", "Index")
+</div>

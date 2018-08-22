@@ -1,0 +1,78 @@
+﻿
+@*<script lang=javascript>
+
+    function fnCapture(idx) {
+        try {
+            var activeX = document.getElementById('imgCtl' + idx);
+            activeX.DeviceID = -1;
+            activeX.CodeName = 4;
+            activeX.MinutiaeMode = 256;
+
+            activeX.Capture();
+
+            var result = activeX.ErrorCode;
+            if (result == 0) {
+                document.getElementById('min' + idx).value = activeX.ImageTextData;
+            }
+            else {
+                alert('Failed to capture - ' + result);
+            }
+            return;
+        }
+        catch (err) {
+            alert(err);
+        }
+    }
+
+    function fnSave() {
+        var strmin1 = document.getElementById('min0').value;
+        var strmin2 = document.getElementById('min1').value;
+
+        $.ajax(
+        {
+            url: '@Url.Action("_SaveThumbImages","ThumbScanner")',
+            type: "POST",
+            contentType: "application/json",
+            data: JSON.stringify({ id: $("#ID").val(), image1: strmin1, image2: strmin2 }),
+            success: function (result) {
+                //alert('Image saved successfully !');
+                closeThumbScanner();
+            }
+        });
+    }
+
+</script>
+
+
+<div id="thumbScanner">
+    <object id=objVerify style="LEFT: 0px; TOP: 0px" height=0 width=0
+            classid="CLSID:8D613732-7D38-4664-A8B7-A24049B96117"
+            name=objVerify viewastext>
+        <param name="MinutiaeMode" value="256">
+    </object>
+
+    <table border=1 cellspacing=0 cellpadding=0 align="center">
+        <caption> Fingerprint Images </caption>
+        <tr>
+            <td>
+                <object id=imgCtl0 style="LEFT: 0px; WIDTH: 149px; TOP: 0px; HEIGHT: 182px" height=182
+                        width=149 classid="CLSID:D547FDD7-82F6-44e8-AFBA-7553ADCEE7C8" codebase="sgfplibx.ocx"
+                        name=imgCtl0 viewastext></object>
+            </td>
+            <td>
+                <object id=imgCtl1 style="LEFT: 0px; WIDTH: 149px; TOP: 0px; HEIGHT: 182px" height=182
+                        width=149 classid="CLSID:D547FDD7-82F6-44e8-AFBA-7553ADCEE7C8" codebase="sgfplibx.ocx"
+                        name=imgCtl1 viewastext></object>
+            </td>
+        </tr>
+        <tr>
+            <td align=center><input type=button name=btnCapture1 value='Capture Image 1' onclick='fnCapture(0);'></td>
+            <td align=center><input type=button name=btnCapture2 value='Capture Image 2' onclick='fnCapture(1);'></td>
+        </tr>
+        <tr>
+            <td colspan="2" align=center><input type=button name=btnRegister value='Save' onclick='fnSave()' style='width:80px'></td>
+        </tr>
+    </table>
+    <input type="hidden" id="min0" name="min"><br>
+    <input type="hidden" id="min1" name="min"><br>
+</div>*@

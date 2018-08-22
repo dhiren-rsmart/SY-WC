@@ -1,0 +1,31 @@
+﻿@model IEnumerable<smART.ViewModel.Contact>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @(
+ Html.Telerik().Grid<Contact>()
+         .Name("Grid_Contact_List")
+         .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "Contact"))
+        .Columns(columns =>
+            {
+                columns.Bound(o => o.ID).Filterable(false);
+                columns.Bound(o => o.First_Name);
+                columns.Bound(o => o.Last_Name);
+                columns.Bound(o => o.Email);
+                columns.Bound(o => o.Mobile).Filterable(false);
+                columns.Bound(o => o.ID).ClientTemplate(Ajax.ActionLink("Select", "Index", "Contact", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+            })
+              .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+
+)
+</div>

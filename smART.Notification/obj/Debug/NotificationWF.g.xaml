@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<snw:NotificationWF sap:VirtualizedContainerService.HintSize="262,240" mva:VisualBasic.Settings="Assembly references and imported namespaces for internal implementation" xmlns="http://schemas.microsoft.com/netfx/2009/xaml/activities" xmlns:local="clr-namespace:smART.Notification;assembly=smART.Integration.Email" xmlns:local1="clr-namespace:smART.Notification.WFActivities;assembly=smART.Integration.Email" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" xmlns:mv="clr-namespace:Microsoft.VisualBasic;assembly=System" xmlns:mva="clr-namespace:Microsoft.VisualBasic.Activities;assembly=System.Activities" xmlns:s="clr-namespace:System;assembly=mscorlib" xmlns:s1="clr-namespace:System;assembly=System" xmlns:s2="clr-namespace:System;assembly=System.Xml" xmlns:s3="clr-namespace:System;assembly=System.Core" xmlns:s4="clr-namespace:System;assembly=System.ServiceModel" xmlns:sa="clr-namespace:System.Activities;assembly=System.Activities" xmlns:sad="clr-namespace:System.Activities.Debugger;assembly=System.Activities" xmlns:sap="http://schemas.microsoft.com/netfx/2009/xaml/activities/presentation" xmlns:scg="clr-namespace:System.Collections.Generic;assembly=System" xmlns:scg1="clr-namespace:System.Collections.Generic;assembly=System.ServiceModel" xmlns:scg2="clr-namespace:System.Collections.Generic;assembly=System.Core" xmlns:scg3="clr-namespace:System.Collections.Generic;assembly=mscorlib" xmlns:sd="clr-namespace:System.Data;assembly=System.Data" xmlns:sl="clr-namespace:System.Linq;assembly=System.Core" xmlns:snw="clr-namespace:smART.Notification.Workflow;assembly=smART.Integration.Email" xmlns:st="clr-namespace:System.Text;assembly=mscorlib" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <snw:NotificationWF.Implementation>
+    <Sequence sad:XamlDebuggerXmlReader.FileName="D:\RecyclesmART_Cloud\V1.1\smART.Notification\Workflow\NotificationWF.xaml" sap:VirtualizedContainerService.HintSize="222,200">
+      <sap:WorkflowViewStateService.ViewState>
+        <scg3:Dictionary x:TypeArguments="x:String, x:Object">
+          <x:Boolean x:Key="IsExpanded">True</x:Boolean>
+        </scg3:Dictionary>
+      </sap:WorkflowViewStateService.ViewState>
+      <local1:SendEmail BookingID="[BookingID]" CompanyName="[CompanyName]" CustomerName="[CustomerName]" EntityID="[EntityID]" sap:VirtualizedContainerService.HintSize="200,22" NotificationDef="[NotificationDef]" Result="[Result]" SOID="[SOID]" UserName="[UserName]" XSLPath="[XSLPath]" />
+    </Sequence>
+  </snw:NotificationWF.Implementation>
+</snw:NotificationWF>

@@ -1,0 +1,67 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<h2>@ViewBag.Message</h2>
+
+@*<script language="JavaScript" type="text/JavaScript">
+   // Variable Definitions
+   var nameSpace = null;
+   var mailFolder = null;
+   var mailItem = null;
+   var tempDoc = null;
+   var outlookApp = null;
+   function OpenOutlookDoc(whatform)
+   {
+      try
+      {
+      outlookApp = new ActiveXObject("Outlook.Application");
+      nameSpace = outlookApp.getNameSpace("MAPI");
+      mailFolder = nameSpace.getDefaultFolder(6);
+      mailItem = mailFolder.Items.add(whatform);
+      mailItem.Attachments.Add("C:\\test.txt");
+      mailItem.Display(0)
+      }
+      catch(e)
+      {
+      // act on any error that you get
+      }
+      }
+    // Disable Stealth Mode -->
+
+   function draftOutlookEmail(to, cc, subject, body, attachmentFileName, attachmentContents) {
+       var outlookApp = new ActiveXObject("Outlook.Application");
+       var nameSpace = outlookApp.getNameSpace("MAPI");
+       var mailItem = outlookApp.CreateItem(0); //olMailItem
+       mailItem.BodyFormat = 2; //html
+       mailItem.To = to;
+       mailItem.Cc = (cc == null) ? "" : cc;
+       mailItem.Subject = subject;
+       mailItem.HTMLBody = body;
+      
+       //if (attachmentContents != null && attachmentContents != "") {
+       //    //The only way that the attachment will work on the SERVER (while user is connected to THIN client)
+       //    //is for us to create a file on the user's local machine, and for us to use THAT file.
+       //    var filePath = "C:\\Temp\\" + attachmentFileName;
+       //    var fso = new ActiveXObject("Scripting.FileSystemObject");
+       //    var newFile = fso.CreateTextFile(filePath, true);
+       //    newFile.Write(attachmentContents);
+       //    newFile.Close();
+
+       //    //attach the file
+           var filePath = "C:\\Temp\\a.txt";
+           mailItem.Attachments.Add(filePath);
+       //}
+       mailItem.Display(false);
+   }
+</script>*@
+
+@*To use form buttons:<br>
+<input type=button value="Form A" name="OutlookOpen1" onclick="OpenOutlookDoc('IPM.Note.FormA')"><br><br>
+<input type=button value="Form B" name="OutlookOpen2" onclick="OpenOutlookDoc('IPM.Note.FormB')"><br><br>
+To use text links:<br>
+<a href=javascript:void(0) onclick="OpenOutlookDoc('IPM.Note.FormA')">Form A</a><br><br>
+<a href=javascript:void(0) onclick="OpenOutlookDoc('IPM.Note.FormB')">Form B</a>
+<input type=button value="Form B" name="OutlookOpen2" onclick="draftOutlookEmail('a', 'b','c','d','abc.txt','ddddd')"><br><br>*@
+
+

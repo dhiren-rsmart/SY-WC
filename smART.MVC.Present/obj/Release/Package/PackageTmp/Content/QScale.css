@@ -1,0 +1,73 @@
+﻿.CaptionStyle
+{
+  
+  text-align: left;
+  white-space: nowrap;
+  font-weight:bold;
+}
+
+input[type="text"]
+{
+  width: 200px;
+  height:25px;
+  border: 1px solid #CCC;
+  background-color: transparent;/*vivek*/
+}
+
+.EditorStyle
+{  
+  width: 200px;
+  border: 1px solid #CCC;
+ background-color: #d1deb6;
+}
+
+.telerikControlWidth
+{
+  width: 205px !important;
+}
+
+.QuickLaunchItemStyle
+{
+  height:30px;
+  font-size:medium;
+  white-space: nowrap; 
+  overflow:hidden; 
+  padding-top: 5px;
+}
+
+
+.t-panelbar .t-group
+ {
+     height:500px;
+     overflow:auto;
+ }
+
+ 
+.t-popup .t-item
+{
+padding-top:10px !important;
+padding-bottom:10px !important;
+}
+
+/*==============================Process Indicator=========================*/
+div#scanspinner
+{
+    display: none;
+    width:60px;
+    height: 70px;
+    position: fixed;
+    top: 40%;
+    left: 50%;
+    background-color: #d1deb6;
+    background:url('/Content/Images/ajax-loader.gif') no-repeat center #fff;
+    text-align:center;
+    padding:5px;
+   font-weight :bold;
+    font:normal 12px Tahoma, Geneva, sans-serif; 
+    vertical-align:middle;
+    color:Green;
+    margin-left: -50px;
+    margin-top: -50px;
+    z-index:2;  
+    overflow: auto;
+}

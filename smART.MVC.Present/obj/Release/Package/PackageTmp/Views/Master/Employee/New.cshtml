@@ -1,0 +1,149 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+
+@model smART.ViewModel.Employee
+@{
+    ViewBag.Title = "Employee Master";
+
+    ViewBag.AjaxFormSubmitMethod = "Save";
+    ViewBag.NewUrl = "New";
+
+    ViewBag.DeleteAction = "_Delete";
+    ViewBag.DeleteController = "Employee";
+    ViewBag.DeleteData = Model.ID.ToString();
+
+    ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+    
+    ViewBag.SearchAction = "_Index";
+    ViewBag.SearchController = "Employee";
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+ 
+<script language="javascript" type="text/javascript">
+    $(function () {
+        $("#MoveRight,#MoveLeft").click(function (event) {
+            var id = $(event.target).attr("id");
+            var selectFrom = id == "MoveRight" ? "#SelectLeft" : "#SelectRight";
+            var moveTo = id == "MoveRight" ? "#SelectRight" : "#SelectLeft";
+
+            var selectedItems = $(selectFrom + " :selected").toArray();
+            $(moveTo).append(selectedItems);
+            selectedItems.remove;
+        });
+    });
+    </script>  
+
+     @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+    
+   @* <hr />*@
+     @Html.ValidationSummary() 
+     <div class="editLeft">
+    <table>
+        <tr>
+            <td style="width :25%">@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.User_ID)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.User_ID)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Password)
+            </td>
+            <td>@Html.PasswordFor(m => m.Password)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Emp_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Emp_Name)
+            </td>
+        </tr>
+  </table>
+     </div>
+       <div class="editLeft">
+    <table>
+        <tr>
+            <td style="width :25%">@Html.AuthorizedLabelFor(m => m.Email)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Email)
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Email_Password)
+            </td>
+            <td>@Html.PasswordFor(m => m.Email_Password)
+            </td>
+        </tr>    
+    </table>
+     </div>
+     <div class="editClear" />
+ }
+@section DetailsSection
+{
+    <script language="javascript" type="text/javascript">
+
+        function Child_Grid_onEdit_Local(e) {
+
+            Child_Grid_onEdit(e);
+
+            if (e.dataItem["Role"]!=null)
+              $("#LabelID_Role").val(e.dataItem["Role"].Role_Description);
+        }
+
+    function Child_Grid_onSave(e) {
+        // Set Party.ID to the Parent ID
+        e.values["Employee.ID"] = @Model.ID;
+
+        // The following are "required" fields for thr Party object; 
+        // setting them to ANY value has no effect, 
+        // as these values are overwritten based on the ID
+        // set in the "Party.ID" field above
+        e.values["Employee.User_ID"] = 'Test';
+        e.values["Employee.Password"] = 'Test';
+        e.values["Employee.Emp_Name"] = 'Test';
+        //e.values["Role.Role_Description"] = 'Test';
+    }
+    </script>
+    
+    <hr />
+
+    @( Html.Telerik().TabStrip()
+                .Name("Tab_Employee_EmployeeRole")
+                .SelectedIndex(0)
+                .Items(items =>
+                    {
+                     items.Add()
+                          .Text("Roles")
+                          .Enabled(true)
+                          .Content(Html.Telerik().Grid<EmployeeRole>()
+                                            .BuildGrid(
+                                                gridName: "Grid_Employee_EmployeeRole",
+                                                ajaxController: "EmployeeRole",
+                                                indexID: Model.ID.ToString(),
+                                                allowDelete:true ,
+                                                allowInsert :true ,
+                                                allowEdit:true,
+                                                feature: smART.Common.EnumFeatures.Master_Role)
+                                            .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local"))
+                                            .ToHtmlString()
+                      );
+                     
+                  })
+            
+       )
+}

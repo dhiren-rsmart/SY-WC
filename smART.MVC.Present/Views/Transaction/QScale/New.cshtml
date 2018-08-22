@@ -1,0 +1,1872 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.Scale
+@{
+    ViewBag.AjaxFormSubmitMethod = "Save";
+    ViewBag.NewUrl = "New";
+
+    ViewBag.DeleteAction = "_Delete";
+    ViewBag.DeleteController = "QScale";
+    ViewBag.DeleteData = Model.ID.ToString();
+
+    ViewBag.SearchAction = "_Index";
+    ViewBag.SearchController = "QScale";
+
+    //ViewBag.Transaction = false;
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+    ViewBag.SearchOpenTicketsAction = "_OpenTickets";
+
+    ViewBag.SearchOpenBookingAction = "_OpenBookingContainers";
+    ViewBag.OpenBookingController = "Container";
+
+    ViewBag.SearchOpenPOItemsAction = "_OpenPurchaseOrderItems";
+    ViewBag.OpenPOItemsController = "PurchaseOrderItem";
+
+
+    ViewBag.TicketType = "Receiving Ticket";
+
+    ViewBag.PrintAction = "QScale";
+    ViewBag.PrintController = "Reports";
+    ViewBag.PrintParams = "{ID: " + Model.ID + "}";
+    ViewBag.PrintID = Model.ID;
+
+    ViewBag.CameraAction = "_OpenCamera";
+    ViewBag.CameraController = "Camera";
+
+    ViewBag.ThumbScannerAction = "_Scan";
+    ViewBag.ThumbScannerController = "ThumbScanner";
+
+    ViewBag.Data = Model;
+    ViewBag.UtilitiesPath = smART.Common.ConfigurationHelper.GetsmARTUtilitiesPath();
+}
+<script type="text/javascript" language="javascript">
+
+    //#region Document.Ready
+
+    $(document).ready(function ()
+    {
+
+        $("input[LetterCase='AllCap']").autoCapital();
+        $("input[LetterCase='AllLower']").autoLower();
+        $("input[LetterCase='FirstCap']").autoFirstLetterCapital();
+        //initCamera();
+    });
+
+    //#endregion
+
+    function initCamera2() {
+        var $browserWidth = $(window).width();
+        var $initTop = $('#tdOperateCamera').position().top;
+        //var $initLeft = $('#tdOperateCamera').position().left;
+        var $initHeight = $('#tdOperateCamera').height();
+        var $initWidth = $initHeight * 3;
+        var $windowHeaderHeight = $('#OpenCamera').find('div.t-header').height();
+        var $initLeft = ($browserWidth-$initWidth) / 2;
+
+        $('#OpenCamera').css({"position":"absolute","top":$initTop,"left":$initLeft});
+        $('#OpenCamera').height($initHeight + $windowHeaderHeight + 10);
+        $('#OpenCamera').width($initWidth + 10);
+
+        $('#OpenCamera').find('div.t-window-content').height($initHeight);
+        $('#OpenCamera').find('div.t-window-content').width($initWidth);
+
+        $('#OpenCamera').tabSlideOut({
+            tabHandle: '.handle',                              //class of the element that will be your tab
+            pathToTabImage: '../../Content/Images/final_logo.jpg',          //path to the image for the tab *required*
+            imageHeight: '122px',                               //height of tab image *required*
+            imageWidth: '40px',                               //width of tab image *required*
+            tabLocation: 'left',                               //side of screen where tab lives, top, right, bottom, or left
+            speed: 300,                                        //speed of animation
+            action: 'click',                                   //options: 'click' or 'hover', action to trigger animation
+            topPos: '200px',                                   //position from the top
+            fixedPosition: true                               //options: true makes it stick(fixed position) on scroll
+        });
+    }
+
+    function initCamera() {
+        // DO NOT PROCESS FOR CLOSED tickets
+        var ticketStatus = 'open';
+        @if (@Model != null) {
+            <text>
+        ticketStatus = '@Model.Ticket_Status';
+        </text>
+        }
+
+        if(ticketStatus.toLowerCase().indexOf('close') != -1)
+            return;
+
+        //            $('#btnOperateCamera').html($('#btnOperateCamera').text().replace(/(.)/g,"$1<br />"));
+        $('#tdOperateCamera').css({"background-color":"green","color":"black", "display":""});
+
+        //Set Camera Window position
+        var $browserWidth = $(window).width();
+        var $initTop = $('#tdOperateCamera').position().top;
+        var $initLeft = $('#tdOperateCamera').position().left;    //$browserWidth;	// < 50 ? 0 : ($browserWidth-50);
+        var $initHeight = $('#tdOperateCamera').height();
+        var $initWidth = $initHeight * 3;
+        var $windowHeaderHeight = $('#OpenCamera').find('div.t-header').height();
+
+        $('#OpenCamera').css({"position":"absolute","top":$initTop,"left":$initLeft});
+        $('#OpenCamera').height($initHeight + $windowHeaderHeight + 100);
+        $('#OpenCamera').width($initWidth + 10);
+
+        $('#OpenCamera').find('div.t-window-content').height($initHeight+90);
+        $('#OpenCamera').find('div.t-window-content').width($initWidth);
+
+        // Set Camera Button Click function
+        $("#tdOperateCamera").click(function () {
+            //var $newTop = 0;
+            var $browserWidth = $(window).width();
+            var $telerikWindowWidth = $('#OpenCamera').width();
+            var $newLeft = ($browserWidth-$telerikWindowWidth) / 2;
+
+            if ($newLeft < 0) $newLeft = 0;
+
+            //var $initTop = 200;
+            var $initLeft = $('#tdOperateCamera').position().left;	// < 50 ? 0 : ($browserWidth-50);
+            $('#OpenCamera').css({"position":"absolute","left":$initLeft, "display":"block"});
+
+            $('#silverlightControlHost').hide();
+
+            // animate window
+            $('#OpenCamera').animate({ left: $newLeft }, 'slow', function() {
+                $('#imgSnapShot').attr('src', '../../../Content/Images/blank.gif');
+                $('#silverlightControlHost').show();
+            });
+        });
+    }
+
+    function OnPriceList_Load()
+    {
+        var priceListId = $("#PriceList_ID").val();
+        if (priceListId>0){
+            var combobox = $('#PriceListDropDown').data('tDropDownList');
+            combobox.value(priceListId);
+        }
+    }
+    var spinnerScanVisible = false;
+
+    function showScanProgress()
+    {
+        if (!spinnerScanVisible)
+        {
+            $("div#scanspinner").fadeIn("fast");
+            spinnerScanVisible = true;
+        }
+    }
+
+    function hideScanProgress()
+    {
+        if (spinnerScanVisible)
+        {
+            var spinner = $("div#scanspinner");
+            spinner.stop();
+            spinner.fadeOut("fast");
+            spinnerVisible = false;
+        }
+    };
+
+    function openSearch(controller,action,params) {
+        openWindow("#SearchWindow", controller, action, params);
+    }
+
+    function openWindow(windowID, controller, action, params) {
+        var window = $(windowID).data("tWindow");
+        if (params != null)
+            window.ajaxRequest("/" + controller + "/" + action + params);
+        else
+            window.ajaxRequest("/" + controller + "/" + action , params);
+
+        var overlay = $('.t-overlay');
+        $(windowID).css('zIndex', 20001)
+                          .data("tWindow")
+                          .center()
+                          .open();
+    }
+
+    function closeWindow() {
+        var window = $("#SearchWindow").data("tWindow");
+        window.close();
+    }
+
+    function openQScalePrintWindow() {
+        if ('0' == '@Model.ID' || '' == '@Model.ID'){
+            alert('There is nothing to print.');
+        }
+        else
+        {
+            var controller ='Reports';
+            var action = 'QScale';
+            var params = "?ID=" + '@Model.ID';
+            openWindow("#PrintWindow", controller,action,params);
+        }
+    }
+
+    function closePrintWindow() {
+        var window = $("#PrintWindow").data("tWindow");
+        window.close();
+    }
+
+    function newEntity() {
+        window.location = '@ViewBag.NewUrl';
+    }
+
+    function OnTicketType_Change()
+    {
+    }
+
+    function OnMake_Change(e)
+    {
+        //  alert(e.value)
+        //     var modelCombo = $("#Model").data("tDropDownList");
+        //    var dataSource = [
+        //                { Text: "Product 1", Value: "1" },
+        //                { Text: "Product 2", Value: "2" },
+        //                { Text: "Product 3", Value: "3" },
+        //                { Text: "Product 4", Value: "4" },
+        //                { Text: "Product 5", Value: "5" },
+        //                { Text: "Product 6", Value: "6" },
+        //                { Text: "Product 7", Value: "7" },
+        //                { Text: "Product 8", Value: "8" },
+        //                { Text: "Product 9", Value: "9" }
+        //            ];
+
+        GetLOVByParentType(e.value)
+
+        //       modelCombo.dataBind(dataSource);
+
+        //     modelCombo.reload();
+        //     alert(modelCombo.value());
+    }
+
+    function GetLOVByParentType(parentType,selectedValue)
+    {
+        if (parentType!=''){
+            $.ajax({
+                url: '/LOV/_GetByParentType?parentType=' + parentType,
+                type: 'GET',
+                contentType: 'application/json;',
+                data: null,
+                cache: false,
+                success: function (data,result)
+                {
+                    var modelCombo = $("#Model").data("tComboBox");
+                    modelCombo.dataBind(data);
+                    modelCombo.reload();                    
+                    if (selectedValue != null && selectedValue !=''){                        
+                        modelCombo.value(selectedValue);
+                    }
+                },
+                error: function(xhr, status, error) {
+                    alert("An AJAX error occured: " + status + "\nError: " + error + "\nError detail: " + xhr.responseText);
+                }
+            });
+        }
+    }
+
+    function onAjaxComboLoad(e) {
+        $(e.target).data("tDropDownList").reload();
+    }
+
+
+    function onPriceListChange(e){
+        $("#PriceList_ID").val(e.value);
+    }
+
+
+    function Child_Grid_onEdit_Local(e)
+    {
+        e.preventDefault();
+    }
+
+    function Child_Grid_onSave(e)
+    {
+        Grid_onSave(e);
+
+        // Set Party.ID to the Parent ID
+        e.values["Parent.ID"] =  @Model.ID;
+        e.values["Scale.ID"] =  @Model.ID;
+        e.values["Reference_ID"] = 0;
+
+        e.values["Item_Received.Category"] = 'Test';
+        e.values["Item_Received.Group"] = 'Test';
+        e.values["Apply_To_Item.Category"] = 'Test';
+        e.values["Apply_To_Item.Group"] = 'Test';
+    }
+
+    function ValidateAndPayTicket()
+    {
+        $("#Ticket_Status").val("Close");
+        $.ajax({
+            type: "POST",
+            url: '/QScale/Validate',
+            cache: false,
+            data: $("#qscalefrm").serialize(), // serializes the form's elements.
+            success: function (result)
+            {
+                if(!result.success) {
+                    var errorString =   GetValidationMessageString(result.errors)
+                    alert(errorString);
+                    return false;
+                }
+                else{
+                    PayTicket();
+                }
+            },
+            error: function (xhr, status)
+            {
+                alert("Failed to validate payment entity.");
+                return false;
+            }
+        });
+    }
+
+
+    // Pay Ticket.
+    function PayTicket()
+    {
+        var id = $("#ID").val();
+        $.ajax({
+            type: "POST",
+            url: '/QScale/_MakePayment',
+            cache: false,
+            data: $("#qscalefrm").serialize(), // serializes the form's elements.
+            success: function (data)
+            {
+                $('#qscalefrm').html(data);
+                var id = $("#ID").val()
+                //          alert('Ticket# ' + id + ' paid successfully.');
+                RefreshPannel();
+                // ExportAndPrintTicket(id);
+                NewTicket();
+            },
+            error: function (xhr, status)
+            {
+                alert("Failed to pay ticket.");
+            }
+        });
+    }
+
+
+    // Save Ticket.
+    function SaveTicket(callback)
+    {
+        $.ajax({
+            type: "POST",
+            url: '/QScale/Save',
+            cache: false,
+            data: $("#qscalefrm").serialize(), // serializes the form's elements.
+            success: function (data)
+            {
+                $('#qscalefrm').html(data);
+                var id = $("#ID").val()
+                //        alert('Ticket# ' + id + ' is saved successfully.' );
+                RefreshPannel();
+                RefreshContent("/QScale/Index/" + id)
+                ExpandItem(2);
+                // invoke the callback function here
+                if(callback != null)  {
+                    callback();
+                }
+            },
+            error: function (xhr, status)
+            {
+                alert("Failed to save entity.");
+            }
+        });
+    }
+
+    function ValidateAndSaveScaleEntity(callback)
+    {
+        $.ajax({
+            type: "POST",
+            url: '/QScale/Validate',
+            cache: false,
+            data: $("#qscalefrm").serialize(), // serializes the form's elements.
+            success: function (result)
+            {
+                if(!result.success) {
+                    var errorString =   GetValidationMessageString(result.errors)
+                    alert(errorString);
+                }
+                else{
+                    SaveTicket(callback);
+                }
+            },
+            error: function (xhr, status)
+            {
+                alert("Failed to validate entity.");
+                return false;
+            }
+        });
+    }
+
+
+    function GetValidationMessageString(errors){
+        var errorString;
+        for(var error in errors) {
+            if (errorString== null)
+                errorString = errors[error].Value[0];
+            else
+                errorString +=  "\n" + errors[error].Value[0];
+        }
+        return errorString;
+    }
+
+    // Delete Ticket.
+    function DeleteTicket()
+    {
+        var choice = confirm('Do you really want to delete?');
+        if (choice == true)
+        {
+            //   var id = ($("#Scale_Ticket_No").val());
+            var id = ($("#ID").val());
+            if (ValidateOnDeleteTicket(id)){
+                $.ajax({
+                    url: '/QScale/_Delete',
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    data: "{id: " + id + "}",
+                    success: function (data, result)
+                    {
+                        RefreshPannel();
+                        RefreshContent('/QScale/New')
+                        ExpandItem(2);
+                    }
+                });
+            }
+        }
+        return false;
+    }
+
+    function ValidateOnDeleteTicket(id){
+        if (id == 0){
+            alert("There is nothing to delete.");
+            return false;
+        }
+
+        var isSettled = $("#Ticket_Settled").val();
+        if (isSettled == 'True'){
+            alert("Can not delete paid ticket.");
+            return false;
+        }
+        return true;
+    }
+
+    function OnPartySearch_Click(e){
+        var partyCombobox = $('#IDParty').data('tComboBox');
+        var partyId = partyCombobox.value();
+        SetParty(partyId);
+    }
+
+    function SetParty(partyId)
+    {
+        if (partyId == null || partyId=='')
+            return ;
+        var nocache = new Date().getTime();
+        $.getJSON('@(Url.Action("_PartyById", "Party"))',{id: partyId, cache:nocache}, function(result) {
+            try {
+                if(result!=null)
+                {
+                    // Set Party TextBox
+                    $("#Party_ID_ID").val(partyId);
+                    $("#Party_ID_License_No").val(result.LicenseNo);
+                    $("#License_No").val(result.LicenseNo);
+                    $("#Party_ID_Party_Name").val( result.Name);
+                    var statecombobox = $('#State').data('tDropDownList');
+                    statecombobox.value(result.State);
+                    $("#PrimaryAddress_Address1").val(result.Address1);
+                    $("#PrimaryAddress_City").val(result.City);
+                    $("#PrimaryAddress_Country").val(result.Country);
+                    $("#PrimaryAddress_Zip_Code").val(result.Zip);
+                    $("#PrimaryAddress_Address_Type").val(result.AddressType);
+                    $("#Party_ID_Party_DOB").val(result.DOB);
+                    $("#Party_ID_ACLicense_ID").val(result.ACLicense_ID);
+                    
+                    $("#Vehicle_Plate_No").val(result.VehiclePlateNo);
+                    var makecombobox = $('#Make').data('tComboBox');
+                    makecombobox.value(result.Make); 
+                  
+                    GetLOVByParentType(result.Make,result.Model);                  
+
+                    // Set Party Photo
+                    SetPartyImages(partyId);
+
+                    $("#Vechile_Year").val(result.VehicleYear);
+                    var vehicleYearcombobox = $('#Vehicle_Year').data('tDropDownList');
+                    vehicleYearcombobox.value(result.VehicleYear);
+
+                    var colorcombobox = $('#Color').data('tDropDownList');
+                    colorcombobox.value(result.Color);
+                    //$("#Color").val(result.Color);                  
+                    
+                    var vehicleLicenseStatecombobox = $('#Plate_State').data('tDropDownList');
+                    vehicleLicenseStatecombobox.value(result.VehicleLicenseState);
+                }
+                else
+                {
+                    alert("Party not found for "+ partyId);
+                }
+            }
+            catch(err)
+            {
+                alert(err.Message);
+            }
+        });
+    }
+
+    function SetPartyImages(id){
+        if (id == null || id =='')
+            return
+        var scaleId =  eval('@Model.ID');
+        var postData = { scaleId: scaleId, partyId:id};
+        $.ajax({
+            url: '@(Url.Action("_SaveCustomerImages", "Utility"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+                if (data != null)
+                {
+                    RefreshDocumentGrid();
+                }
+            },
+            error: function (error)
+            {
+                alert("An error occured to get party photo.");
+            }
+        });
+    }    
+
+    function RefreshDocumentGrid(){
+        var tItemGrid = $('#Grid_QScale_Attachments').data('tGrid');
+        tItemGrid.rebind();
+    }
+    function onPartyChange(e)
+    {
+        var partyCombobox = $('#IDParty').data('tComboBox');
+        var licenseNo = partyCombobox.text();
+        var id = partyCombobox.value();
+
+        $("#Party_ID_ID").val(id);
+        $("#License_No").val(licenseNo);
+
+        if (licenseNo!='' &&  licenseNo!=0){
+            var nocache = new Date().getTime();
+            var url = '/Party/_PartySearchById?id=' + id + '&cache=' + nocache;
+            $.get(url, function (result)
+            {
+                var partyNameCombobox = $('#PartyName').data('tComboBox');
+                partyNameCombobox.value(result.Name);
+            });
+        }
+    }
+
+    function onPartyNameChange(e)
+    {
+        var partyCombobox = $('#PartyName').data('tComboBox');
+        var id = partyCombobox.value();
+
+        $("#Party_ID_ID").val(id);
+
+        if (id!='' &&  id!=0){
+            var nocache = new Date().getTime();
+            var url = '/Party/_PartySearchById?id=' + id + '&cache=' + nocache;
+            $.get(url, function (result)
+            {
+                var partyNameCombobox = $('#IDParty').data('tComboBox');
+                partyNameCombobox.text(result.LicenseNo);
+                partyNameCombobox.value(result.ID);
+
+            });
+        }
+    }
+
+    function setPartyName(id)
+    {
+        var url = '/Party/_PartyNameByID/' + id;
+        $.get(url, function (result)
+        {
+            $("#Party_ID_Party_Name").val(result);
+        });
+    }
+
+
+    function CloseTicket()
+    {
+        $("#Ticket_Status").val("Close");
+        ValidateAndSaveScaleEntity();
+    }
+
+</script>
+@* Attachment *@
+<script type="text/javascript">
+
+    function QScaleAttachment_Grid_onRowDataBound(e)
+    {
+        var grid = $("#Grid_QScale_Attachments").data('tGrid');
+        ShowAttchmentImage(e.row, grid);
+    }
+
+    function OpenItemAttachmentWindow(id)
+    {
+        openSearch("ScaleAttachments", "_ShowScaleItemAttachments", "?scaleDetailId=" + id + "&scaleId=" + eval(@Model.ID));
+    }
+
+</script>
+
+<script type="text/javascript">
+
+    function onMaterialChange(e)
+    {
+        if (e != null && e.value != 0 )
+        {
+            var scaleDetailId = $("#Scale_Details_ID").val();
+            if (scaleDetailId <= 0)
+                ClearItemFields();
+            var itemId = e.value;
+            GetItemPrice(itemId);
+        }
+    }
+
+    function GetItemPrice(itemId)
+    {
+        if (itemId>0){
+            var combobox = $('#PriceListDropDown').data('tDropDownList');
+            combobox.value(itemId);
+            priceListId= combobox.value();
+            //      var priceListId = $('#PriceList_ID').val();
+            if (priceListId>0){
+                var postData = { priceListID: priceListId.toString(),itemID: itemId.toString()};
+                $.ajax({
+                    url: '@(Url.Action("_GetItemPriceByPriceIdAndItemId", "PriceListItem"))',
+                    type: "GET",
+                    dataType: "json",
+                    data: postData,
+                    cache: false,
+                    success: function (data)
+                    {
+                        if (data != null)
+                        {
+                            var price = data.Price;
+                            price = parseFloat(price).toFixed(2)
+                            $("#Item_Price").data("tTextBox").value(price);
+                        }
+                    },
+                    error: function ()
+                    {
+                        alert('An error occured due to get price.')
+                    }
+                });
+            }
+        }
+    }
+
+    function OnClick_ApplyBalance(e)
+    {
+        var totalNetWeight = $("#Net_Weight").val();
+        var truckGW = $("#Gross_Weight").val();
+        //if (truckGW > 0 && truckGW == totalNetWeight)
+        //    totalNetWeight = 0;
+
+        var itemGW = truckGW - totalNetWeight;
+        if(itemGW > 0)
+        {
+            itemGW = parseFloat(itemGW).toFixed(2)
+            $("#Item_GW").data("tTextBox").value(itemGW);
+        }
+        OnItemWeight_Change();
+    }
+
+    function ClearItemFields()
+    {
+        $("#Scale_Details_ID").val(0);
+        $("#Item_GW").data("tTextBox").value(0.00);
+        $("#Item_TW").data("tTextBox").value(0.00);
+        $("#Item_Price").data("tTextBox").value(0.00);
+        $("#Item_NW").data("tTextBox").value(0.00);
+        $("#Item_Amt").data("tTextBox").value(0.00);
+        $("#Item_Adjestment").data("tTextBox").value(0.00);
+        $("#Notes").val("");
+    }
+
+    function SelectMaterial(itemId)
+    {
+        var combobox = $('#Material').data('tDropDownList');
+        combobox.value(itemId);
+        //    if (combobox != null)
+        //    {
+        //      var selectItem = function (item)
+        //      {
+        //        //dataItem argument is a ComboBox data item.
+        //        return item.Text == " -- Select Value ---";
+        //      }
+        //      combobox.select(selectItem);
+        //    }
+    }
+
+    function ValidateAndSaveScaleDetailEntity(e)
+    {
+        var material = $('#Material').data('tDropDownList');
+        var material_value = material.value();
+        var material_ShortName = material.text();
+        var postData = {
+            ID: $("#Scale_Details_ID").val(),
+            GrossWeight: $("#Item_GW").val(),
+            TareWeight: $("#Item_TW").val(),
+            Contamination_Weight:$("#Item_Adjestment").val(),
+            NetWeight: $("#Item_NW").val(),
+            Amount: $("#Item_Amt").val(),
+            Split_Value: 100,
+            Rate: $("#Item_Price").val(),
+            Amount: $("#Item_Amt").val(),
+            Scale: { ID: $("#ID").val() },
+            Item_Received: { ID: material_value, Short_Name: material_ShortName },
+            Apply_To_Item: { ID: material_value, Short_Name: material_ShortName },
+            Notes: $("#Notes").val(),
+        };
+        var jsonSerialized = JSON.stringify(postData);
+
+        $.ajax({
+            type: "POST",
+            url: '/QScaleDetails/Validate',
+            dataType: "json",
+            traditional: true,
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            data: jsonSerialized, // serializes the form's elements.
+            success: function (result)
+            {
+                if (!result.success)
+                {
+                    var errorString = GetValidationMessageString(result.errors)
+                    alert(errorString);
+                    return false;
+                }
+                else
+                {
+                    Add_Update_Material(jsonSerialized);
+                }
+            },
+            error: function (xhr, status)
+            {
+                alert("Failed to validate scale detail entity.");
+                return false;
+            }
+        });
+    }
+
+    function Add_Update_Material(jsonSerialized)
+    {
+        var isNew = true;
+        if ($("#ID").val() > 0)
+            isNew = false;
+
+        $.ajax({
+            url: "/QScaleDetails/_InsertUpdate/?isNew=" + isNew,
+            type: "POST",
+            dataType: "json",
+            traditional: true,
+            cache: false,
+            contentType: "application/json; charset=utf-8",
+            data: jsonSerialized,
+            success: function (data)
+            {
+                if (data != null)
+                {
+                    var tGrid = $('#Grid_ScaleDetails').data('tGrid');
+                    tGrid.rebind();
+                    SelectMaterial(0);
+                    ClearItemFields();
+                }
+            },
+            error: function (xhr, status)
+            {
+                alert('An error occured due to add/update material.')
+            }
+        });
+    }
+
+
+    function Delete_Material(e)
+    {
+        var ID = $("#Scale_Details_ID").val()
+        if (ValidateOnDeleteItem(ID)){
+            var postData = null;
+            var isNew = true;
+            if ($("#ID").val() > 0)
+                isNew = false;
+            $.ajax({
+                url: "/QScaleDetails/_Delete/?ID=" + ID + "&isNew=" + isNew,
+                type: "POST",
+                dataType: "json",
+                traditional: true,
+                contentType: "application/json; charset=utf-8",
+                data: postData,
+                cache: false,
+                success: function (data)
+                {
+                    if (data != null)
+                    {
+                        var tGrid = $('#Grid_ScaleDetails').data('tGrid');
+                        tGrid.rebind();
+                        ClearItemFields();
+                        SelectMaterial(0);
+                        setTotal($("#ID").val());
+                    }
+                },
+                error: function ()
+                {
+                    alert('An error occured due to delete material.')
+                }
+            });
+        }
+    }
+
+    function ValidateOnDeleteItem(id){
+        var isSettled = $("#Ticket_Settled").val();
+        if (isSettled == 'True'){
+            alert("Can not delete paid item.");
+            return false;
+        }
+        return true;
+    }
+
+    function OnItemWeight_Change(e)
+    {
+        var sum = 0;
+
+        var grossWeight = $("#Item_GW").val();
+        var tareWeight = $("#Item_TW").val();
+        var diffNetWeight = $("#Item_Adjestment").val();
+        var price = $("#Item_Price").val();
+
+        //add only if the value is number
+        if (!isNaN(grossWeight) && grossWeight.length != 0)
+        {
+            sum += parseFloat(grossWeight);
+        }
+
+        //add only if the value is number
+        if (!isNaN(tareWeight) && tareWeight.length != 0)
+        {
+            sum -= parseFloat(tareWeight);
+        }
+
+        //add only if the value is number
+        if (!isNaN(diffNetWeight) && diffNetWeight.length != 0)
+        {
+            sum -= parseFloat(diffNetWeight);
+        }
+
+        sum = sum.toFixed(2);
+        $("#Item_NW").data("tTextBox").value(sum);
+
+        var amount = 0;
+        //add only if the value is number
+        if (!isNaN(price) && price.length != 0)
+        {
+            amount = price * sum;
+        }
+        amount = amount.toFixed(2);
+        $("#Item_Amt").data("tTextBox").value(amount);
+    }
+
+
+
+</script>
+<script type="text/javascript" language="javascript">
+
+    function On_RowSelect_Scale_Details(e)
+    {
+        var grid = $(this).data('tGrid');
+        var dataItem = grid.dataItem(e.row);
+        if (dataItem != null)
+        {
+            $("#Scale_Details_ID").val(dataItem.ID);
+            $("#Item_GW").data("tTextBox").value(dataItem.GrossWeight);
+            $("#Item_TW").data("tTextBox").value(dataItem.TareWeight);
+            $("#Item_Adjestment").data("tTextBox").value(dataItem.Contamination_Weight);
+            $("#Item_NW").data("tTextBox").value(dataItem.NetWeight);
+            $("#Item_Price").data("tTextBox").value(dataItem.Rate);
+            $("#Item_Amt").data("tTextBox").value(dataItem.Amount);
+            $("#Item_Received_ID").val(dataItem.Item_Received.ID);
+            $("#Apply_To_Item_ID").val(dataItem.Apply_To_Item.ID);
+            $("#Notes").val(dataItem.Notes);
+
+            SelectMaterial(dataItem.Item_Received.ID)
+        }
+    }
+
+    function On_RowDataBound_Scale_Details(e)
+    {
+        setTotal(e.dataItem.Scale.ID);
+    }
+
+    function setTotal(scaleId)
+    {
+        var total = 0;
+        var postData = { id: scaleId.toString() };
+        $.ajax({
+            url: '@(Url.Action("_GetTotal", "QScaleDetails"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+                if (data != null)
+                {
+                    $("#Net_Weight").data("tTextBox").value(parseFloat(data.NW));
+                    $("#Item_Amount").data("tTextBox").value(parseFloat(data.Amt));
+                }
+            },
+            error: function ()
+            {
+                alert('An error occured due to get total item net weight and amount.')
+            }
+        });
+    }
+
+
+</script>
+
+<script type="text/javascript" language="javascript">
+
+    function Refresh_IDScannerGrid()
+    {
+        // Refresh ID Scanner grid.
+        var tItemGrid = $('#Grid_QScale_Attachments').data('tGrid');
+        tItemGrid.rebind();
+    }
+
+    function SetLicenceDetails(data)
+    {
+        $("#License_No").val(data.CustomerLicenceID);
+        $("#Party_ID_License_No").val(data.CustomerLicenceID);
+        $("#Party_ID_ID").val(data.CustomerID);
+        $("#Party_ID_Party_Name").val(data.CustomerName);
+        $("#Party_ID_LicenseImageRefId").val(data.LicenseImageRefId);
+        $("#Party_ID_Party_DOB").val(data.Party_DOB);
+        $("#Party_ID_ACLicense_ID").val(data.ACLicense_ID);
+
+        var combobox = $('#IDParty').data('tComboBox');
+        if (combobox != null)
+        {
+            if (data.CustomerID > 0)
+            {
+                var selectItem = function (dataItem)
+                {
+                    //dataItem argument is a ComboBox data item.
+                    return dataItem.Text == data.CustomerLicenceID;
+                }
+                combobox.select(selectItem);
+            }
+            else
+                combobox.text(data.CustomerLicenceID);
+        }
+        var statecombobox = $('#State').data('tDropDownList');
+        statecombobox.value(data.State);
+    }
+
+    function OnPartyBtnClick(e)
+    {
+        var combobox = $('#IDParty').data('tComboBox');
+        if (combobox != null)
+        {
+            var selectItem = function (dataItem)
+            {
+                //dataItem argument is a ComboBox data item.
+                return dataItem.Text == e.License_No;
+            }
+            combobox.select(selectItem);
+            //        combobox.trigger('OnChange');
+        }
+    }
+
+    function ScanDrivingLicenceID()
+    {
+        var customerID = 0
+        var customerLicenceID = "";
+        var customerName = "";
+        var postData = { id: $("#ID").val(), state: $("#State").val() };
+        $('#scanspinner').show();
+        $.ajax({
+            url: '@(Url.Action("_ScanDrivingLicenceID", "Scanner"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            complete: function ()
+            {
+                $('#scanspinner').hide();
+            },
+            success: function (data)
+            {
+                if (data != null)
+                {
+                    SetLicenceDetails(data);
+                    Refresh_IDScannerGrid();
+                }
+            },
+            error: function ()
+            {
+                alert('Please place the license ID on the scanner.')
+            }
+        });
+    }
+
+    function SavePartyDrivingLicenceID()
+    {
+        var customerID = 0
+        var customerLicenceID = "";
+        var customerName = "";
+        var postData = { scaleId: $("#ID").val(), licenseImageRefId: $("#Party_ID_LicenseImageRefId").val() };
+        $.ajax({
+            url: '@(Url.Action("_SavePartyLicenceID", "Scanner"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+                if (data != null && data.Success == true)
+                {
+                    Refresh_IDScannerGrid();
+                }
+            },
+            error: function ()
+            {
+                alert('Error occured to save party license id.')
+            }
+        });
+    }
+
+
+
+</script>
+
+<script type="text/javascript">
+
+    //In the Browser Toolbar:
+    //Tools -> Internet Options -> choose the Security tab
+    //Click the Custom Level button
+    //Enable the following settings:
+    //Run ActiveX controls and plug-ins
+    //Initialize and script ActiveX control not marked as safe.
+    function ExecuteUtils() {
+        try {
+            var cmdline= '@ViewBag.UtilitiesPath';
+            var params =eval('@Model.ID')
+            if (params<=0){
+                alert ("Please save the ticket before you run utilities.");
+                return ;
+                //SaveTicket();
+                @*var params =eval('@Model.ID')*@
+            }
+            var fso = new ActiveXObject("Scripting.FileSystemObject");
+            fileExist = fso.FileExists(cmdline);
+            if (!fileExist) {
+                alert("The requested application is not installed.");
+            }
+            else {
+                var shell = new ActiveXObject("WScript.Shell");
+                if (params) {
+                    params = ' ' + params;
+                }
+                else {
+                    params = '';
+                }
+                shell.Run('"' + cmdline + '"' + params);
+            }
+        }
+        catch(err)
+        {
+            alert(err.Message);
+        }
+    }
+
+</script>
+
+@* Printing Being*@
+<script type="text/javascript" language="javascript">
+
+    // Export Ticket to PDF And Print.
+    function ExportAndPrintTicket(scaleId)
+    {
+        var postData = { id: scaleId.toString() };
+        $.ajax({
+            url: '@(Url.Action("_ExportTicketToPDF", "QScale"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+                if (data != null)
+                {
+                    $.each(data, function (key, val)
+                    {
+                        if (val != '')
+                        {
+                            var root = '@Url.Content("~/")';
+                            var baseUrl = root + "Print.aspx?ID=" + scaleId;
+                            var printWindow = window.open(baseUrl);
+                            // RunEXE(val);
+                        }
+                        else
+                            alert("PrintTicekt.bat file not found.");
+                    });
+                }
+            },
+            error: function ()
+            {
+                alert("Error occured to print ticket.");
+            }
+        });
+    }
+
+    function PrintTicket()
+    {
+        //alert("Under construction");
+        var id = $("#ID").val();
+        var paid = $("#Ticket_Settled").val();
+        if ('0' == id)
+            alert('There is nothing to print.');
+        else if (paid == 'False')
+            alert('Can not print unpaid ticket.');
+        else
+            ExportAndPrintTicket(id);
+    }
+
+    function RunEXE(path)
+    {
+        var oShell = new ActiveXObject("WScript.Shell");
+        var prog = path; // 'D:\\Test Projects\\PrintToPDF\\PrintToPDF\\bin\\Debug\\PrintToPDF.exe';
+        oShell.Run('"' + prog + '"');
+    }
+
+</script>
+@* Printing End*@
+
+@* Camera Begin*@
+@*<script type="text/javascript" language="javascript">
+
+        function On_CameraClose(){
+            RefreshDocumentGrid();
+        }
+
+        function closeCamera() {
+            var window = $("#OpenCamera").data("tWindow");
+            window.close();
+        }
+
+        function ShowCamera() {
+            var params = "?cameraInitiator=1&id=" + '@Model.ID';
+            openWindow("#OpenCamera", "Camera","_OpenCamera",params);
+            //var window = $("#OpenCamera").data("tWindow");
+            //$("#OpenCamera").slideUp();
+            //window.center().open();
+        }
+
+    </script>*@
+@* Camera End*@
+
+@* ThumbScanner Begin*@
+@*<script type="text/javascript" language="javascript">
+        function On_ThumbScannerClose(){
+            RefreshDocumentGrid();
+        }
+
+        function closeThumbScanner() {
+            var window = $("#ThumbScannerWindow").data("tWindow");
+            window.close();
+        }
+
+        function  openThumbScanner(){
+            var params = "?id=" + '@Model.ID';
+            openWindow("#ThumbScannerWindow", "ThumbScanner","_Scan",params);
+        }
+
+        //function refreshThumbScanner(){
+        //    openThumbScanner();
+        //    //closeThumbScanner();
+        //}
+
+        function RefreshDocumentGrid(){
+            var tItemGrid = $('#Grid_QScale_Attachments').data('tGrid');
+            tItemGrid.rebind();
+        }
+    </script>*@
+@* ThumbScanner End*@
+
+
+@*<div id="divOpenCamera">
+        @(Html.Telerik().Window().Name("OpenCamera").Buttons(buttons => buttons.Close()).Visible(false).ClientEvents(e => e.OnClose("On_CameraClose"))
+                        .LoadContentFrom((string)ViewBag.CameraAction, (string)ViewBag.CameraController, new
+                        {
+                            cameraInitiator = EnumCameraInitiator.Scale,
+                            Id = @Model.ID
+                        }).Width(620).Height(350)
+        )
+    </div>
+    <div id="divOpenThumbScanner">
+        @(Html.Telerik().Window().Name("ThumbScannerWindow").Buttons(buttons => buttons.Close()).Visible(false).ClientEvents(e => e.OnClose("On_ThumbScannerClose"))
+                                .LoadContentFrom((string)ViewBag.ThumbScannerAction, (string)ViewBag.ThumbScannerController, new
+                        {
+                            id = @Model.ID
+                        }).Width(500).Height(330)
+        )
+    </div>*@
+
+<div id="ScaleDetailValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+</div>
+
+<div id="scanspinner">
+    Scanning...
+</div>
+
+@using (Html.BeginForm("Save", "QScale", FormMethod.Post, new
+{
+    ID = "qscalefrm"
+}))
+{
+    <table>
+        <tr>
+            <td valign="top" style="width:800px;">
+                @(Html.Telerik().TabStrip()
+    .Name("Scale_TabStrip")
+    .Items(items =>
+    {
+        @* =======Ticket Begin================ *@
+        items.Add()
+            .Text("Ticket")
+            .Enabled(true)
+            .Selected(true)
+            .Content(@<text>
+                <div style="height: 470px; width:100%; padding: 0px; border-top-color: transparent; border-left-color: transparent; ">
+                    <table style=" border:none; padding: 0px;">
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Scale_Ticket_No)
+                            </td>
+                            <td>
+                                @*@Html.TextBoxFor(m => m.Scale_Ticket_No, new {@readonly = "readonly", @class = "keyboardInput"*@
+                                @Html.TextBoxFor(m => m.Scale_Ticket_No, new { @readonly = "readonly" })
+                                @Html.HiddenFor(m => m.ID)
+                                @Html.HiddenFor(m => m.Container_No.ID)
+                                @Html.HiddenFor(m => m.Booking.ID)
+                                @Html.HiddenFor(m => m.Brokerage_Party.ID)
+                                @Html.HiddenFor(m => m.Brokerage_Purchase_Order.ID)
+                                @Html.HiddenFor(m => m.Local_Sales_AND_Trading_Party.ID)
+                                @Html.HiddenFor(m => m.Ticket_Status)
+                                @Html.HiddenFor(m => m.QScale)
+                                @Html.HiddenFor(m => m.Ticket_Settled)
+                                @Html.HiddenFor(m => m.License_No)
+                                @*  @Html.HiddenFor(m => m.Net_Weight)*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Price List")
+                            </td>
+                            <td>
+                                @Html.HiddenFor(o => o.PriceList.ID)
+                                @(Html.Telerik().DropDownList().Name("PriceListDropDown").BindTo(QScaleHelper.PriceList("")).ClientEvents(events => events.OnChange("onPriceListChange").OnLoad("OnPriceList_Load")).HtmlAttributes(new
+                                                    {
+                                                        style = "width:210px;line-height:30px; height:30px;vertical-align:middle;display: table-cell;vertical-align:middle;display: table-cell;"
+                                                    }))
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Ticket Status")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Ticket_Status, new { @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Ticket Paid Y/N")
+                            </td>
+                            <td>
+                                @Html.CheckBoxFor(m => m.Payment, new { @disabled = "true" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Created By")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Created_By, new { @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Created Date")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Created_Date, new { @readonly = "readonly" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Created from Device")
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Unique_ID, new { @readonly = "readonly" })
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </text>);
+                    @* =======Ticket End================ *@
+
+                    @* =======Material Begin================ *@
+        items.Add()
+            .Text("Material")
+            .Enabled(true)
+            .Content(@<text>
+                <div style="height: 470px; width:100%; padding: 0px; border-top-color: transparent; border-left-color: transparent; ">
+
+                    <table cellpadding="0" cellspacing="0" style="padding: 0px 0px 0px 0px; border-collapse: separate;">
+                        <tr>
+                            <td>
+                                <table style=" border:none; padding: 0px;">
+                                    <tr>
+                                        @*<td style="background-color: Red; color: White;">*@
+                                        <td class="CaptionStyle">
+                                            @Html.Label("Truck_Weight_Gross", "Truck G.W.")
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBoxFor(m => m.Gross_Weight).Name("Gross_Weight").Spinners(false).MinValue(0).InputHtmlAttributes(new
+                                {
+                                    style = "width:200px;height:30px;"
+                                })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="CaptionStyle">
+                                            @Html.Label("Material")
+                                            @Html.Hidden("Scale_Details_ID", 0)
+                                        </td>
+                                        <td>
+                                            @(Html.Telerik().DropDownList().Name("Material").BindTo(ItemHelper.ItemList("")).ClientEvents(events => events.OnChange("onMaterialChange")).HtmlAttributes(new
+                                {
+                                    style = "width:210px;line-height:30px; height:30px;vertical-align:middle;display: table-cell;vertical-align:middle;display: table-cell;"
+                                })
+                                            )
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @*background-color: #6F8BA1*@
+                                            @Html.AuthorizedButton("Gross", "Gross", "button", new
+                                {
+                                    onclick = "",
+                                    @class = "t-button",
+                                    @style = "height:37px;width:80px;)"
+                                })
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_GW").Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("OnItemWeight_Change")).InputHtmlAttributes(new
+                                {
+                                    style = "width:110px; float:left"
+                                })
+                                            @* @Html.AuthorizedButton("ApplyBalance", "Apply Balance", "button", new {onclick = "OnClick_ApplyBalance()", @class = "t-button", @style = "height:50px;width:95px;"})*@
+                                            @Html.AuthorizedButton("ApplyBalance", "Apply Bal.", "button", new
+                                {
+                                    onclick = "OnClick_ApplyBalance()",
+                                    @class = "t-button",
+                                    @style = "float:right; white-space: normal;height:37px;width:80px;)"
+                                })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @Html.AuthorizedButton("Tare", "Tare", "button", new
+                                {
+                                    onclick = "",
+                                    @class = "t-button",
+                                    @style = "height:37px;width:80px;)"
+                                })
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_TW").Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("OnItemWeight_Change")).InputHtmlAttributes(new
+                                {
+                                    style = "width:190px;"
+                                })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="CaptionStyle">
+                                            @Html.Label("Adjustment")
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_Adjestment").Spinners(false).ClientEvents(events => events.OnChange("OnItemWeight_Change")).InputHtmlAttributes(new
+                                {
+                                    style = "width:190px;"
+                                })
+                                            <br />
+                                            @*   @(Html.Telerik().Slider<int>()
+                                                .Name("GreenSlider")
+                                                .Max(255)
+                                                .Value(0)
+                                                .TickPlacement(SliderTickPlacement.Both)
+                                                .ShowButtons(true)
+                                                .ClientEvents(events => events.OnSlide("onSliderEvent").OnChange("onSliderEvent")))
+                                            *@
+                                        </td>
+                                    </tr>
+                                    @*<tr>
+                                            <td class="CaptionStyle">
+                                                @Html.Label("Notes")
+                                            </td>
+                                            <td style="width: 190px;">
+                                                @Html.TextBox("Notes", "", new
+                                                {
+                                                style = "width:190px"
+                                                })
+                                            </td>
+                                        </tr>*@
+                                    <tr>
+                                        <td class="CaptionStyle">
+                                            @Html.AuthorizedLabelFor(m => m.Net_Weight)
+                                        </td>
+
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_NW").Spinners(false).MinValue(0).Value(0).InputHtmlAttributes(new
+                                {
+                                    style = "width:190px;height:20px;"
+                                }).Enable(true)
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="CaptionStyle">
+                                            @Html.Label("Price")
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_Price").Spinners(false).MinValue(0).DecimalDigits(4).ClientEvents(events => events.OnChange("OnItemWeight_Change")).InputHtmlAttributes(new
+                                {
+                                    style = "width:190px;"
+                                })
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="CaptionStyle">
+                                            @Html.AuthorizedLabelFor(m => m.Item_Amount, "Amount")
+                                        </td>
+                                        <td>
+                                            @Html.Telerik().NumericTextBox().Name("Item_Amt").Spinners(false).MinValue(0).InputHtmlAttributes(new
+                                {
+                                    style = "width:190px;height:20px;"
+                                }).Value(0).Enable(false)
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td style=" border:none; padding: 0px; vertical-align:top;">
+                                <table style=" border:none; padding: 0px; vertical-align:top;">
+                                    <tr>
+                                        <td colspan="2" align="right">
+                                            @Html.AuthorizedButton("Add", "Add/Update Material", "button", new
+                                {
+                                    onclick = "ValidateAndSaveScaleDetailEntity()",
+                                    @class = "t-button",
+                                    @style = "height:50px;width:92px; white-space:normal;"
+                                })
+                                            @Html.AuthorizedButton("Delete", "Delete Material", "button", new
+                                {
+                                    onclick = "Delete_Material()",
+                                    @class = "t-button",
+                                    @style = "height:50px;width:92px; white-space:normal;)"
+                                })
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </text>);
+                    @* =======Material End================ *@
+
+                    @* =======Customer Begin================ *@
+        items.Add()
+            .Text("Customer")
+            .Enabled(true)
+            .Selected(false)
+            .Content(@<text>
+                <div style="height: 470px; width: 100%; padding: 0px; border-top-color: transparent; border-left-color: transparent; ">
+                    <table>
+                        <tr>
+                            @*<td class="CaptionStyle">
+                                    @Html.Label("Customer DL ID")
+                                </td>*@
+                            <td valign="top" class="CaptionStyle" style="padding:0px; border-top-color:transparent; border-left-color:transparent; ">
+
+                                @*@Html.LookupHtml(m => m.Party_ID, "PartyLookup", "ID", "Party_Name", "_PartyByType", "Party", new { partytype = "Individual" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "License_No","State" }, "OnPartyBtnClick", false)*@
+                                @Html.Label("Customer DL ID")
+
+                            </td>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedEditorFor(m => m.Party_ID.License_No)
+                            </td>
+                            <td>
+                                @(Html.Telerik().ComboBoxFor(m => m.Party_ID.ID).Name("IDParty").BindTo(PartyHelper.IndividualPartyList(Model.Party_ID)).ClientEvents(events => events.OnChange("onPartyChange")).HtmlAttributes(new
+                                                        {
+                                                            @class = "telerikControlWidth"
+                                                        }).Filterable(filtering =>
+                                                        {
+                                                            filtering.FilterMode(AutoCompleteFilterMode.Contains);
+                                                        })
+                                                               .HighlightFirstMatch(true)
+                                )
+                                @Html.HiddenFor(m => m.Party_ID.ID)
+                                @Html.HiddenFor(m => m.Party_ID.License_No)
+                                @Html.HiddenFor(m => m.Party_ID.LicenseImageRefId)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Party_ID.Party_Name, "Customer Name")
+                            </td>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedEditorFor(m => m.Party_ID.Party_Name)
+                            </td>
+                            <td>
+                                @(Html.Telerik().ComboBoxFor(m => m.Party_ID.Party_Name).Name("PartyName").BindTo(PartyHelper.PartyList(Model.Party_Name)).ClientEvents(events => events.OnChange("onPartyNameChange")).HtmlAttributes(new
+                                                        {
+                                                            @class = "telerikControlWidth"
+                                                        }).Filterable(filtering =>
+                                                        {
+                                                            filtering.FilterMode(AutoCompleteFilterMode.Contains);
+                                                        })
+                                                               .HighlightFirstMatch(true)
+                                )
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Address1")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.PrimaryAddress.Address1)
+                            </td>
+                            <td>
+                                @Html.AuthorizedButton("btnSearchParty", "Search", "button", new
+                                {
+                                    onclick = "OnPartySearch_Click()",
+                                    @class = "t-button",
+                                    @style = "height:37px;width:200px;)"
+                                })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("City")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.PrimaryAddress.City)
+                            </td>
+                            <td>
+                                @Html.AuthorizedButton("btnUtility", "Utility ", "button", new
+                                {
+
+                                    onclick = "ExecuteUtils()",
+                                    @class = "t-button",
+                                    @style = "height:37px;width:200px;)"
+                                })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.State)
+                            </td>
+                            <td>
+                                @*@(Html.Telerik().ComboBoxFor(m => m.Make).Name("Model").BindTo(QScaleHelper.Model("")).ClientEvents(events => events.OnChange("onModelChange")).HtmlAttributes(new { @class = "telerikControlWidth" }))*@
+                                @Html.AuthorizedEditorFor(m => m.State, new
+                                                       {
+                                                           LovType = "State",
+                                                           selectedItem = "TX",
+                                                           Style = "width:210px;height:30px;line-height:30px;vertical-align:middle;display: table-cell;"
+                                                       })
+                            </td>
+
+
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Country")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.PrimaryAddress.Country)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Zip")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.PrimaryAddress.Zip_Code)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Address Type")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.PrimaryAddress.Address_Type, new { LovType = "ADDRESS_TYPE" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("Date of Birth")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.Party_ID.Party_DOB)
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.Label("AC License ID")
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.Party_ID.ACLicense_ID)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </text>);
+                    @* =======Customer End================ *@
+
+                    @* =======Vehicle Begin================ *@
+        items.Add()
+            .Text("Vehicle")
+            .Enabled(true)
+            .Selected(false)
+            .Content(@<text>
+                <div style="height: 470px; width: 100%; padding: 0px; border-top-color: transparent; border-left-color: transparent; ">
+                    <table>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Vehicle_Plate_No, new
+                               {
+                                   @style = "height:40px;"
+                               })
+                            </td>
+                            <td>
+                                @Html.TextBoxFor(m => m.Vehicle_Plate_No, new { @LetterCase = "AllCap" })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Make)
+                            </td>
+                            <td>
+                                @(Html.Telerik().ComboBoxFor(m => m.Make).Name("Make").BindTo(LOVHelper.LOVList("Make", "", "")).ClientEvents(events => events.OnChange("OnMake_Change")).HtmlAttributes(new
+                            {
+                                @class = "telerikControlWidth"
+                            }).Filterable(filtering =>
+                            {
+                                filtering.FilterMode(AutoCompleteFilterMode.Contains);
+                            }).HighlightFirstMatch(true)
+                                )
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Model)
+                            </td>
+                            <td>
+                                @(Html.Telerik().ComboBoxFor(m => m.Model).Name("Model").BindTo(LOVHelper.LOVList("Model", "", @Model.Make)).HtmlAttributes(new
+                            {
+                                @class = "telerikControlWidth"
+                            }).Filterable(filtering =>
+                            {
+                                filtering.FilterMode(AutoCompleteFilterMode.Contains);
+                            }).HighlightFirstMatch(true)
+                                )
+                                @*   @(Html.Telerik().DropDownListFor(m => m.Model).Name("Model").BindTo(LOVHelper.LOVList("Model","","")).ClientEvents(events => events.OnChange("onModelChange")).HtmlAttributes(new { @class = "telerikControlWidth" }))*@
+                                @*  @Html.AuthorizedEditorFor(m => m.Model, new {
+                                        LovType = "Model", ParentValue = @Model.Make, OnChange = "OnModel_Change", Style = "width:200px;height:30px;line-height:30px;vertical-align:middle;display: table-cell;"
+                                    })*@
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Plate_State)
+                            </td>
+                            <td>
+                                @Html.AuthorizedEditorFor(m => m.Plate_State, new
+                           {
+                               LovType = "State",
+                               selectedItem = "Texas",
+                               Style = "width:210px;height:30px;line-height:30px;vertical-align:middle;display: table-cell;"
+                           })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Color)
+                            </td>
+                            <td>
+                                @*@(Html.Telerik().ComboBoxFor(m => m.Color).Name("Color").BindTo(QScaleHelper.Color("")).ClientEvents(events => events.OnChange("onColorChange")).HtmlAttributes(new { @class = "telerikControlWidth" }))*@
+                                @Html.AuthorizedEditorFor(m => m.Color, new
+                           {
+                               LovType = "Color",
+                               Style = "width:210px;height:30px;line-height:30px;vertical-align:middle;display: table-cell;"
+                           })
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="CaptionStyle">
+                                @Html.AuthorizedLabelFor(m => m.Vehicle_Year)
+                            </td>
+                            <td>                        
+                                @Html.AuthorizedEditorFor(m => m.Vehicle_Year, new {
+                               LovType = "Vehicle_Year",
+                               Style = "width:210px;height:30px;line-height:30px;vertical-align:middle;display: table-cell;"
+                           })
+                            </td>
+                        </tr>
+
+                    </table>
+                </div>
+            </text>);
+                    @* =======Vehicle Begin================ *@
+
+                    @* =======Documents Begin================ *@
+        items.Add()
+              .Text("Documents")
+              .Enabled(true)
+              .Content(Html.Telerik().Grid<ScaleAttachments>()
+                                      .Columns(columns =>
+                                      {
+                                          columns.Bound("Image").Width(250).ClientTemplate("<img alt='<#= Image #>' width='200' height='100' src='<#= Image #>' />");
+                                          columns.Bound("ID").Hidden();
+                                          columns.Bound("Ref_Type").ClientTemplate("<#= Ref_Type==1 ? 'Material' : Ref_Type==3 ? 'Signature' : Ref_Type==4 ? 'Thumb': Ref_Type==5 ? 'Customer': Ref_Type==7 ? 'Vehicle' : Ref_Type==10 ? 'Driver License' : Ref_Type==11 ? 'Cash Card': 'General' #>").Title("Image Type");
+                                      })
+                                       .BuildGrid(
+                                           gridName: "Grid_QScale_Attachments",
+                                           ajaxController: "ScaleAttachments",
+                                           indexID: Model.ID.ToString(),
+                                           hiddenColumns: new string[] { "ID", "Document_Title", "Document_Name", "Document_Type", "Document_Size", "Updated_By", "Last_Updated_Date", "Image" },
+                                           allowEdit: false,
+                                           allowInsert: true,
+                                           allowDelete: true,
+                                           feature: smART.Common.EnumFeatures.Transaction_ScaleAttachment
+                                       )
+                        .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("QScaleAttachment_Grid_onRowDataBound"))
+                        .ToHtmlString()
+                      );
+
+                    @* =======Documents End================ *@
+                    @* =======Thumb Ipression Begin================ *@
+        //items.Add()
+        //   .Text("Thumb Ipression")
+        //   .Enabled(true)
+        //   .Content(Html.Telerik().Grid<ScaleAttachments>()
+        //                           .Columns(columns =>
+        //                           {
+        //                               columns.Bound("Image").Width(250).ClientTemplate("<img alt='<#= Image #>' width='250' height='100' src='<#= Image #>' />");
+        //                           })
+        //                            .BuildGrid(
+        //                                gridName: "Grid_QScale_Attachments",
+        //                                ajaxController: "ScaleAttachments",
+        //                                indexID: Model.ID.ToString(),
+        //                                hiddenColumns: new string[] { "ID", "Document_Title", "Document_Name", "Document_Type", "Document_Size", "Updated_By", "Last_Updated_Date", "Image" },
+        //                                allowEdit: false,
+        //                                allowInsert: true,
+        //                                allowDelete: true,
+        //                                feature: smART.Common.EnumFeatures.Transaction_ScaleAttachment
+        //                            )
+        //             .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("QScaleAttachment_Grid_onRowDataBound"))
+        //             .ToHtmlString()
+        //           );
+
+        @* =======Thumb Ipression End================ *@
+    })
+                )
+
+            </td>
+
+            @* =======Right Begin================ *@
+            <td valign="top" style="width:300px; float:right; height: 100%;  border-top-right-radius: 15px; border-bottom-right-radius: 15px;">
+                <table>
+                    <tr>
+                        <td style="width: 100%; border-top-right-radius: 15px; border-bottom-right-radius: 15px;border-top-left-radius: 15px; border-bottom-left-radius: 15px; background-color: Blue;color: Black;">
+                            <table width="100%">
+                                <tr>
+                                    <td style="color: White">
+                                        @Html.Label("Total Net Weight:")
+                                    </td>
+                                    <td align="right">
+                                        @Html.Telerik().NumericTextBoxFor(m => m.Net_Weight).Name("Net_Weight").Spinners(false).MinValue(0).InputHtmlAttributes(new
+               {
+                   style = "width:100px;background-color: transparent;color: White; text-align: right; border-color:transparent;",
+                   @readonly = "readonly"
+               })
+                                        @Html.Hidden("Net_Weight")
+                                    </td>
+                                </tr>
+                                <tr style="color: White; font: bold 16px arial;">
+                                    <td>
+                                        @Html.Label("Total Amount:")
+                                    </td>
+                                    <td align="right">
+                                        $@Html.Telerik().NumericTextBoxFor(m => m.Item_Amount).Name("Item_Amount").Spinners(false).MinValue(0).InputHtmlAttributes(new
+               {
+                   @style = "width:100px;background-color: transparent;color: White; text-align: right; border-color:transparent;",
+                   @readonly = "readonly"
+               })
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @(Html.Telerik().Grid<ScaleDetails>()
+                                .ClientRowTemplate(grid => "<div>" + "<hr style='margin-bottom:0px;padding:0px;'/>" + "<dl>"
+                                 + "<dt> <b> <a href='javascript:OpenItemAttachmentWindow(<#= ID #>);'> <#= Item_Received.Short_Name #> </a></b> </dt>"
+                                  + "<dt><#= NetWeight #> lbs @ $<#= Rate #> = $<#= Amount #></dt>"
+                                    //+ "<dt> <b> Rate: </b><#= Rate #> <b> Amount: </b><#= Amount #>"
+                                  + "<div class='commands' style='float:right;'>"
+                                  + "</div>"
+                                  + "</dt>"
+                                    //+ "<dt> <b> <a href='javascript:OpenItemAttachmentWindow(<#= ID #>);'>View Item Image</a></b></dt>"
+                                  + "</dl>" + "</div>")
+                                 .Columns(columns =>
+                                 {
+                                     columns.Bound("ID").Hidden();
+                                 })
+                                  .BuildGrid(
+                                      gridName: "Grid_ScaleDetails",
+                                      ajaxController: "ScaleDetails",
+                                      indexID: Model.ID.ToString(),
+                                      hiddenColumns: new string[] { "ID", "Item_Received", "Apply_To_Item", "Split_Value", "GrossWeight", "TareWeight", "NetWeight", "Contamination_Weight", "Settlement_Diff_NetWeight", "Notes" },
+                                      allowInsert: false,
+                                      allowEdit: false,
+                                      allowDelete: false,
+                                      feature: smART.Common.EnumFeatures.Transaction_ScaleDetails
+                                  )
+                                  .Selectable()
+                                  .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError").OnRowDataBound("On_RowDataBound_Scale_Details").OnRowSelect("On_RowSelect_Scale_Details"))
+                            )
+                        </td>
+                    </tr>
+                </table>
+            </td>
+            @* =======Right End================ *@
+        </tr>
+
+    </table>
+}

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<smART.ViewModel.PaymentReceiptDetails>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+@(
+ Html.Telerik().Grid<PaymentReceiptDetails>()
+        .Name("Grid_Payment_List")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+                  .Select("_Index", "Receipt"))
+        .Columns(columns => 
+            {
+                  
+                columns.Bound(o => o.PaymentReceipt.ID).Filterable(true);
+                columns.Bound(o => o.Invoice.ID).Title("Invoice#").Filterable(true);
+                columns.Bound(o => o.Invoice.Net_Amt).Title("Invoice Amount").Filterable(false);
+                columns.Bound(o => o.PaymentReceipt.Party.Party_Name);
+                columns.Bound(o => o.PaymentReceipt.Transaction_Date).Title("Receipt Date");
+                //columns.Bound(o => o.Transaction_Status).Title("Receipt Status");
+                columns.Bound(o => o.PaymentReceipt.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "Receipt", new { id = "<#= PaymentReceipt.ID #>" }, null).ToHtmlString()).Filterable(false);
+            })
+              .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+            
+)
+</div>

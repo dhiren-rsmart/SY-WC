@@ -1,0 +1,183 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.Asset
+@{
+   ViewBag.Title = "Asset Master";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Asset";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+   
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Asset";
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+   @* Asset *@
+   <script language="javascript" type="text/javascript">
+
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Party"] != null)
+            $("#LabelID_Party").val(e.dataItem["Party"].Party_Name);
+         if (e.dataItem["Location"] != null)
+            $("#LabelID_Location").val(e.dataItem["Location"].FullAddress);
+      }
+
+      function Child_Grid_onSave(e) {
+         // Set Asset ID to the Parent ID
+         e.values["Parent.ID"] = eval('@Model.ID');
+         e.values["Reference_ID"] = eval('@Model.ID');
+         e.values["Asset.ID"] = eval('@Model.ID');
+      }           
+ 
+   </script>
+   @* Attachment *@
+   <script type="text/javascript" language="javascript">
+      function OnShowHideImage_Clicked(e) {
+         var grid = $("#Grid_Asset_Attachments").data('tGrid');
+         var Rows = grid.$rows();
+         for (var i = 0; i < Rows.length; i++) {
+            var row = Rows[i];
+            ShowHideAttchmentImage(row, grid);
+         }
+      }
+      function Attachment_Grid_onRowDataBound(e) {
+         var grid = $("#Grid_Asset_Attachments").data('tGrid');
+         ShowHideAttchmentImage(e.row, grid);
+      }
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint() {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Asset_No)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Asset_No)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Asset_Type)
+            </td>
+            <td>
+               @if (Model.ID > 0) {
+                  @Html.TextBoxFor(m => m.Asset_Type, new { @readonly = "readonly" })
+               }
+               else { 
+                  @Html.AuthorizedEditorFor(m => m.Asset_Type, new { LovType = "ASSET_TYPE", selectedItem = "Bin" })
+               }
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Asset_Sub_Type)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Asset_Sub_Type, new { LovType = "ASSET_SUB_TYPE", selectedItem = "20 Yard" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Purchase_Date)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Purchase_Date)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Purchase_Aamount)
+            </td>
+            <td>
+               @(Html.Telerik().NumericTextBoxFor(m => m.Purchase_Aamount).Spinners(false).MinValue(0))
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Current_Value)
+            </td>
+            <td>
+               @(Html.Telerik().NumericTextBoxFor(m => m.Current_Value).Spinners(false).MinValue(0))
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Active)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Active)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @(Html.Telerik().TabStrip()
+    .Name("Asset_TabStrip")
+    .Items(items => {
+       items.Add()
+           .Text("Asset Tracking")
+           .Selected(true)
+           .Enabled(true)
+           .Content(Html.Telerik().Grid<AssetAudit>()
+                              .Columns(columns => {
+                                 columns.Bound(o => o.Party.Party_Name).Title("Party Name");
+                                 columns.Bound(o => o.Location.FullAddress).Title("Party Location");
+                              })
+                              .BuildGrid(
+                                  gridName: "Grid_AssetAudit",
+                                  ajaxController: "AssetAudit",
+                                  indexID: Model.ID.ToString(),
+                                  hiddenColumns: new string[] { "Party", "Location" },
+                                  allowDelete: false,
+                                  allowInsert: true,
+                                  allowEdit: false,
+                                  feature: smART.Common.EnumFeatures.Master_AssetAudit
+                              )
+         .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+          .Sortable(sorting => sorting.OrderBy(sortOrder => sortOrder.Add(o => o.ID).Descending()))
+         .ToHtmlString()
+       );
+       items.Add().Text("Attachments").Content(
+                   Html.Telerik().Grid<AssetAttachments>()
+                       .BuildGrid(
+                           gridName: "Grid_Asset_Attachments",
+                           ajaxController: "AssetAttachments",
+                           indexID: Model.ID.ToString(),
+                           hiddenColumns: new string[] { "ID" },
+                           allowEdit: false,
+                           allowInsert: true,
+                           allowDelete: true,
+                           feature: smART.Common.EnumFeatures.Master_AssetAttachments
+                       )
+                        .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new
+                           record</a>
+   <label class="customer-label" for="Customers-input">
+      Show Images</label>
+   <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Asset_Attachments")' />
+   </text>))
+                       .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnRowDataBound("Attachment_Grid_onRowDataBound"))
+                       .ToHtmlString()
+                   );
+    })
+
+ )}
+@section DetailsSection
+{
+   <div />
+}

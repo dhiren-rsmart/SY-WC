@@ -1,0 +1,7 @@
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\bin\Release\smART.Integration.Camera.IPCamera.dll
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\bin\Release\smART.Integration.Camera.IPCamera.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\bin\Release\smART.Integration.Camera.dll
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\bin\Release\smART.Integration.Camera.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\obj\Release\smART.Integration.Camera.IPCamera.csprojResolveAssemblyReference.cache
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\obj\Release\smART.Integration.Camera.IPCamera.dll
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Camera.IPCamera\obj\Release\smART.Integration.Camera.IPCamera.pdb

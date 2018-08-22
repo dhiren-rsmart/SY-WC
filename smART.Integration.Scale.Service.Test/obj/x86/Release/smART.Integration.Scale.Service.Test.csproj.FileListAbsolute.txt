@@ -1,0 +1,5 @@
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Release\smART.Integration.Scale.Service.Test.exe.config
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Release\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Release\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Release\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Release\smART.Integration.Scale.Service.Test.pdb

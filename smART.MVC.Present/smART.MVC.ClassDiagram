@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Resources.EditorLocalization" Collapsed="true">
+    <Position X="18.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AuAAMgSAAAAEAiCAAIAREgAAoYAAQAgEBQEEABCEAIE=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Resources.GridLocalization" Collapsed="true">
+    <Position X="22.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAYSJEICUOHQhCAAEIgBFAAAARECCAQCCAAIYwABAIA=</HashCode>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.App_Start.RegisterClientValidationExtensions" Collapsed="true">
+    <Position X="20.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\RegisterClientValidationExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.BaseController&lt;TLibrary, TEntity&gt;" Collapsed="true">
+    <Position X="8.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAACAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\BaseController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.BaseFormController&lt;TLibrary, TEntity&gt;" Collapsed="true">
+    <Position X="2.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAwIIAAAAAAACAAAAAAAQAAAAAAAAAgAAEAAIAAAAA=</HashCode>
+      <FileName>Controllers\BaseFormController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.BaseGridController&lt;TLibrary, TEntity&gt;" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAEAEAACAAAAQAAAAAAAAEAAAABAIAAAAA=</HashCode>
+      <FileName>Controllers\BaseGridController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.BankController" Collapsed="true">
+    <Position X="7.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\BankController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.ContactController" Collapsed="true">
+    <Position X="9.5" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\ContactController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.ItemController" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\ItemController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.PartyChildGridController&lt;TLibrary, TEntity&gt;" Collapsed="true">
+    <Position X="11.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAABAAAAQAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\PartyChildGridController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.PartyController" Collapsed="true">
+    <Position X="2.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\PartyController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.DispatcherRequestController" Collapsed="true">
+    <Position X="5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAIAAAAA=</HashCode>
+      <FileName>Controllers\Transaction\DispatcherRequestController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.HomeController" Collapsed="true">
+    <Position X="24" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAAA=</HashCode>
+      <FileName>Controllers\HomeController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.Master.AddressBookController" Collapsed="true">
+    <Position X="11.75" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\AddressBookController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.Master.BinController" Collapsed="true">
+    <Position X="14" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\BinController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Controllers.Master.NoteController" Collapsed="true">
+    <Position X="16.25" Y="4.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Controllers\Master\NoteController.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Extensions.EditorExtensions" Collapsed="true">
+    <Position X="24" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\EditorExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Extensions.FlashMessageExtensions" Collapsed="true">
+    <Position X="20.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAEAAAAAAAAQAAAAAAABAAAgAAAAAAAAAAAAAAAAg=</HashCode>
+      <FileName>Extensions\FlashMessageExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Extensions.LabelExtensions" Collapsed="true">
+    <Position X="18.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Extensions\LabelExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.MvcApplication" Collapsed="true">
+    <Position X="22.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAABAIQAAAAAAAAAA=</HashCode>
+      <FileName>Global.asax.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.AddressBookHelper" Collapsed="true">
+    <Position X="18.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAA=</HashCode>
+      <FileName>Helpers\AddressBookHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.ConfigurationHelper" Collapsed="true">
+    <Position X="20.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAA=</HashCode>
+      <FileName>Helpers\Configuration.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.ContactHelper" Collapsed="true">
+    <Position X="22.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUAAAAAAA=</HashCode>
+      <FileName>Helpers\ContactHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.LOVHelper" Collapsed="true">
+    <Position X="20.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\LOVHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.PartyHelper" Collapsed="true">
+    <Position X="18.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQBAA=</HashCode>
+      <FileName>Helpers\PartyHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.TelerikHelper" Collapsed="true">
+    <Position X="22.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACEAAAAEAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\TelerikHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.MVC.Present.Helpers.PartyChildHelper" Collapsed="true">
+    <Position X="24" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Helpers\PartyChildHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

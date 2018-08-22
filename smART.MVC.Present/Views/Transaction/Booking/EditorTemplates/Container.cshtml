@@ -1,0 +1,158 @@
+﻿@model smART.ViewModel.Container 
+@using smART.MVC.Present.Extensions
+<script language="javascript" type="text/javascript" runat="server">
+
+@*   $(document).ready(function(){             
+   alert('hi');
+      var containerNo=@Model.Container_No;   
+      alert(containerNo);
+    if (containerNo!= null && containerNo!=''){
+        showohideTransferLookup(true);
+     }
+      else {
+      showohideTransferLookup(false);
+      }
+      
+    });
+
+    function showohideTransferLookup(value) {
+     $('div[id|="transferDiv"]').each(function(index) {
+          if ("value" == 'true') {
+               $(this).show(1);              
+          }
+          else {
+               $(this).hide(1);
+          }
+     });
+    } 
+*@   
+   function OnBookingChange(e){
+       if (e != null ){   
+          $("#TransferBooking_ID").val(e.ID);
+       }         
+    }
+</script>
+<div class="editor">
+    <div class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>
+   
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Container_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Container_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Container_Size)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Container_Size, new { LovType = "SHIPPING_CONTAINERS" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Chasis_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Chasis_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Seal1_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Seal1_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Seal2_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Seal2_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Origin)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Origin, new { LovType = "PORT_OF_DISCHARGE" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Destination)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Destination, new { LovType = "PORT_OF_DISCHARGE" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Net_Weight)
+            </td>
+            <td>
+                @*@Html.AuthorizedEditorFor(l => l.Net_Weight)*@
+                @(Html.Telerik().NumericTextBoxFor(l => l.Net_Weight).Spinners(false).MinValue(0))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Status)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Status, new { LovType = "Container_Status", selectedItem = "Open-Empty" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Container_Return_Date)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.Container_Return_Date, new { @readonly = "readonly" })
+                @Html.HiddenFor(l => l.Date_In)
+            </td>
+        </tr>
+            <tr>
+            <td>
+                @Html.AuthorizedLabelFor(m => m.TransferBooking)
+            </td>
+            <td>
+                @Html.LookupHtml(m => m.TransferBooking, "ItemLookup", "ID", "Booking_Ref_No", "_OpenBookings", "Booking", null, "_GetJson", "Booking", new string[] { "ID", "Booking_Ref_No", "No_Of_Containers" }, "OnBookingChange")
+                @Html.HiddenFor(m => m.TransferBooking.ID)
+            </td>
+        </tr> 
+        @*   <tr>
+            <td colspan="2">
+                <div id="transferDiv">
+                    <table>
+                        <tr>
+                            <td>
+                                @Html.AuthorizedLabelFor(m => m.TransferBooking.Booking_Ref_No)
+                            </td>
+                            <td>
+                                @Html.LookupHtml(m => m.TransferBooking, "ItemLookup", "ID", "Booking_Ref_No", "_OpenBookings", "Booking", null, "_GetJson", "Booking", new string[] { "ID", "Booking_Ref_No", "No_Of_Containers" }, "OnBookingChange")
+                                @Html.HiddenFor(m => m.TransferBooking.ID)
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>*@
+    </table>
+</div>

@@ -1,0 +1,37 @@
+﻿@model IEnumerable<smART.ViewModel.Scale>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @(
+ Html.Telerik().Grid<Scale>()
+        .Name("Grid_Scale_List_Open")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_OpenTickets", "Scale"))
+        .Columns(columns =>
+            {
+                columns.Bound(o => o.Scale_Ticket_No).Filterable(true);
+                columns.Bound(p => p.Party_ID.Party_Name).ClientTemplate("<#= Party_ID? Party_ID.Party_Name  : '' #>");
+                columns.Bound(o => o.Truck_No);
+                columns.Bound(p => p.Container_No.Container_No).ClientTemplate("<#= Container_No? Container_No.Container_No : '' #>");
+                //columns.Bound(p => p.Container_No.Gross_Weight).ClientTemplate("<#= Container_No? Container_No.Gross_Weight : '0' #>");
+                //columns.Bound(p => p.Container_No.Tare_Weight).ClientTemplate("<#= Container_No? Container_No.Tare_Weight : '0' #>");
+                columns.Bound(p => p.Gross_Weight).HtmlAttributes(new {
+                  style = "text-align: right;"
+                }).Format("{0:0.00}");
+                columns.Bound(p => p.Tare_Weight).HtmlAttributes(new {
+                  style = "text-align: right;"
+                }).Format("{0:0.00}");
+                columns.Bound(p => p.Container_No.Booking.Booking_Ref_No).ClientTemplate("<#= Container_No != null && Container_No.Booking != null ? Container_No.Booking.Booking_Ref_No : '' #>");
+                columns.Bound(o => o.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "Scale", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+            })
+           .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+   )
+</div>

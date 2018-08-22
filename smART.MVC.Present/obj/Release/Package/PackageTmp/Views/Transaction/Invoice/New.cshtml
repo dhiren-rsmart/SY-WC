@@ -1,0 +1,835 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model Invoice
+@{
+  ViewBag.TotalAmount = 1;
+  ViewBag.Title = "Invoice";
+
+  ViewBag.AjaxFormSubmitMethod = "Save";
+  ViewBag.NewUrl = "New";
+
+  ViewBag.DeleteAction = "_Delete";
+  ViewBag.DeleteController = "Invoice";
+  ViewBag.DeleteData = Model.ID;
+
+  ViewBag.SearchAction = "_Index";
+  ViewBag.SearchController = "Invoice";
+
+  ViewBag.Transaction = true;
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+  ViewBag.PrintID = Model.ID;
+  ViewBag.PrintAction = "Invoice";
+  ViewBag.PrintController = "Reports";
+  ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+}
+@section MasterSection
+{
+  <script type="text/javascript">
+
+      //#region Local Members
+
+      var total = 0;
+      var ExpenseTotal = 0;
+      var _invoiceType="Local Sales";
+
+      //#endregion Local Members
+
+      //#region Events
+
+      function Child_Grid_onSave(e) {
+         Grid_onSave(e);     
+         ExpenseTotal=0;//Reset expece total.
+         e.values["Invoice.ID"] = @Model.ID;
+         e.values["Parent.ID"] = @Model.ID; //required for notes etc.
+         e.values["Reference_ID"] = @Model.ID;
+         e.values["Invoice.InvoiceItem.Item.Category"] = 'Test';
+         e.values["Invoice.InvoiceItem.Item.Group"] = 'Test'
+      }
+
+      function Child_Grid_onEdit_Local(e)
+      {
+         Child_Grid_onEdit(e);
+      }
+
+      function OnBookingChange(e)
+      {
+         if (_invoiceType=='Brokerage')
+             BindBrokerageGrid(e.ID)
+         else
+         BindExportsGrid(e.ID)    
+         $("#Booking_Sales_Order_No_Party_Party_Name").val(e.Sales_Order_No.Party.Party_Name);
+         $("#Booking_Sales_Order_No_ID").val(e.Sales_Order_No.ID);
+      
+         // Add non invoice expenses.
+         AddNonInvoicedExpenses(e.ID);
+
+         // Set total amount
+         SetTotalAmt(e.ID);
+      }
+
+      function BindBrokerageGrid(bookingId){
+       var tGrid =  $('#Grid_Brokerage_List').data('tGrid');
+        tGrid.rebind({ id: bookingId, isNew: true });
+        //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../InvoiceBrokerage/_Index?id=" + bookingId + "&isNew=true" };
+      }
+
+      function BindExportsGrid(bookingId){
+       var tGrid =  $('#Grid_Item_List').data('tGrid') ;
+         tGrid.rebind({ id: bookingId, isNew: true });
+        //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../InvoiceItem" + "/_Index?id=" + bookingId + "&isNew=true" };
+      }
+
+      function OnInvoiceType_Change(e)
+      {
+         var selectedValue = e.value;
+         _invoiceType= selectedValue;
+
+         //InitOnInvoiceTypeChange(selectedValue);   
+
+         // if (selectedValue == "Exports"){           
+         //   BindExportBookingLookup();
+         // }
+         //else  if (selectedValue == "Brokerage"){            
+         //   BindBrokerageBookingLookup();
+         //}
+
+         //// Refresh lookup
+         //$('#LabelID_Booking').val('');
+         //$("#HiddenID_BookingID").val(0);
+         //$('#LabelID_Sales_Order_No').val('');
+         //$("#HiddenID_Sales_Order_NoID").val(0);
+         //$("#Sales_Order_No_Party_Party_Name").val('');
+         //$("#Sales_Order_No_ID").val(0);
+         //$("#Booking_Sales_Order_No_Party_Party_Name").val('');
+         //$("#Booking_Sales_Order_No_ID").val(0);
+
+         // // refresh export grid
+         //var tItemGrid = $('#Grid_Item_List').data('tGrid');
+         //tItemGrid.rebind({ id: 0, isNew: true });
+
+         //  // refresh brokerage grid
+         //var tBrokerageGrid = $('#Grid_Brokerage_List').data('tGrid');
+         //tBrokerageGrid.rebind({ id: 0, isNew: true });
+
+         // refresh local sale grid
+         var tLocalSaleGrid = $('#Grid_LocalSales_List').data('tGrid');
+         tLocalSaleGrid.rebind({ id: 0, isNew: true }); 
+          
+          // refrest total 
+          var total = 0;
+          $("#Total_Amt").val(total.toFixed(2));
+          UpdateNetTotal();
+      }
+
+      function OnTabStrip_Load(e)
+      {
+         var selectedValue = $("#Invoice_Type").val();
+         //InitOnInvoiceTypeChange(selectedValue);                     
+      }
+
+        function onTabStrib_Select(e)
+      {     
+          var item = $(e.item);
+          var selectedIndex = item.index();                 
+          if (selectedIndex == 1) // Expense       
+            refreshGrid("#Grid_Expense_List");
+          else if (selectedIndex == 2) // Notes
+            refreshGrid("#Grid_Invoice_Notes");
+          else if (selectedIndex == 3) // Attachment
+            refreshGrid("#Grid_Invoice_Attachments");
+        }
+
+      function InvoiceExpense_onRowDataBound(e)
+      {
+         update_ExpAmt();
+      }
+
+
+      function onRowDataBound(e)
+      {
+         if (e.dataItem.RemoveDelete > 0)
+         {
+            $(e.row).find('a.t-grid-delete').remove(); //remove Delete button
+         }
+      }
+
+      function Child_Grid_onDelete(e)
+      {
+         if (get_expRowCount() == 1)
+         {
+            ExpenseTotal = 0;
+            $("#Expences_Amt").val(ExpenseTotal);
+            UpdateNetTotal();
+         }
+      }
+
+      function OnSO_Change(e)
+      {
+         var tGrid = $('#Grid_LocalSales_List').data('tGrid');
+         tGrid.rebind({ id: e.ID, isNew: true });
+
+         $("#Sales_Order_No_Party_Party_Name").val(e.Party.Party_Name);
+         $("#Sales_Order_No_ID").val(e.ID);
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../InvoiceLocalSales/_Index?id=" + e.ID + "&isNew=true" };
+
+         // Set total amount
+         SetTotalAmtBySoID(e.ID);
+      }
+
+    function BindExportBookingLookup(e)
+      {
+         var tGrid = $('#SearchWindowGrid_Booking').data('tGrid');
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../Booking/_InvoicePendingBooking"};
+
+         tGrid.rebind();
+       
+         //clear driver data
+         $('#LabelID_Booking').val('');
+         $("#HiddenID_BookingID").val(0);
+      }
+
+    function BindBrokerageBookingLookup(e)
+      {
+         var tGrid = $('#SearchWindowGrid_Booking').data('tGrid');
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../Booking/_InvoicePendingBrokerageTypBooking"};
+
+         tGrid.rebind();
+       
+         //clear driver data
+         $('#LabelID_Booking').val('');
+         $("#HiddenID_BookingID").val(0);
+      }
+
+      //#endregion Events
+
+      //#region Functions
+
+      //function InitOnInvoiceTypeChange(selectedValue){      
+      // if (selectedValue == "Exports")
+      //   {
+      //      TabEnable("#Invoice_TabStrip", 0);
+      //      TabSelect("#Invoice_TabStrip", 0);
+      //      TabDisable("#Invoice_TabStrip", 1);
+      //      TabDisable("#Invoice_TabStrip", 2);
+
+      //      VisibleExportsSection(true);
+      //      VisibleLocalSalesSection(false);          
+      //   }
+      //  else  if (selectedValue == "Brokerage")
+      //   {
+      //      TabDisable("#Invoice_TabStrip", 0);            
+      //      TabEnable("#Invoice_TabStrip", 1);
+      //      TabSelect("#Invoice_TabStrip", 1);
+      //      TabDisable("#Invoice_TabStrip", 2);
+      //      VisibleExportsSection(true);
+      //      VisibleLocalSalesSection(false);           
+      //   }
+      //   else if (selectedValue == "Local Sales" || selectedValue == "Trading" )
+      //   {
+      //      TabDisable("#Invoice_TabStrip", 0);
+      //      TabDisable("#Invoice_TabStrip", 1);
+      //      TabEnable("#Invoice_TabStrip", 2);
+      //      TabSelect("#Invoice_TabStrip", 2);
+
+      //      VisibleExportsSection(false);
+      //      VisibleLocalSalesSection(true);
+
+      //   }
+      //   else
+      //   {
+      //      TabDisable("#Invoice_TabStrip", 0);
+      //      TabDisable("#Invoice_TabStrip", 1);
+      //      TabDisable("#Invoice_TabStrip", 2);
+      //      TabSelect("#Invoice_TabStrip", 3);
+
+      //      VisibleExportsSection(false);
+      //      VisibleLocalSalesSection(false);
+      //   }
+      //}
+
+      function UpdateNetTotal()
+      {
+         var netAmt = 0;
+         netAmt = parseFloat($("#Total_Amt").val()) + parseFloat($("#Expences_Amt").val()) + parseFloat($("#Advance_Amt").val()) - parseFloat($("#Discount").data("tTextBox").value()) + parseFloat($("#Tax_Amt").data("tTextBox").value());
+         $("#Net_Amt").val(netAmt.toFixed(2));
+      }
+
+      function SetTotalAmt(bookingId){    
+       if (_invoiceType==="Brokerage")
+          SetBrokerageTotalAmt(bookingId);
+       else
+         SetExportTotalAmt(bookingId);
+      }
+
+      function SetBrokerageTotalAmt(bookingId)
+      {        
+         var total = 0;
+         var postData = { id: bookingId.toString() };       
+         $.ajax({
+            url: '@(Url.Action("_GetTotal", "InvoiceBrokerage"))',
+            type: "Get",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+               if (data != null)
+               {
+                  total = parseFloat(data);
+                  $("#Total_Amt").val(total.toFixed(2));
+                  UpdateNetTotal();
+               }
+            },
+            error: function ()
+            {
+               alert('An error occured due to Get Total.')
+            }
+         });    
+      }
+
+       function SetExportTotalAmt(bookingId)
+      {   
+         var total = 0;
+         var postData = { id: bookingId.toString() };
+         $.ajax({
+            url: '@(Url.Action("_GetTotal", "InvoiceItem"))',
+            type: "Get",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+               if (data != null)
+               {
+                  total = parseFloat(data);
+                  $("#Total_Amt").val(total.toFixed(2));
+                  UpdateNetTotal();
+               }
+            },
+            error: function ()
+            {
+               alert('An error occured due to Get Total.')
+            }
+         });     
+      }
+
+      function SetTotalAmtBySoID(soId)
+      {
+         //           $.ajaxSetup({ cache: false});
+         var total = 0;
+         var postData = { id: soId.toString() };
+         $.ajax({
+            url: '@(Url.Action("_GetTotal", "InvoiceLocalSales"))',
+            type: "Get",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data)
+            {
+               if (data != null)
+               {
+                  total = parseFloat(data);
+                  $("#Total_Amt").val(total.toFixed(2));
+                  UpdateNetTotal();
+               }
+            },
+            error: function ()
+            {
+               alert('An error occured due to Get Total.')
+            }
+         });
+      }
+
+      function update_ExpAmt()
+      {
+         ExpenseTotal = get_totalExpense();
+         $("#Expences_Amt").val(ExpenseTotal);
+         UpdateNetTotal();
+      }
+
+      function get_totalExpense()
+      {
+         var totalExp = 0;
+         var grid = $("#Grid_Expense_List").data("tGrid");
+         var Rows = grid.$rows();
+         var masterRow;
+         if (grid != null && Rows.length > 0)
+         {
+            for (var i = 0; i < Rows.length; i++)
+            {
+               var row = Rows[i];
+               var dataItem = grid.dataItem(row);
+               if (dataItem != null && dataItem.Paid_By == 'PARTY')
+               {
+                  totalExp += dataItem.Amount_Paid;
+               }
+            }
+         }
+         return totalExp.toFixed(2);
+      }
+
+      function get_expRowCount()
+      {
+         var count = 0;
+         var grid = $("#Grid_Expense_List").data("tGrid");
+         if (grid != null)
+         {
+            var Rows = grid.$rows();
+            count = Rows.length;
+         }
+         return count;
+      }
+
+      function VisibleExportsSection(value)
+      {
+         $('div[id|="ExportsSection"]').each(function (index)
+         {
+            if (value === true)
+            {
+               $(this).show(1);
+            }
+            else
+            {
+               $(this).hide(1);
+            }
+         });
+      }
+
+      function VisibleLocalSalesSection(value)
+      {
+         $('div[id|="LocalSalesSection"]').each(function (index)
+         {
+            if (value === true)
+            {
+               $(this).show(1);
+            }
+            else
+            {
+               $(this).hide(1);
+            }
+         });
+      }
+
+      function AddNonInvoicedExpenses(bookingId){
+        var id = eval('@Model.ID');                  
+         if (id === 0) {
+            var postData = { bookingId: bookingId.toString() };
+               $.ajax({
+                  url: '@(Url.Action("AddNonInvoiceSellingExpenses", "InvoiceExpense"))',
+                  type: "POST",
+                  dataType: "json",
+                  data: postData,
+                  cache: false,
+                  success: function (data) {
+                     var tGrid = $('#Grid_Expense_List').data('tGrid');
+                     var params = {id: id.toString() };
+                     tGrid.rebind(params);                                  
+                  },
+                  error: function () {
+                     alert('An error occured due to AddUnPaidPurchaseExpenses.')
+                  }
+               });
+           }
+       }
+
+      //#endregion Functions  
+            
+  </script>
+  <script type="text/javascript" language="javascript">
+    function OnShowHideImage_Clicked(e)
+    {
+      var grid = $("#Grid_Invoice_Attachments").data('tGrid');
+      var Rows = grid.$rows();
+      for (var i = 0; i < Rows.length; i++)
+      {
+        var row = Rows[i];
+        ShowHideAttchmentImage(row, grid);
+      }
+    }
+    function Attachment_Grid_onRowDataBound(e)
+    {
+      var grid = $("#Grid_Invoice_Attachments").data('tGrid');
+      ShowHideAttchmentImage(e.row, grid);
+    }
+  </script>
+  @* Print *@
+  <script type="text/javascript" language="javascript">
+
+    function ValidatePrint()
+    {
+      if (eval('@Model.ID') === '0')
+      {
+        alert('There is nothing to print.');
+        return false;
+      }
+      return true;
+    }
+  </script>
+  @* Expense *@
+  <script type="text/javascript" language="javascript">
+
+    function Expense_Grid_onEdit_Local(e)
+    {
+      Child_Grid_onEdit(e);
+      if (e.dataItem["Paid_Party_To"] != null)
+      {
+        $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+      }
+    }
+  </script>
+  @Html.ValidationSummary()
+  <div class="editLeft">
+    <table>
+      <tr>
+        <td style="width: 30%">
+          @Html.AuthorizedLabelFor(m => m.ID)
+        </td>
+        <td style="width: 70%">
+          @Html.TextBoxFor(m => m.ID, new {
+       @readonly = "readonly"
+     })
+        </td>
+      </tr>
+      <tr>@*Party Order Ref#*@
+        <td>@Html.AuthorizedLabelFor(m => m.Trans_Date)
+        </td>
+        <td>@Html.AuthorizedEditorFor(m => m.Trans_Date)
+        </td>
+      </tr>
+      <tr>
+        <td>
+          @Html.AuthorizedLabelFor(m => m.Invoice_Type)
+        </td>
+        <td>
+          @if (@Model.ID > 0) {
+            @Html.TextBoxFor(m => m.Invoice_Type, new {
+         @readonly = "readonly"
+       })                                
+          }
+          else {
+            @Html.AuthorizedEditorFor(m => m.Invoice_Type, new {
+         LovType = "Invoice_Type",
+         OnChange = "OnInvoiceType_Change",
+         selectedItem = "Local Sales"
+       })
+          }
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Invoice_Status)
+        </td>
+        <td>@Html.AuthorizedEditorFor(m => m.Invoice_Status, new {
+         LovType = "Invoice_Status",
+         selectedItem = "Open"
+       })
+        </td>
+      </tr>
+        <tr>
+            <td>
+                @Html.Label("Sales Order#")
+            </td>
+            <td>
+                @if (@Model.ID > 0)
+                {
+                    @Html.TextBoxFor(m => m.Sales_Order_No.ID, new
+               {
+                   @readonly = "readonly"
+               })
+                }
+                else
+                {
+                    @Html.LookupHtml(m => m.Sales_Order_No, "SalesOrderLookup", "ID", "ID", "_OpenSalesOrders", "SalesOrder", new
+               {
+                   partyId = 0
+               },
+                                                     "_GetJson", "SalesOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnSO_Change")
+                    @Html.HiddenFor(m => m.Sales_Order_No.ID)
+                }
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.Label("Party Name")
+            </td>
+            <td>
+                @Html.TextBoxFor(m => m.Sales_Order_No.Party.Party_Name, new
+             {
+                 @readonly = "readonly"
+             })
+            </td>
+        </tr>
+        @*<tr>
+        <td colspan="2">
+          <div id="ExportsSection">
+            <table>
+              <tr>
+                <td>@Html.AuthorizedLabelFor(m => m.Booking)
+                </td>
+                <td>
+                  @if (@Model.ID > 0) {
+                    @Html.TextBoxFor(m => m.Booking.Booking_Ref_No, new {
+                 @readonly = "readonly"
+               })   
+                    @Html.HiddenFor(m => m.Booking.ID)                              
+                  }
+                  else {
+                    @Html.LookupHtml(m => m.Booking, "BookingLookup", "ID", "Booking_Ref_No", @Model.Invoice_Type == "Brokerage" ? "_InvoicePendingBrokerageTypBooking" : "_InvoicePendingBooking", "Booking", null, "_GetJson", "Booking", new string[] { "Booking_Ref_No", "Sales_Order_No.Sales_Order_No", "Sales_Order_No.Party.Party_Name", "Booking_Status" }, "OnBookingChange")
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  @Html.Label("Sales Order#")
+                </td>
+                <td>
+                  @Html.TextBoxFor(m => m.Booking.Sales_Order_No.ID, new {
+               @readonly = "readonly"
+             })
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  @Html.Label("Party Name")
+                </td>
+                <td>
+                  @Html.TextBoxFor(m => m.Booking.Sales_Order_No.Party.Party_Name, new {
+               @readonly = "readonly"
+             })
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div id="LocalSalesSection">
+            <table>
+              <tr>
+                <td>
+                  @Html.Label("Sales Order#")
+                </td>
+                <td>
+                  @if (@Model.ID > 0) {
+                    @Html.TextBoxFor(m => m.Sales_Order_No.ID, new {
+                 @readonly = "readonly"
+               })                                 
+                  }
+                  else {
+                    @Html.LookupHtml(m => m.Sales_Order_No, "SalesOrderLookup", "ID", "ID", "_OpenSalesOrders", "SalesOrder", new {
+                 partyId = 0
+               },
+                                                     "_GetJson", "SalesOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnSO_Change")
+                    @Html.HiddenFor(m => m.Sales_Order_No.ID)
+                  }
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  @Html.Label("Party Name")
+                </td>
+                <td>
+                  @Html.TextBoxFor(m => m.Sales_Order_No.Party.Party_Name, new {
+               @readonly = "readonly"
+             })
+                </td>
+              </tr>
+            </table>
+          </div>
+        </td>
+      </tr>*@
+    </table>
+  </div>
+  <div class="editLeft">
+    <table>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Total_Amt)
+        </td>
+        <td>
+          @Html.TextBox("Total_Amt", String.Format("{0:0.00}", Model.Total_Amt), new {
+       @readonly = "readonly"
+     })
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Advance_Amt)
+        </td>
+        <td>
+          @Html.TextBox("Advance_Amt", String.Format("{0:0.00}", Model.Advance_Amt), new {
+       @readonly = "readonly"
+     })
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Discount)
+        </td>
+        <td>
+          @(Html.Telerik().NumericTextBoxFor(m => m.Discount).DecimalDigits(2).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("UpdateNetTotal")))
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Tax_Amt)
+        </td>
+        <td>
+          @(Html.Telerik().NumericTextBoxFor(m => m.Tax_Amt).DecimalDigits(2).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("UpdateNetTotal")))
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Expences_Amt, "Expenses")
+        </td>
+        <td>
+          @Html.TextBox("Expences_Amt", String.Format("{0:0.00}", Model.Expences_Amt), new {
+       @readonly = "readonly"
+     })
+        </td>
+      </tr>
+      <tr>
+        <td>@Html.AuthorizedLabelFor(m => m.Net_Amt)
+        </td>
+        <td>
+          @Html.TextBox("Net_Amt", String.Format("{0:0.00}", Model.Net_Amt), new {
+       @readonly = "readonly"
+     })
+        </td>
+      </tr>
+    </table>
+  </div>
+  <div class="editClear">
+  </div>
+  <table>
+    <tr>
+      <td>
+      </td>
+      <td style="text-align: left; vertical-align: top">
+      </td>
+    </tr>
+  </table>
+  <hr />
+  @(Html.Telerik().TabStrip()
+    .Name("Invoice_TabStrip")
+         .ClientEvents(events => events.OnLoad("OnTabStrip_Load").OnSelect("onTabStrib_Select"))
+    .Items(items => {
+          @*================================= Invoice Exports TAB =============================== *@
+      //items.Add()
+      //    .Text("Exports")
+      //    .Selected(false)
+      //    .Enabled(false)
+      //    .Content(Html.Telerik().Grid<InvoiceItem>()
+      //    .BuildGrid(
+      //        gridName: "Grid_Item_List",
+      //        ajaxController: "InvoiceItem",
+      //        indexID: Model.Booking != null ? Model.Booking.ID.ToString() : "0",
+      //        hiddenColumns: new string[] { "ID" },
+      //        allowDelete: false, allowEdit: false, allowInsert: false,
+      //        feature: smART.Common.EnumFeatures.Transaction_InvoiceItem
+      //    )
+      //    .ToHtmlString()
+      //);
+    
+            @*================================= Borkerage TAB =============================== *@
+      //items.Add()
+      //    .Text("Brokerage")
+      //    .Selected(false)
+      //    .Enabled(false)
+      //    .Content(Html.Telerik().Grid<InvoiceItem>()
+      //    .BuildGrid(
+      //        gridName: "Grid_Brokerage_List",
+      //        ajaxController: "InvoiceBrokerage",
+      //        indexID: Model.Booking != null ? Model.Booking.ID.ToString() : "0",
+      //        hiddenColumns: new string[] { "ID" },
+      //        allowDelete: false, allowEdit: false, allowInsert: false,
+      //        feature: smART.Common.EnumFeatures.Transaction_InvoiceItem
+      //    )
+      //    .ToHtmlString()
+      //);
+       @*================================= Local Sale TAB =============================== *@
+      items.Add()
+          .Text("Local Sales")
+          .Selected(true)
+          .Enabled(true)
+          .Content(Html.Telerik().Grid<InvoiceLocalSales>()
+          .BuildGrid(
+              gridName: "Grid_LocalSales_List",
+              ajaxController: "InvoiceLocalSales",
+        //indexID: Model.Sales_Order_No != null ? Model.ID == 0 ? Model.Sales_Order_No.ID.ToString() : Model.ID.ToString() : "0",
+              indexID: Model.Sales_Order_No != null ? Model.Sales_Order_No.ID.ToString() : "0",
+              hiddenColumns: new string[] { "ID" },
+              allowDelete: false, allowEdit: false, allowInsert: false,
+              feature: smART.Common.EnumFeatures.Transaction_InvoiceItem
+          )
+          .ToHtmlString()
+      );
+
+        @*================================= Expense TAB =============================== *@
+      items.Add()
+          .Text("Expenses")
+          .Enabled(true)
+          .Content(Html.Telerik().Grid<InvoiceExpense>()
+                  .Columns(columns => {
+                    columns.Bound(p => p.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+                  })
+                 .BuildGrid(
+                      gridName: "Grid_Expense_List",
+                      ajaxController: "InvoiceExpense",
+                      indexID: Model.ID.ToString(),
+                      hiddenColumns: new string[] { "ID", "Paid_YN", "Reference", "Party_To", "Contact_ID", "Expence_Start_Date", "Expence_End_Date", "Dispatcher_Request", "Weinghing_Ticket_ID", "Paid_Party_To" },
+                      feature: smART.Common.EnumFeatures.Transaction_ExpensesRequest
+                    )
+                  .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnDelete("Child_Grid_onDelete").OnRowDataBound("InvoiceExpense_onRowDataBound").OnEdit("Expense_Grid_onEdit_Local").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                  .ToHtmlString()
+              );
+       
+        @*================================= Notes TAB =============================== *@
+      items.Add()
+           .Text("Notes")
+           .Enabled(true)
+           .Content
+           (Html.Telerik().Grid<InvoiceNotes>()
+                             .BuildGrid(
+                                 gridName: "Grid_Invoice_Notes",
+                                 ajaxController: "InvoiceNotes",
+                                 indexID: Model.ID.ToString(),
+                                 feature: smART.Common.EnumFeatures.Transaction_InvoiceNote
+                             )
+
+                             .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                             .ToHtmlString()
+                  );
+                    
+        @*================================= Attachment TAB =============================== *@
+      items.Add().Text("Attachments").Content(
+
+              Html.Telerik().Grid<InvoiceAttachments>()
+                  .BuildGrid(
+                      gridName: "Grid_Invoice_Attachments",
+                      ajaxController: "InvoiceAttachments",
+                      indexID: Model.ID.ToString(),
+                      hiddenColumns: new string[] { "ID" },
+                      allowEdit: false,
+                      allowInsert: true,
+                      allowDelete: true,
+                      feature: smART.Common.EnumFeatures.Transaction_InvoiceAttachment
+                  )
+                 .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new
+                    record</a>
+  <label class="customer-label" for="Customers-input">
+    Show Images</label>
+  <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Invoice_Attachments")' />
+  </text>))
+                  .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("Attachment_Grid_onRowDataBound").OnDataBinding("LookupGrid_onDataBinding"))
+                  .ToHtmlString()
+       );
+
+    })
+   )
+}
+@section DetailsSection
+{
+  <div />
+}

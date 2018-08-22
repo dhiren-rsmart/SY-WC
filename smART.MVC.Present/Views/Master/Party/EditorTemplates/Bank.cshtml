@@ -1,0 +1,139 @@
+﻿@model smART.ViewModel.Bank
+@using smART.MVC.Present.Extensions
+<div class="editor">
+   <div id="BankValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(o => o.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Account_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Account_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Bank_Name)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Bank_Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Account_Name)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Account_Name)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Routing_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Routing_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Notes_Instruction)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Notes_Instruction)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Bank_Address1)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Bank_Address1)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Bank_Address2)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Bank_Address2)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.City)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.City)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.State)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.State)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Country)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Country)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Phone_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Phone_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Fax_No)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Fax_No)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Email)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Email)
+            </td>
+        </tr>
+        @*
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Active_Ind)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Active_Ind)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Party)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Party)
+            </td>
+        </tr>
+        *@
+    </table>
+</div>

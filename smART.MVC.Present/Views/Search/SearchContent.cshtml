@@ -1,0 +1,89 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@using System.Data;
+@model System.Data.DataTable
+@{
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml"; 
+}
+<div>
+   @(Html.Telerik().Grid(Model)
+                  .Name("Grid")
+         //.ToolBar(commands => commands.Custom().HtmlAttributes(new { id = "export" }).Text("Export to Exce").Action("ExportExcel", "GlobalSearch", new { page = 1, orderBy = "~", filter = "~",viewName=""}))
+                  .Columns(columns => {
+                     foreach (DataColumn column in Model.Columns) {
+                        if (column.ColumnName.Split('_').Contains("Link")) {
+                           //Template column which shows an action link
+                           columns.Bound(column.DataType, column.ColumnName)
+                               .Template(
+                                     @<text>
+                                       @Html.ActionLink(@item.Row.ItemArray.GetValue(column.Table.Columns.IndexOf(column.ColumnName)).ToString(),
+                                                                              column.ColumnName.Split('_').GetValue(3).ToString(),
+                                                                              column.ColumnName.Split('_').GetValue(2).ToString(),
+                                                                                       new { id = @item.Row.ItemArray.GetValue(column.Table.Columns.IndexOf(column.ColumnName)) },
+                                                                                       new { @class = "reesendInviteLink" })
+                                      </text>
+                                )
+                                //.ClientTemplate("Data: <#= " + column.ColumnName + "#>").Width(30)                                
+                                .ClientTemplate(
+                                                 "<a href='/" + column.ColumnName.Split('_').GetValue(2).ToString() + "/" +
+                                                  column.ColumnName.Split('_').GetValue(3) + "/?id=" +
+                                                  "<#= " + column.ColumnName + "#>" +
+                                                  "'>" + "<#= " + column.ColumnName + "#>" + "</a>")
+                              .Title(column.ColumnName.Split('_').GetValue(1).ToString()).HtmlAttributes(new { Style = "text-align: right;" })
+                              .Width(60);
+
+                        }
+                        else
+                           if (column.DataType == typeof(bool))
+                              columns.Bound(column.DataType, column.ColumnName).Width(60);
+                           else if (column.DataType == typeof(DateTime))
+                              columns.Bound(column.DataType, column.ColumnName).Width(80);
+                           else
+                              columns.Bound(column.DataType, column.ColumnName).Width(120);
+                     }
+                  })
+                  .Resizable(rs => rs.Columns(true))
+                  .DataBinding(dataBinding => dataBinding.Ajax().Select("_SearchContent", "GlobalSearch"))
+                  .Pageable(paging => paging.PageSize(ViewBag.PageSize).Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric))
+                  .Scrollable(sc => sc.Height("*"))
+                  .Filterable()
+                  .ColumnContextMenu()
+                  .Groupable()
+          )
+</div>
+<script type="text/ecmascript" language="javascript">
+
+   function Bind_SearchGrid(viewName) {
+      alert("grid");
+      var grid = $('#Grid_Search').data("tGrid");
+
+      //      var params = {
+      //         viewName: viewName
+      //      };
+
+      if (grid != null) {
+
+         // rebind grid.
+         // grid.rebind(params);
+
+         // set the refresh button ID value
+         grid.ajax = { selectUrl: "../GlobalSearch/_SearchContent/?viewName=" + viewName };
+      }
+   }
+   function onDataBound() {
+      var grid = $(this).data('tGrid');
+      // Get the export link as jQuery object        
+      var $exportLink = $('#export');
+      // Get its 'href' attribute - the URL where it would navigate to        
+      var href = $exportLink.attr('href');
+      // Update the 'page' parameter with the grid's current page        
+      href = href.replace(/page=([^&]*)/, 'page=' + grid.currentPage);
+      // Update the 'orderBy' parameter with the grids' current sort state        
+      href = href.replace(/orderBy=([^&]*)/, 'orderBy=' + (grid.orderBy || '~'));
+      // Update the 'filter' parameter with the grids' current filtering state        
+      href = href.replace(/filter=(.*)/, 'filter=' + (grid.filterBy || '~'));
+      // Update the 'href' attribute        
+      $exportLink.attr('href', href);
+   }
+</script>

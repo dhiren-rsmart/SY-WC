@@ -1,0 +1,121 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Extensions;
+@model BaseEntity
+           
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="masterMenu">
+            @(Html.Telerik().Menu()
+                    .Name("menuTransactionMenu")
+                    .Items(menu => {
+                      menu.Add().Text("Receiving Scale Ticket").ActionIf(
+                            new ActionDetails[] {
+                                    new ActionDetails() { Action="Index_Qscale", Controller="Qscale"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_Scale}
+                                }
+                            );//.Selected(Model.MenuSelect.Master_ItemSelected);
+
+                      //menu.Add().Text("Payments").ActionIf(
+                      //          new ActionDetails[] {
+                      //              new ActionDetails() { Action="New", Controller="Payment"
+                      //                  , Feature= smART.Common.EnumFeatures.Transaction_Payment}
+                      //          }
+                      //          );
+
+                      menu.Add().Text("Shipment Scale Ticket").ActionIf(
+                             new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Scale"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_Scale}
+                                }
+                             ) ;//.Selected(Model.MenuSelect.Master_ItemSelected);
+
+                      menu.Add().Text("Sales Order").ActionIf(
+                             new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="SalesOrder"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_SalesOrder }
+                                }
+                             );//.Selected(Model.MenuSelect.Master_ItemSelected);
+                      menu.Add().Text("Sales Invoice").ActionIf(
+                             new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Invoice"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_Invoice}
+                                }
+                             );
+
+                      menu.Add().Text("Receipts").ActionIf(
+                               new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Receipt"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_Receipt}
+                                 }
+                               );
+                      
+                        //menu.Add().Text("Purchase Order").ActionIf(
+                        //       new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="PurchaseOrder"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_PurchaseOrder}
+                        //        }
+                        //       );//.Selected(Model.MenuSelect.Master_ItemSelected);
+                     
+                                          
+                        //menu.Add().Text("Settlement").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="Settlement"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_Settlement}
+                        //        }
+                        //        );
+
+                      
+                        
+                        //menu.Add().AddSeparator();
+                        
+                     
+                        //menu.Add().Text("Purchase Order").ActionIf(
+                        //       new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="PurchaseOrder"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_PurchaseOrder}
+                        //        }
+                        //       );//.Selected(Model.MenuSelect.Master_ItemSelected);
+                        
+                        //menu.Add().Text("Booking").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="Booking"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_Booking }
+                        //        }
+                        //        );//.Selected(Model.MenuSelect.Master_ItemSelected);
+                       
+                       
+                        //menu.Add().AddSeparator();
+
+                        //menu.Add().Text("Dispatcher").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="DispatcherRequest"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_Dispatcher }
+                        //        }
+                        //        );//.Selected(Model.MenuSelect.Master_PartySelected);
+                        //menu.Add().Text("Expenses").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="GenericExpensesRequest"
+                        //                , Feature= smART.Common.EnumFeatures.Transaction_ExpensesRequest }
+                        //        }
+                        //        );//.Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        
+
+                       //.Selected(Model.MenuSelect.Master_ItemSelected);
+                        //menu.Add().Text("Dispatcher Request").Action("New", "DispatcherRequest").Selected(Model.MenuSelect.Transaction_DispatcherSelected);
+                        //menu.Add().Text("Weighing").Action("New", "Weighing").Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        //menu.Add().Text("Expenses Request").Action("New", "ExpensesRequest").Selected(Model.MenuSelect.Transaction_ExpensesSelected);
+                        //menu.Add().Text("Sales Order").Action("New", "SalesOrder").Selected(Model.MenuSelect.Transaction_SalesOrderSelected);
+                    }))
+</div>
+
+@*@if (IsSectionDefined("LocalHead")) {
+  {
+         @RenderSection("LocalHead", required: false)
+  }
+ }*@
+
+<div>
+    @RenderBody()
+</div>

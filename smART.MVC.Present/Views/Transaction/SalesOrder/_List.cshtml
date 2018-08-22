@@ -1,0 +1,36 @@
+﻿@model IEnumerable<smART.ViewModel.SalesOrderItem>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @(
+ Html.Telerik().Grid<SalesOrderItem>()
+        .Name("Grid_SalesOrder_List")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+                .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_GetAllItems", "SalesOrderItem"))
+        .Columns(columns =>
+            {
+                columns.Bound(o => o.SalesOrder.ID).Title("SO #");
+                columns.Bound(o => o.SalesOrder.Order_Status).Title("Status");
+                columns.Bound(o => o.SalesOrder.Party.Party_Name).Title("Party Name");
+                columns.Bound(o => o.Item_Override);
+                columns.Bound(o => o.SalesOrder.Order_Type).Title("Order Type");
+                columns.Bound(o => o.SalesOrder.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "SalesOrder", new {
+                  id = "<#= SalesOrder.ID #>"
+                }, null).ToHtmlString()).Filterable(false);
+                columns.Bound(o => o.SalesOrder.ID).Title("Copy").ClientTemplate(Ajax.ActionLink("Copy", "Copy", "SalesOrder", new {
+                  refID = "<#= SalesOrder.ID #>"
+                }, null).ToHtmlString()).Filterable(false);
+            })
+              .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+
+)
+</div>

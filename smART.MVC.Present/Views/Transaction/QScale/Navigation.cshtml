@@ -1,0 +1,216 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@{
+ 
+  //ViewBag.AjaxFormSubmitMethod = "Save";
+  //ViewBag.NewUrl = "New";
+
+  //ViewBag.DeleteAction = "_Delete";
+  //ViewBag.DeleteController = "QScale";
+  //ViewBag.DeleteData = "0";
+
+  //ViewBag.SearchAction = "_Index";
+  //ViewBag.SearchController = "Scale";
+
+  ////ViewBag.Transaction = true;
+  ////Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+  //ViewBag.SearchOpenTicketsAction = "_OpenTickets";
+
+  //ViewBag.SearchOpenBookingAction = "_OpenBookingContainers";
+  //ViewBag.OpenBookingController = "Container";
+
+  //ViewBag.SearchOpenPOItemsAction = "_OpenPurchaseOrderItems";
+  //ViewBag.OpenPOItemsController = "PurchaseOrderItem";
+
+
+  //ViewBag.TicketType = "Receiving Ticket";
+
+  //ViewBag.PrintAction = "Scale";
+  //ViewBag.PrintController = "Reports";
+  //ViewBag.PrintParams = "{ID: " + 0 + "}";
+  //ViewBag.PrintID = "0";
+
+  //ViewBag.CameraAction = "_OpenCamera";
+  //ViewBag.CameraController = "Camera";
+  //ViewBag.PageCSS = "~/Content/QScale.css";
+}
+<script type="text/javascript" language="javascript">
+
+  function OnPannelBarItem_Select(e)
+  {
+    
+    //get the clicked item and its Url set as an HTML Attribute
+    var item = $(e.item);
+    var itemText = item.find('> .t-link').text();
+
+    var url = item.data("url");
+    if (url === "/QScale/_Index")
+    {
+      openSearch("QScale", "_Index");
+    }
+    else if (url != null && url.indexOf("/QScale/Index") !== -1)
+    {
+      RefreshContent(url);
+    }
+    else if (url === "Material")
+    {
+      var combobox = $('#Material').data('tDropDownList');
+      if (combobox != null)
+      {
+        var selectItem = function (dataItem)
+        {
+          //dataItem argument is a ComboBox data item.
+          return dataItem.Text == itemText;
+        }
+        combobox.select(selectItem);
+        //        combobox.trigger('OnChange');
+      }
+    }
+    else if (url === "TicketHistory")
+    {
+      var partyId = $("#Party_ID_ID").val();
+      openSearch("QScaleDetails", "_TicketHistory", "?partyId=" + partyId);
+    }
+    else if (url === "ScanID")
+    {
+      ScanDrivingLicenceID();
+    }
+    else if (url === "Payments") {        
+        openSearch("PaymentDetails", "_GetQScalePaymentHistory");
+    }
+
+    else if (url === "Camera") {
+        ShowCamera();
+    }
+    else if (url === "ThumbScanner") {
+        openThumbScanner();
+    }
+//    else if (url === "Attachment")
+//    {
+//      var id = $("#ID").val();
+//      openSearch("ScaleAttachments", "_ShowAttachments", "?scaleId=" + id);
+//    }
+//    else if (url === "PriceList")
+//    {
+//      OnPriceList_Change();
+//    }
+  }
+
+  function ReBindPannelBar()
+  {   
+    var panelBar = $("#PanelBar").data("tPanelBar");
+    //    $("> li:nth-child(3)", panelBar.element).trigger('load');
+    $("> li:nth-child(3)", panelBar.element).expand();
+    //    var item = ("> li", panelBar.element)[2];
+    //    alert(item[0].text);
+    //    panelBar.expand(item);
+  }
+
+  function ExpandItem(itemIndex)
+  {
+    var panelBar = $("#PanelBar").data("tPanelBar");
+    var item = $("> li", panelBar.element)[itemIndex];
+    panelBar.expand(item);
+  }
+
+</script>
+@(Html.Telerik().PanelBar()
+      .Name("PanelBar")
+      .ExpandMode(PanelBarExpandMode.Multiple)
+      .ExpandAll(false)
+      //.HtmlAttributes(new { style = "height:535px; float: left; margin-bottom:30px;" })
+      .Items(item => {
+        //item.Add().Text("PriceList")
+        //   .Items((subItem) => {
+        //     var items = QScaleHelper.PriceList();
+        //     foreach (var i in items) {
+        //       subItem.Add().Text(i.PriceList_Name).HtmlAttributes(new {
+        //         @class = "QuickLaunchItemStyle", data_url = "PriceList"
+        //       });
+        //     }
+        //   })
+        //   .Expanded(false);
+        
+        //item.Add().Text("Material")
+        //    .Items((subItem) => {
+        //      var items = ItemHelper.ItemList();
+        //      foreach (var i in items) {
+                
+        //        string s = i.Short_Name.ToString();
+        //        if (s.ToString().Length > 20) {
+        //          s = s.ToString().Substring(0, 20) + "...";
+        //        }
+        //        subItem.Add().Text(i.Short_Name).HtmlAttributes(new {
+        //          title = i.Short_Name,
+        //          @class = "QuickLaunchItemStyle", data_url = "Material"
+        //        });
+        //      }
+        //    })
+        //    .Expanded(false);
+        //item.Add().Text("Utilities")
+        //    .Items((subItem) => {
+        //        subItem.Add().Text("Camera").HtmlAttributes(new
+        //        {
+        //            @class = "QuickLaunchItemStyle",
+        //            data_url = "Camera"
+        //        });
+        //      subItem.Add().Text("Signature").HtmlAttributes(new {
+        //        @class = "QuickLaunchItemStyle",
+        //        data_url = "Signature"
+        //      });
+        //      subItem.Add().Text("Thumb Scanner").HtmlAttributes(new
+        //      {
+        //          @class = "QuickLaunchItemStyle",
+        //          data_url = "ThumbScanner"
+        //      });
+        //    });
+
+        item.Add().Text("Open Tickets")
+              .Items((subItem) => {
+                var tickets = QScaleHelper.OpenTicketsList();
+                foreach (var t in tickets) {
+                  string vechDetails = !string.IsNullOrWhiteSpace(t.Make) ? ", " + t.Make : "";
+                  vechDetails += !string.IsNullOrWhiteSpace(t.Model) ? ", " + t.Model : "";
+                  vechDetails += !string.IsNullOrWhiteSpace(t.Color) ? ", " + t.Color : "";
+
+                  string s = t.Scale_Ticket_No.ToString() + vechDetails;
+                  if (s.ToString().Length > 20) {
+                    s = s.ToString().Substring(0, 20) + "...";
+                  }
+                  subItem.Add().Text(s).HtmlAttributes(new {
+                    @class = "QuickLaunchItemStyle",
+                    title = t.ID.ToString() + vechDetails,
+                    data_url = Url.Action("Index", "QScale", new {
+                      ID = t.ID
+                    })
+                  });
+                }
+              })
+              .Expanded(true); 
+
+        item.Add().Text("Search")
+            .Items((subItem) => {
+              subItem.Add().Text("All Tickets").HtmlAttributes(new {
+                @class = "QuickLaunchItemStyle", data_url = Url.Action("_Index", "QScale")
+              });
+              subItem.Add().Text("Ticket History").HtmlAttributes(new {
+                @class = "QuickLaunchItemStyle", data_url = "TicketHistory"
+              });
+              subItem.Add().Text("Customer").HtmlAttributes(new {
+                @class = "QuickLaunchItemStyle"
+              });
+              subItem.Add().Text("Deleted Tickets").HtmlAttributes(new {
+                @class = "QuickLaunchItemStyle"
+              });
+              subItem.Add().Text("Payments").HtmlAttributes(new
+              {
+                  @class = "QuickLaunchItemStyle",data_url = "Payments"
+              });  
+            });
+      })
+      .ClientEvents(events => {
+        events.OnSelect("OnPannelBarItem_Select");
+      })
+    )

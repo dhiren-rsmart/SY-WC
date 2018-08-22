@@ -1,0 +1,5 @@
+﻿@model  smART.ViewModel.AssetAttachments
+@using smART.MVC.Present.Extensions  
+ <div class="editor">  
+   @Html.Partial("EditorTemplates/Attachment", Model, new ViewDataDictionary { { "ContName", "AssetAttachments" } })
+</div>

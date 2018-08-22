@@ -1,0 +1,125 @@
+﻿@model smART.ViewModel.SettlementDetails 
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    <script language="javascript" type="text/javascript">
+
+        function onUOMChange(e) {
+            if (e.value != null && e.value != "") {
+                $.ajax({
+                    url: '@(Url.Action("_ConvertUOM", "UOMConversion"))',
+                    type: 'GET',
+                    contentType: 'application/json;',
+                    data: { sourceUOM: e.value, targetUOM: 'LBS' },
+                    success: function (data) {
+                        if (data != null) {                        
+                            convFactor = data;
+                            $("#Item_UOM_Conv_Fact").val(convFactor);
+                            onValueChange();                        
+                        }
+                    }
+                });
+            }
+        }
+
+        function onValueChange() {
+            $("#Amount").val(getAmount());
+        }
+
+        function getAmount() {
+            var amount = 0;
+
+            var pRate = $("#Rate").val();
+            var rate = 0;
+            if (pRate > 0) {
+                rate = parseFloat(pRate);
+            }
+
+            var pNetWeight = $("#Actual_Net_Weight").val();
+            var netWeight = 0;
+            if (pNetWeight > 0) {
+                netWeight = parseFloat(pNetWeight);
+            }
+
+            var pItem_UOM_Conv_Fact = $("#Item_UOM_Conv_Fact").val();
+            var Item_UOM_Conv_Fact = 0;
+            if (pItem_UOM_Conv_Fact != null && pItem_UOM_Conv_Fact > 0) {
+                Item_UOM_Conv_Fact = parseFloat(pItem_UOM_Conv_Fact);
+                var poNetWeight = netWeight / Item_UOM_Conv_Fact;
+                poNetWeight = poNetWeight.toFixed(3);
+                $("#Item_UOM_NetWeight").val(poNetWeight);
+            }
+
+            var pNetWeight_Item_UOM = $("#Item_UOM_NetWeight").val();
+            var netWeight_Item_UOM = 0;
+            if (pNetWeight_Item_UOM > 0) {
+                netWeight_Item_UOM = parseFloat(pNetWeight_Item_UOM);
+                amount = rate * netWeight_Item_UOM;
+            }
+            else {
+                amount = rate * netWeight;
+            }
+            var amount = amount.toFixed(2);
+            return amount;
+        }
+
+    </script>
+
+    @Html.ValidationSummary()
+
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Rate)
+            </td>
+            <td>
+                @(Html.Telerik().NumericTextBoxFor(l => l.Rate).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("onValueChange")))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Actual_Net_Weight)
+            </td>
+            <td>
+                @(Html.Telerik().NumericTextBoxFor(l => l.Actual_Net_Weight).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("onValueChange")))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Item_UOM)
+            </td>
+            <td>
+                <div id="divItem_UOM">
+                    @Html.TextBoxFor(l => l.Item_UOM, new { @readonly = "readonly" })
+                </div>
+                <div id="divItem_UOM_LOV">
+                    @Html.AuthorizedEditorFor(l => l.Item_UOM_LOV, new { LovType = "UOM", onChange = "onUOMChange", selectedItem = "LBS" })
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Item_UOM_NetWeight)
+            </td>
+            <td>
+                 @Html.TextBox("Item_UOM_NetWeight", String.Format("{0:0.000}", Model.Item_UOM_NetWeight), new { @readonly = "readonly" })
+            @*    @Html.TextBoxFor(l => l.Item_UOM_NetWeight, new { @readonly = "readonly" })*@
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Amount)                
+            </td>
+            <td>
+                @Html.TextBox("Amount", String.Format("{0:0.00}", Model.Amount), new { @readonly = "readonly" })
+                @*@Html.TextBoxFor(l => l.Amount, new { @readonly = "readonly" })*@
+                @Html.HiddenFor(l => l.Scale_Details_ID.GrossWeight)
+                @Html.HiddenFor(l => l.Scale_Details_ID.Item_Received.Short_Name)
+                @Html.HiddenFor(l => l.Scale_Details_ID.Apply_To_Item.Short_Name)
+                @Html.HiddenFor(l => l.Scale_Details_ID.ID)
+                @Html.HiddenFor(l => l.Scale_Details_ID.Scale.ID)
+                @Html.HiddenFor(l => l.Scale_Details_ID.Contamination_Weight)
+                @Html.HiddenFor(l => l.Item_UOM_Conv_Fact)
+            </td>
+        </tr>
+    </table>
+</div>

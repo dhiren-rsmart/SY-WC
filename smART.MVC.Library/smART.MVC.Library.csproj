@@ -1,0 +1,223 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D2BF47F5-C0D5-4CC0-938A-EA294FEC7EF0}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>smART.MVC.Library</RootNamespace>
+    <AssemblyName>smART.MVC.Library</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AutoMapper">
+      <HintPath>..\packages\AutoMapper.2.0.0\lib\net40-client\AutoMapper.dll</HintPath>
+    </Reference>
+    <Reference Include="ComPortReader">
+      <HintPath>..\packages\ScaleReader\ComPortReader.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework, Version=4.1.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\EntityFramework.4.1.10715.0\lib\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Common, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.EnterpriseLibrary.Common.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.EnterpriseLibrary.Logging, Version=5.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.EnterpriseLibrary.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.ServiceLocation, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.ServiceLocation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.Unity.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Configuration, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.Unity.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.Unity.Interception.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Practices.Unity.Interception.Configuration, Version=2.0.414.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>C:\Program Files (x86)\Microsoft Enterprise Library 5.0\Bin\Microsoft.Practices.Unity.Interception.Configuration.dll</HintPath>
+    </Reference>
+    <Reference Include="ScaleReader">
+      <HintPath>..\packages\ScaleReader\ScaleReader.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Telerik.Web.Mvc, Version=2013.1.219.340, Culture=neutral, PublicKeyToken=121fae78165ba3d4, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\TelerikMvcExtensions.2013.2.611\lib\net40\Telerik.Web.Mvc.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Administration\LeadLogLibrary.cs" />
+    <Compile Include="Administration\LOVLibrary.cs" />
+    <Compile Include="Administration\LOVTypeLibrary.cs" />
+    <Compile Include="Administration\UOMConversionLibrary.cs" />
+    <Compile Include="Asset\AssetAttachmentsLibrary.cs" />
+    <Compile Include="Asset\AssetAuditLibrary.cs" />
+    <Compile Include="Asset\AssetLibrary.cs" />
+    <Compile Include="AttachmentLibrary.cs" />
+    <Compile Include="BusinessRules\BusinessRuleEngine.cs" />
+    <Compile Include="BusinessRules\ConfigurationReader\BusinessRuleElement.cs" />
+    <Compile Include="BusinessRules\ConfigurationReader\BusinessRuleElementCollection.cs" />
+    <Compile Include="BusinessRules\ConfigurationReader\BusinessRuleSection.cs" />
+    <Compile Include="Exception\LibraryException.cs" />
+    <Compile Include="Exception\LibraryExceptionHandler.cs" />
+    <Compile Include="Interface\IBookingLibrary.cs" />
+    <Compile Include="Master\DeviceSettings\DeviceSettingsLibrary.cs" />
+    <Compile Include="Master\FocusArea\FocusAreaLibrary.cs" />
+    <Compile Include="Transaction\Cash\CashLibrary.cs" />
+    <Compile Include="Transaction\DispatcherRequest\DispatcherRequestExpenseLibrary.cs" />
+    <Compile Include="Transaction\Expense\ExpenseLibrary.cs" />
+    <Compile Include="GenericLibrary.cs" />
+    <Compile Include="Interface\ILibrary.cs" />
+    <Compile Include="Interface\IParentChildLibrary.cs" />
+    <Compile Include="Interface\IPriceListChildLibrary.cs" />
+    <Compile Include="Interface\ISalesOrderChildLibrary.cs" />
+    <Compile Include="Master\Party\AddressBookLibrary.cs" />
+    <Compile Include="Master\Party\BankLibrary.cs" />
+    <Compile Include="Master\Party\BinLibrary.cs" />
+    <Compile Include="Master\Party\ContactLibrary.cs" />
+    <Compile Include="Master\Item\ItemAttachmentLibrary.cs" />
+    <Compile Include="Master\Item\ItemLibrary.cs" />
+    <Compile Include="Master\Item\ItemNotesLibrary.cs" />
+    <Compile Include="Master\Party\NoteLibrary.cs" />
+    <Compile Include="Master\Party\PartyChildLibrary.cs" />
+    <Compile Include="Master\Party\PartyLibrary.cs" />
+    <Compile Include="Administration\PriceListChildLibrary.cs" />
+    <Compile Include="Administration\PriceListItemLibrary.cs" />
+    <Compile Include="Administration\PriceListLibrary.cs" />
+    <Compile Include="Master\Security\DataAccessControlLibrary.cs" />
+    <Compile Include="Master\Security\EmployeeLibrary.cs" />
+    <Compile Include="Master\Security\EmployeeRoleLibrary.cs" />
+    <Compile Include="Master\Security\FeatureLibrary.cs" />
+    <Compile Include="Master\Security\RoleFeatureLibrary.cs" />
+    <Compile Include="Master\Security\RoleLibrary.cs" />
+    <Compile Include="NotesLibrary.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Transaction\AuditLog\AuditLogLibrary.cs" />
+    <Compile Include="Transaction\Booking\BookingAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\Booking\BookingLibrary.cs" />
+    <Compile Include="Transaction\Booking\BookingNotesLibrary.cs" />
+    <Compile Include="Transaction\Booking\ContainerLibrary.cs" />
+    <Compile Include="Transaction\DispatcherRequest\DispatcherRequestLibrary.cs" />
+    <Compile Include="Transaction\ExpensesRequestLibrary.cs" />
+    <Compile Include="Administration\Cycle\CycleDetailsLibrary.cs" />
+    <Compile Include="Administration\Cycle\CycleLibrary.cs" />
+    <Compile Include="Transaction\Inventory\InventoryAuditLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceBrokerageLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceExpenseLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceChildLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceLocalSalesLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceNotesLibrary.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceItemLibrary.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptDetailsLibrary.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptLibrary.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptNotesLibrary.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderChildLibrary.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderItemLibrary.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderLibrary.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderNotesLibrary.cs" />
+    <Compile Include="Transaction\Payment\PaymentExpenseLibrary.cs" />
+    <Compile Include="Administration\QB\QuickBookLibrary.cs" />
+    <Compile Include="Transaction\Receipt\ReceiptExpenseLibrary.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderChildLibrary.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderItemLibrary.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderLibrary.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderNotesLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleDetailsLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleExpenseLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleIDCardAttachmentsLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleLibrary.cs" />
+    <Compile Include="Transaction\Scale\ScaleNotesLibrary.cs" />
+    <Compile Include="Transaction\Settlement\SettlementDetailsLibrary.cs" />
+    <Compile Include="Transaction\Settlement\SettlementLibrary.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Search\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\smART.Common\smART.Common.csproj">
+      <Project>{398BE886-8E17-48AD-A016-721C4DC83DF4}</Project>
+      <Name>smART.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\smART.Model\smART.Model.csproj">
+      <Project>{AF682434-E6CD-4235-B35A-E28DD758986A}</Project>
+      <Name>smART.Model</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\smART.MVC.ViewModel\smART.MVC.ViewModel.csproj">
+      <Project>{B843FF1C-96DF-4484-B061-564A4FD262BA}</Project>
+      <Name>smART.MVC.ViewModel</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="ClassDiagram1.cd" />
+    <None Include="packages.config" />
+    <None Include="smART.MVC.Library.ClassDiagram" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

@@ -1,0 +1,32 @@
+﻿@model IEnumerable<smART.ViewModel.PriceList>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+@(
+    Html.Telerik().Grid<PriceList>()
+        .Name("Grid_PriceList_List")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+                .Select("_Index", "PriceList"))
+        .Columns(columns => 
+            {
+                columns.Bound(o => o.ID).Filterable(false);
+                columns.Bound(o=> o.PriceList_Name);
+                columns.Bound(o=> o.Effective_Date_From);
+                columns.Bound(o=> o.Effective_Date_To);
+                columns.Bound(o=> o.UOM);
+                columns.Bound(o => o.ID).ClientTemplate(Ajax.ActionLink("Select", "Index", "PriceList", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+            })
+            .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+            
+)
+</div>

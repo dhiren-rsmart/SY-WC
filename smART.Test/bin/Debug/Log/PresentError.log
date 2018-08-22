@@ -1,0 +1,17 @@
+----------------------------------------
+Timestamp : 7/1/2014 5:33:24 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Model.DataException: ABC
+
+Category  : Present
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------

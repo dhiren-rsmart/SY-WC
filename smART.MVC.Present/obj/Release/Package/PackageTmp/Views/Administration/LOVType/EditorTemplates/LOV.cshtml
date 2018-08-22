@@ -1,0 +1,70 @@
+﻿@model smART.ViewModel.LOV
+@using smART.MVC.Present.Extensions
+<div class="editor">
+  <script type="text/javascript">
+    $('#LOV_Value').change
+    (
+      function ()
+      {
+        var input = $("#LOV_Value").val();
+        $("#LOV_Display_Value").val(input);
+      }
+   );
+
+  </script>
+  <div id="LOVItemValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>
+  <table>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.ID)
+      </td>
+      <td>
+        @Html.TextBoxFor(l => l.ID, new {
+     id = "Child_ID", @readonly = "readonly"
+   })
+       @* @Html.TextBoxFor(l => l.Parent_Type_ID)*@
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.LOV_Value)
+      </td>
+      <td>
+        @Html.AuthorizedEditorFor(l => l.LOV_Value)
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.LOV_Display_Value)
+      </td>
+      <td>
+        @Html.AuthorizedEditorFor(l => l.LOV_Display_Value)
+      </td>
+    </tr>
+    @* <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.LOV_Association)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.LOV_Association)
+            </td>
+        </tr> *@
+    <tr>
+      <td>@Html.AuthorizedLabelFor(m => m.Parent)
+      </td>
+      <td>
+        @Html.LookupHtml(m => m.Parent, "ParentLookup", "ID", "LOV_Value", "_GetAllLOV", "LOV",null, "_GetJson", "LOV", new string[] { "ID","LOVType.LOVType_Name", "LOV_Value"})        
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.LOV_Active)
+      </td>
+      <td>
+        @Html.AuthorizedEditorFor(l => l.LOV_Active)
+      </td>
+    </tr>
+  </table>
+</div>

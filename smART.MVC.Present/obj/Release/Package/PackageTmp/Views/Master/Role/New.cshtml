@@ -1,0 +1,174 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+
+@model smART.ViewModel.Role
+@{
+    ViewBag.Title = "Role Master";
+
+    ViewBag.AjaxFormSubmitMethod = "Save";
+    ViewBag.NewUrl = "New";
+
+    ViewBag.DeleteAction = "_Delete";
+    ViewBag.DeleteController = "Role";
+    ViewBag.DeleteData = Model.ID.ToString();
+
+    ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+    
+    ViewBag.SearchAction = "_Index";
+    ViewBag.SearchController = "Role";
+    ViewBag.Feature = smART.Common.EnumFeatures.Master_Role;
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+ 
+<script type="text/javascript">
+    function ondatabound() {
+        setTimeout(function () {
+            var grid = $('#Grid_Role_RoleFeature').data('tGrid');
+            grid.editRow($('#Grid_Role_RoleFeature tr:has(td):eq(0)'));
+        }, 0);
+      }
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Feature"] != null) {
+            $("#LabelID_Feature").val(e.dataItem["Feature"].FeatureName);
+         }
+      }
+</script>
+
+    @*<hr />*@
+     @Html.ValidationSummary() 
+     <div class="editLeft">
+    <table>
+        <tr>
+            <td style="width :25%">@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Role_Name)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Role_Name)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Role_Description)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Role_Description)
+            </td>
+        </tr>
+  </table>
+     </div>
+     <div class="editClear" />
+@*     <div>
+     @(Html.Telerik().Grid<RoleFeature>(Model.Features)
+     .Name("Grid_Role_RoleFeature")
+     .DataKeys(keys => keys.Add(m => m.ID))
+     .Columns(columns => {
+         columns.Bound(m => m.ID);
+         columns.Bound(m => m.Feature.FeatureName);
+         columns.Bound(m => m.ViewAccessInd);
+         columns.Bound(m => m.EditAccessInd);
+         columns.Bound(m => m.DeleteAccessInd);
+         columns.Bound(m => m.NewAccessInd);
+     })
+     .ClientEvents(events => events.OnDataBound("ondatabound"))
+     )
+
+
+    @if(Model.ID > 0)
+    {
+     @(Html.Telerik().Grid<RoleFeature>()
+     .Name("Grid_Role_RoleFeature")
+    .ToolBar(commands =>
+    {
+        commands.SubmitChanges().HtmlAttributes(new {visible="false"});
+    })
+     .DataKeys(keys => keys.Add(m => m.ID))
+     .DataBinding(bindings => bindings.Ajax()
+         .Select("_GetRoleFeatures", "Role", new { roleID = Model.ID })
+         .Update("_SetRoleFeatures", "Role", new { roleID = Model.ID })
+         )
+     .Columns(columns =>
+     {
+         columns.Bound(m => m.ID);
+         columns.Bound(m => m.Feature.FeatureName);
+         columns.Bound(m => m.ViewAccessInd)
+             .ClientTemplate("<input type='checkbox' disabled='disabled' name='ViewAccessInd' <#= ViewAccessInd? checked='checked' : '' #> />");
+         columns.Bound(m => m.EditAccessInd)
+             .ClientTemplate("<input type='checkbox' disabled='disabled' name='EditAccessInd' <#= EditAccessInd? checked='checked' : '' #> />");
+         columns.Bound(m => m.DeleteAccessInd)
+             .ClientTemplate("<input type='checkbox' disabled='disabled' name='DeleteAccessInd' <#= DeleteAccessInd? checked='checked' : '' #> />");
+         columns.Bound(m => m.NewAccessInd)
+             .ClientTemplate("<input type='checkbox' disabled='disabled' name='NewAccessInd' <#= NewAccessInd? checked='checked' : '' #> />");
+     })
+     .Editable(editing => editing.Mode(GridEditMode.InCell))
+             )
+        }
+             </div>
+             *@
+}
+@section DetailsSection
+{
+    <script language="javascript" type="text/javascript">
+
+        function Child_Grid_onEdit_Local(e) {
+
+            Child_Grid_onEdit(e);
+
+            if (e.dataItem["Feature"]!=null)
+              $("#LabelID_Feature").val(e.dataItem["Feature"].FeatureName);
+        }
+            
+
+    function Child_Grid_onSave(e) {
+        // Set Party.ID to the Parent ID
+        e.values["Role.ID"] = eval('@Model.ID');
+
+        // The following are "required" fields for thr Party object; 
+        // setting them to ANY value has no effect, 
+        // as these values are overwritten based on the ID
+        // set in the "Party.ID" field above
+        e.values["Role.Role_Name"] = 'Test';
+        e.values["Role.Role_Description"] = 'Test';
+        //e.values["Feature.FeatureName"] = 'Test';       
+    }
+    </script>
+
+     @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+    <hr />
+
+    @( Html.Telerik().TabStrip()
+                .Name("Tab_Role_RoleFeature")
+                .SelectedIndex(0)
+                .Items(items =>
+                    {
+                        items.Add().Text("Features").ContentIf(new ActionDetails() {
+                        Feature = smART.Common.EnumFeatures.Master_Role,
+                        Content =
+                        Html.Telerik().Grid<RoleFeature>()
+                            .BuildGrid(
+                                gridName: "Grid_Role_RoleFeature",
+                                ajaxController: "RoleFeature",
+                                indexID: Model.ID.ToString(),
+                                feature: smART.Common.EnumFeatures.Master_Role
+                            )
+                            .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+                            .ToHtmlString()
+                       }
+                     );
+                     
+                  })
+            
+       )
+}

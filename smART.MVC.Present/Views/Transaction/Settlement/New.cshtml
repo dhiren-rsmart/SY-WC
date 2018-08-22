@@ -1,0 +1,315 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model Settlement
+@{
+   ViewBag.Title = "Settlement";
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";    
+}
+@section ButtonSection{
+   @Html.AuthorizedButton("Save", "Save", "button", new {
+   onclick = "SaveSettlement()",
+   @class = "t-button"
+})
+}
+@section MasterSection
+{
+   <script type="text/javascript" language="javascript">
+
+      //#region Document.Ready
+      $(document).ready(function ()
+      {
+         $('th.t-hierarchy-cell').html('<a href="#" title="Expand/Collapse all" onclick="return ToggleDetail(this);" class="t-icon t-minus"></a>');
+      });
+      //#endregion 
+
+
+      //#region Events
+
+      function Child_Grid_onEdit_local(e)
+      {
+         Child_Grid_onEdit(e);
+         var pId = 0;
+         if (e.dataItem["Scale_Details_ID"].Scale != null && e.dataItem["Scale_Details_ID"].Scale.Purchase_Order != null)
+         {
+            pId = e.dataItem["Scale_Details_ID"].Scale.Purchase_Order.ID;
+         }
+         if (pId > 0)
+         {
+            document.getElementById('divItem_UOM_LOV').style.visibility = 'hidden';
+            document.getElementById('divItem_UOM_LOV').style.height = '0px';
+            document.getElementById('divItem_UOM').style.visibility = 'visible';
+         }
+         else
+         {
+            document.getElementById('divItem_UOM').style.visibility = 'hidden';
+            document.getElementById('divItem_UOM').style.height = '0px';
+            document.getElementById('divItem_UOM_LOV').style.visibility = 'visible';
+         }
+      }
+
+      function Grid_OnLoad()
+      {
+         $("#StandardButtonSection").attr('style', 'display:none');
+      }
+
+      function Settlement_onRowDataBound(e)
+      {
+         var grid = $(this).data('tGrid');
+         expandFirstRow(grid, e.row);
+      }
+
+      function SettlementDetails_onRowDataBound(e)
+      {
+         var grid = $(this).data('tGrid');
+         UpdateSettlement(e, grid);
+      }
+
+      function Child_Grid_onSave(e)
+      {
+         e.values["Scale_Details_ID.Item_Received.Item_Category"] = 'Test';
+         e.values["Scale_Details_ID.Item_Received.Item_Group"] = 'Test';
+         e.values["Scale_Details_ID.Apply_To_Item.Item_Category"] = 'Test';
+         e.values["Scale_Details_ID.Apply_To_Item.Item_Group"] = 'Test'
+      }
+
+      //#endregion 
+
+      //#region Private Functions
+
+      function GetMasterRow(scaleId)
+      {
+         var grid = $("#Settlement").data("tGrid");
+         var Rows = grid.$rows();
+         var masterRow;
+         if (grid != null && Rows.length > 0)
+         {
+            for (var i = 0; i < Rows.length; i++)
+            {
+               var row = Rows[i];
+               var dataItem = grid.dataItem(row)
+               if (dataItem.Scale.ID == scaleId)
+               {
+                  masterRow = row;
+                  return masterRow;
+               }
+            }
+         }
+         return masterRow;
+      }
+
+      function GetTotalSettlementWeight(grdDetails)
+      {
+         var totalWt = 0;
+         var Rows = grdDetails.$rows();
+         for (var i = 0; i < Rows.length; i++)
+         {
+            var row = Rows[i];
+            totalWt += parseFloat(row.cells[4].innerHTML);
+         }
+         return totalWt.toFixed(2);
+      }
+
+      function GetTotalSettlementAmount(grdDetails)
+      {
+         var totalAmt = 0;
+         var Rows = grdDetails.$rows();
+         for (var i = 0; i < Rows.length; i++)
+         {
+            var row = Rows[i];
+            totalAmt += parseFloat(row.cells[5].innerHTML);
+         }
+         return totalAmt.toFixed(2);
+      }
+
+      function UpdateSettlement(e, detailGrid)
+      {
+         var mRow = GetMasterRow(e.dataItem.Scale_Details_ID.Scale.ID);
+         if (mRow != null)
+         {
+            if (detailGrid != null)
+            {
+               mRow.cells[5].innerHTML = GetTotalSettlementWeight(detailGrid) + e.dataItem.Scale_Details_ID.Contamination_Weight;
+               mRow.cells[7].innerHTML = GetTotalSettlementAmount(detailGrid);
+            }
+         }
+      }
+
+      // Expand Child grid row
+      function expandFirstRow(grid, row)
+      {
+         grid.expandRow(row);
+      }
+
+      //Save selected recoreds
+      function SaveSettlement()
+      {
+         var choice = confirm('Do you really want to settlement?');
+         if (choice == true)
+         {
+            var $checkedRecords = $(':checked');
+            if ($checkedRecords.length < 1)
+            {
+               alert('Check a few grid rows first.');
+               return;
+            }
+            var grid = $("#Settlement").data("tGrid");
+            var rows = grid.$rows();
+            var settlements = new Array();
+            var counter = 0;
+            for (var i = 0; i < rows.length; i++)
+            {
+               var row = rows[i];
+               var dataItem = grid.dataItem(row)
+               var amount = parseFloat(row.cells[7].innerHTML, 10);
+               var actual_Net_Weight = parseFloat(row.cells[5].innerHTML, 10);
+               var scale_Id = dataItem.Scale.ID;
+               if (amount > 0 && actual_Net_Weight > 0 && scale_Id > 0 && dataItem != null && Include($checkedRecords, scale_Id))
+               {
+                  var str = scale_Id + "," + amount + "," + actual_Net_Weight;
+                  settlements[counter] = str;
+                  counter += 1;
+               }
+            }
+            Save(settlements);
+         }
+      }
+
+      function ValidateScaleDetailItems(scaleId)
+      {
+      }
+
+      function Save(settlements)
+      {
+         if (settlements == null || settlements.length <= 0)
+         {
+            return;
+         }
+         var postData = { list: settlements };
+         $.ajax({
+            url: '@(Url.Action("_SaveSelected", "Settlement"))',
+            type: "POST",
+            dataType: "json",
+            traditional: true,
+            data: postData,
+            success: function (data)
+            {
+               if (data != null)
+               {
+                  alert(data.toString());
+                  var grid = $("#Settlement").data("tGrid");
+                  grid.rebind();
+               }
+            },
+            error: function ()
+            {
+               alert('An error occured due to settlement.')
+            }
+         });
+      }
+
+      function Include(arr, obj)
+      {
+         for (var i = 0; i < arr.length; i++)
+         {
+            if (arr[i].value == obj)
+               return true;
+         }
+         return false;
+      }
+
+      function ToggleDetail(e)
+      {
+         var grid = $(e).closest('.t-grid').data('tGrid');
+
+         if ($(e).hasClass('t-minus'))
+         {
+
+            grid.$rows().each(function (index) { grid.collapseRow(this); })
+
+            $(e).removeClass('t-minus');
+
+         } else
+         {
+
+            grid.$rows().each(function (index) { grid.expandRow(this); })
+
+            $(e).addClass('t-minus');
+
+         }
+         return false;
+      }
+      //#endregion Private Functions
+
+   </script>
+   <div id="result">
+      @*  <br />*@
+      @(Html.Telerik().Grid<Settlement>()
+        .Name("Settlement")
+        .Columns(columns => {
+           //columns.Bound(e => e.ID);
+           columns.Bound(e => e.Scale.ID).Title("Ticket#").Filterable(true);
+           columns.Bound(e => e.Scale.Party_ID.ListText).Title("Party(Supplier) Name").Filterable(true);
+           columns.Bound(e => e.Scale.Created_Date).Title("Ticket Date").Format("{0:MM/dd/yyyy}").Filterable(true);
+           columns.Bound(e => e.Scale.Gross_Weight).Filterable(false).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+           columns.Bound(e => e.Actual_Net_Weight).Filterable(false).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+           columns.Bound(e => e.Scale.Purchase_Order.ID).Title("PO#").Filterable(false);
+           columns.Bound(e => e.Amount).Filterable(false).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+           columns.Bound(o => o.Scale.ID).Template(
+                                                    @<text>
+                                                     <input type='checkbox' id='checkedRecords' name='checkedRecords' value='<#= ID #>' />
+                                                    </text>
+                                                   )
+                                         .ClientTemplate
+                                                    (
+                                                      "<input type='checkbox' name='checkedRecords' value='<#= Scale.ID #>' />"
+                                                    ).Filterable(false)
+                                                     .Title("Ready For Payment")
+                                                     .Width(130)
+                                                     .HtmlAttributes(new {style = "text-align:center"});
+
+
+                      })
+
+        .DetailView(details => details.ClientTemplate(
+                     Html.Telerik().Grid<SettlementDetails>()
+                    .Name("SettlementDetails_<#= ID #>")
+                    .DataKeys(keys => {keys.Add(o => o.ID);
+                    })
+                    .Columns(columns => {
+                       columns.Bound(o => o.Scale_Details_ID.Item_Received.Short_Name).Title("Receiving Item");
+                       columns.Bound(o => o.Scale_Details_ID.Apply_To_Item.Short_Name).Title("Apply to Iventory");
+                       columns.Bound(o => o.Rate).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+                       columns.Bound(o => o.Scale_Details_ID.GrossWeight).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+                       columns.Bound(o => o.Actual_Net_Weight).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+                       columns.Bound(o => o.Amount).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+                       columns.Bound(o => o.Scale_Details_ID.Contamination_Weight).Hidden(true);
+                       columns.Command(commands => {commands.Edit().ButtonType(GridButtonType.Image);});
+
+                    })
+                    .DataBinding(dataBinding => dataBinding.Ajax()
+                        .Select("_Index", "SettlementDetails", new {id = "<#= Scale.ID #>"})
+                        .Update("_Insert", "SettlementDetails", new {id = "<#= Scale.ID #>"})
+                    )
+
+                    .Editable(editable => editable.Mode(GridEditMode.PopUp))
+                    .Pageable()
+                    .Sortable()
+                    .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_local").OnRowDataBound("SettlementDetails_onRowDataBound"))
+                    .ToHtmlString()
+        ))
+        .DataBinding(dataBinding => dataBinding.Ajax().Select("_Index", "Settlement"))
+        .EnableCustomBinding(true)
+        .Pageable(paging => paging.PageSize(20)
+        .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+        .Total(100))
+        .Filterable()
+        .Sortable()
+        .ClientEvents(events => events.OnRowDataBound("Settlement_onRowDataBound").OnLoad("Grid_OnLoad"))
+            //.ToolBar(commands => commands.Custom().Text("Expand").HtmlAttributes(new {
+            //  @onclick = "ToggleDetail();"
+            //}))
+     )
+   </div>
+}

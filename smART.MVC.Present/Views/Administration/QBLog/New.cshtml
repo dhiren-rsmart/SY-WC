@@ -1,0 +1,198 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model QBLog
+@{
+  ViewBag.Title = "QB Log";
+
+  ViewBag.AjaxFormSubmitMethod = "Save";
+  ViewBag.NewUrl = "New";
+
+  ViewBag.DeleteAction = "_Delete";
+  ViewBag.DeleteController = "QBLog";
+  ViewBag.DeleteData = Model.ID.ToString();
+
+  ViewBag.SearchAction = "_Index";
+  ViewBag.SearchController = "QBLog";
+  ViewBag.Administration = true;
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml"; 
+}
+@section ButtonSection{
+
+}
+
+@section MasterSection
+{
+  <script type="text/javascript" language="javascript">
+
+    //#region Document.Ready
+    $(document).ready(function () {
+      $('th.t-hierarchy-cell').html('<a href="#" title="Expand/Collapse all" onclick="return ToggleDetail(this);" class="t-icon t-minus"></a>');
+    });
+    //#endregion 
+
+
+    //#region Events
+
+//    function Child_Grid_onEdit_local(e) {
+//      Child_Grid_onEdit(e);    
+//    }
+
+//     function Grid_onEdit_local(e) {
+//       if (e.mode == "edit")
+//       {
+//         $('#Debit_Amt').attr('readonly', 'readonly');
+//         $('#Credit_Amt').attr('readonly', 'readonly');        
+//       }   
+//    }
+
+    function Grid_OnLoad() {
+      $("#StandardButtonSection").attr('style', 'display:none');
+    }
+
+    function QBLogParent_onRowDataBound(e) {
+      var grid = $(this).data('tGrid');
+      expandFirstRow(grid, e.row);
+    }
+
+    function SettlementDetails_onRowDataBound(e) {
+      var grid = $(this).data('tGrid');    
+    }
+
+    function Child_Grid_onSave(e)
+    {
+      Grid_onSave_local(e);  
+    }
+
+    function Grid_onSave_local(e)
+    {
+      e.values["Debit_Amt"] = e.dataItem.Debit_Amt;
+      e.values["Credit_Amt"] = e.dataItem.Credit_Amt;
+      e.values["Remarks"] = e.dataItem.Remarks;
+      e.values["Status_Remarks"] = e.dataItem.Status_Remarks;      
+    }
+
+    //#endregion 
+
+    //#region Private Functions
+
+    function GetMasterRow(id) {
+      var grid = $("#QBLog").data("tGrid");
+      var Rows = grid.$rows();
+      var masterRow;
+      if (grid != null && Rows.length > 0) {
+        for (var i = 0; i < Rows.length; i++) {
+          var row = Rows[i];
+          var dataItem = grid.dataItem(row)
+          if (dataItem.ID == id) {
+            masterRow = row;
+            return masterRow;
+          }
+        }
+      }
+      return masterRow;
+    }        
+
+    // Expand Child grid row
+    function expandFirstRow(grid, row) {
+      grid.expandRow(row);
+    }    
+
+    function Include(arr, obj) {
+      for (var i = 0; i < arr.length; i++) {
+        if (arr[i].value == obj)
+          return true;
+      }
+      return false;
+    }
+
+    function ToggleDetail(e) {
+      var grid = $(e).closest('.t-grid').data('tGrid');
+
+      if ($(e).hasClass('t-minus')) {
+
+        grid.$rows().each(function (index) { grid.collapseRow(this); })
+
+        $(e).removeClass('t-minus');
+
+      } else {
+
+        grid.$rows().each(function (index) { grid.expandRow(this); })
+
+        $(e).addClass('t-minus');
+
+      }
+      return false;
+    }
+    //#endregion Private Functions
+
+  </script>
+
+  <div id="result">  
+    @(Html.Telerik().Grid<QBLog>()
+        .Name("QBLog")
+        .Columns(columns => {
+          columns.Bound(e => e.ID).Title("QBlog#").Filterable(true).ReadOnly(true).Title("QB#");
+          columns.Bound(e => e.Created_Date).Title("Date").Format("{0:MM/dd/yyyy}").Filterable(true).ReadOnly(true);
+          columns.Bound(e => e.Source_Type).ReadOnly(true).Filterable(true);
+          columns.Bound(e => e.Source_ID).Filterable(true);
+          columns.Bound(e => e.Account_Name).Filterable(true);
+          columns.Bound(e => e.Debit_Amt).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).ReadOnly(true);
+          columns.Bound(e => e.Credit_Amt).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).ReadOnly(true);
+          columns.Bound(e => e.Name).Filterable(true);
+          columns.Bound(e => e.Status).Filterable(true);
+          columns.Bound(e => e.Status_Remarks).Filterable(true).ReadOnly(true);
+          columns.Bound(e => e.Source_Type).Hidden(true);
+          columns.Bound(e => e.RS_Ref_No).Hidden(true);          
+          columns.Bound(e => e.Group).Hidden(true);
+          columns.Command(commands => { commands.Edit().ButtonType(GridButtonType.Image); });
+        })
+              .DetailView(details => details.ClientTemplate(
+                                 Html.Telerik().Grid<QBLog>()
+                          .Name("QBLog_<#= ID #>")
+                          .DataKeys(keys => {
+                            keys.Add(o => o.ID);
+                          })
+                          .Columns(columns => {
+                            columns.Bound(e => e.ID).Title("QBlog#").Filterable(true).ReadOnly(true).Width("60px").Title("QB#");
+                            columns.Bound(e => e.Created_Date).Title("Date").Format("{0:MM/dd/yyyy}").Filterable(true).ReadOnly(true).Hidden(true);
+                            columns.Bound(e => e.Account_Name).Filterable(true);
+                            columns.Bound(e => e.Debit_Amt).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").ReadOnly(true).Width("60px");
+                            columns.Bound(e => e.Credit_Amt).Filterable(false).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}").ReadOnly(true).Width("60px");
+                            columns.Bound(e => e.Name).Hidden(true);
+                            columns.Bound(e => e.Status).Filterable(true).ReadOnly(true).Hidden(true);
+                            columns.Bound(e => e.Status_Remarks).Filterable(true).ReadOnly(true).Hidden(true);
+                            columns.Bound(e => e.Source_Type).Hidden(true);
+                            columns.Bound(e => e.Parent_ID).Hidden(true);
+                            columns.Bound(e => e.RS_Ref_No).Hidden(true);
+                            columns.Bound(e => e.Source_ID).Filterable(true).Hidden(true);
+                            columns.Bound(e => e.Group).Hidden(true);
+                            columns.Command(commands => {commands.Edit().ButtonType(GridButtonType.Image);}).Width("150px");
+                          })
+                          .DataBinding(dataBinding => dataBinding.Ajax()
+                                    .Select("_ChildIndex", "QBLog", new { id = "<#= ID #>" })
+                              .Update("_UpdateChild", "QBLog")
+                          )
+                          .Editable(editable => editable.Mode(GridEditMode.InLine))
+                          .Pageable()
+                          .Sortable()
+                          .ClientEvents(events => events.OnSave("Child_Grid_onSave"))
+                          .ToHtmlString()
+              ))
+        .DataKeys(keys => {keys.Add(o => o.ID);})
+        .DataBinding(dataBinding => dataBinding.Ajax()
+                       .Select("_ParentIndex", "QBLog")
+                       .Update("_UpdateParent", "QBLog")
+                    )
+        .Editable(editable => editable.Mode(GridEditMode.InLine))
+        .EnableCustomBinding(false)
+        .Pageable(paging => paging.PageSize(20) 
+        .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+        .Total(100))
+        .Filterable()
+        .Sortable()
+              .ClientEvents(events => events.OnLoad("Grid_OnLoad").OnSave("Grid_onSave_local").OnRowDataBound("QBLogParent_onRowDataBound"))
+     )
+  </div>
+}
+

@@ -1,0 +1,717 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model Booking
+@{
+   ViewBag.Title = "Booking";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Booking";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Booking";
+   
+   ViewBag.Transaction = true;
+   ViewBag.ReOpen = "ReOpen";
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+   ViewBag.PrintID = Model.ID;
+   ViewBag.PrintAction = "PackingList";
+   ViewBag.PrintController = "Reports";  
+   ViewBag.PrintParams = "{ID: " + Model.ID + " }";  
+
+}
+@section ButtonSection{
+   @*@Html.AuthorizedButton("ReOpen", "Re-Open", "button", new { onclick = "ReOpenBooking()", @class = "t-button" })*@
+}
+@section MasterSection
+{
+   <script language="javascript" type="text/javascript">
+
+     function onTabStrib_Select(e)
+     {
+       var item = $(e.item);
+       var selectedIndex = item.index(); 
+       if (selectedIndex == 6) // Notes
+         refreshGrid("#Grid_Booking_Notes");
+       else if (selectedIndex == 7) // Attachments
+         refreshGrid("#Grid_Booking_Attachments");
+      }
+
+      function ReOpenBooking() {
+         alert("This function is under construction.");
+      }
+
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Booking"] != null) {
+            $("#LabelID_Item").val(e.dataItem["Booking"].Booking_Ref_No);
+         }
+      }
+
+      function Child_Grid_onSave(e) {
+         // Set Party.ID to the Parent ID     
+         e.values["Parent.ID"] = eval('@Model.ID');
+         e.values["Booking.ID"] = eval('@Model.ID');
+         e.values["Parent.Booking_Ref_No"] = 'Test';
+         e.values["Booking.Booking_Ref_No"] = 'Test';
+      }
+
+      function OnSalesOrderChange(e) {
+         if (e.Party != null) {
+            $("#Sales_Order_No_Party_ID").val(e.Party.ID);
+            $("#Sales_Order_No_Party_Party_Name").val(e.Party.Party_Name);
+         }
+      }
+
+      function SendEmail(containerId) {
+         if (containerId != '0') {
+            ShowProcessIndicator();
+            $.ajaxSetup({ cache: false });
+            $.getJSON('@(Url.Action("SendEmail", "Container"))' + '?id=' + containerId.toString(), function (data) {
+               var items = [];
+               $.each(data, function (key, val) {
+                  HideProcessIndicator();
+                  alert(val.toString());
+               });
+            });
+         }
+      }
+
+      function Child_Grid_onDelete(e) {
+         e.preventDefault();
+         if (confirm('Are you sure you want to delete this record?')) {
+            $.ajax({
+               type: "POST", // important, only perform deletes on a post
+               url: '@(Url.Action("_ValidateOnDelete", "Container"))',
+               data: { id: e.dataItem.ID.toString() },
+               dataType: "json",
+               cache: false,
+               success: function (result) {
+                  if (result.resultCode != "success") {
+                     alert(result.message);
+                     e.preventDefault();
+                  }
+                  else {
+                     DeleteContainer(e);
+                  }
+               },
+               error: function () {
+                  alert('An error occured due to delete container.');
+                  e.preventDefault();
+               }
+            });
+         }
+      }
+
+      function DeleteContainer(e) {
+         $.ajax({
+            type: "POST", // important, only perform deletes on a post
+            url: '@(Url.Action("_Delete", "Container"))',
+            data: { id: e.dataItem.ID.toString() },
+            dataType: "json",
+            cache: false,
+            success: function (result) {
+               var tGrid = $('#Grid_Container').data('tGrid');
+               tGrid.rebind();
+            },
+            error: function () {
+               alert('An error occured due to delete container.');
+               e.preventDefault();
+            }
+         });
+      }
+
+   </script>
+   <script type="text/javascript" language="javascript">
+      function OnShowHideImage_Clicked(e) {
+         var grid = $("#Grid_Booking_Attachments").data('tGrid');
+         var Rows = grid.$rows();
+         for (var i = 0; i < Rows.length; i++) {
+            var row = Rows[i];
+            ShowHideAttchmentImage(row, grid);
+         }
+      }
+      function Attachment_Grid_onRowDataBound(e) {
+         var grid = $("#Grid_Booking_Attachments").data('tGrid');
+         ShowHideAttchmentImage(e.row, grid);
+      }
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+
+      function ValidatePrint() {
+         if (eval('@Model.ID') === '0') {
+            alert('There is nothing to print.');
+            return false;
+         }
+         return true;
+      }
+
+      
+   </script>
+
+   @Html.ValidationSummary()   
+
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Booking_Ref_No)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Booking_Ref_No)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Sales_Order_No)
+            </td>
+            <td>
+               @Html.LookupHtml(m => m.Sales_Order_No, "SalesOrderLookup", "ID", "ID", "_OpenSalesOrders", "SalesOrder", null, "_GetJson", "SalesOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnSalesOrderChange")
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.Label("Party ID")
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.Sales_Order_No.Party.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.Label("Party Name")
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.Sales_Order_No.Party.Party_Name, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Scale_Name)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Scale_Name, new { LovType = "SCALE_LIST" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Paper_Work_To)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Paper_Work_To)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Forwarder_Party_ID)
+            </td>
+            <td>
+               @Html.LookupHtml(m => m.Forwarder_Party_ID, "PartyForwarderLookup", "ID", "Party_Name", "_PartyByType", "Party", new { partytype = "Forwarder" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Forwarder_Ref_No)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Forwarder_Ref_No)
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Entered_By)
+            </td>
+            <td>
+               @* @Html.LookupHtml(m => m.Entered_By, "ContactEnteredByLookup", "ID", "ListText", "_ContactByPartyType", "Contact", new { partytype = "GSM" }, "_GetJson", "Contact", new string[] { "ID", "ListText", "Email" })*@
+               @Html.TextBoxFor(m => m.Entered_By, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Entered_Date)
+            </td>
+            <td>
+               @Html.TextBox("Entered_Date", String.Format("{0:ddd, MMM d, yyyy}", @Model.Entered_Date), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Pickup_Date)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Pickup_Date)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Receive_Date)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Receive_Date)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Cutoff_Date)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Cutoff_Date)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.No_Of_Containers)
+            </td>
+            <td>
+               @(Html.Telerik().IntegerTextBoxFor(m => m.No_Of_Containers).MinValue(0))
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Containers_Assigned)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.Containers_Assigned, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Containers_Due)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.Containers_Due, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Container_Type)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Container_Type, new { LovType = "SHIPPING_CONTAINERS" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Total_Weight)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.Total_Weight, new { @readonly = "readonly" })
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @(Html.Telerik().TabStrip()
+    .Name("Booking_TabStrip")
+    .ClientEvents(e => e.OnSelect("onTabStrib_Select"))
+    .Items(items => {
+    
+        @*===============================Containers TAB ==================================================*@      
+       items.Add()
+           .Text("Containers")
+           .Enabled(true)
+            .Selected(true)
+           .Content(Html.Telerik().Grid<Container>()
+                             .BuildGrid(
+                                 gridName: "Grid_Container",
+                                 ajaxController: "Container",
+                                 indexID: Model.ID.ToString(),
+                                 allowDelete: true,
+                                 allowInsert: true,
+                                 allowEdit: true,
+                                 feature: smART.Common.EnumFeatures.Transaction_Container
+                             )
+       .Columns(columns => {
+          columns.Bound(o => o.ID).Title("").ClientTemplate("<input type='button'  class='t-button t-state-default' value='Send' onclick=\"SendEmail('<#= ID#>')\"  />");
+       })
+       .ClientEvents(events => events.OnDelete("Child_Grid_onDelete").OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnError("Grid_onError"))
+       .ToHtmlString()
+     );
+        
+         @* ===============================Shipping Details TAB=================================================== *@
+       items.Add()
+           .Text("Shipping Details")
+           .Enabled(true)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            <table>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Final_Destination)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Final_Destination, new { LovType = "PORT_OF_DISCHARGE" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Port_Of_Origin)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Port_Of_Origin, new { LovType = "PORT_OF_DISCHARGE" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Destination_Port)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Destination_Port, new { LovType = "PORT_OF_DISCHARGE" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Shipping_Company)
+                  </td>
+                  <td>
+                     @Html.LookupHtml(m => m.Shipping_Company, "ShippingCompanyLookup", "ID", "Party_Name", "_PartyByType", "Party", new { partytype = "Shipping Company" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" })
+                  </td>
+               </tr>
+            </table>
+         </td>
+         <td>
+         </td>
+         <td>
+            <table style="margin-top: -50px">
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Vessel_Name)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Vessel_Name)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Voyage_No)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Voyage_No)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Departure_Date)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Departure_Date)
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+   </table>
+   </text>);
+        
+        @* ==========================Add. Instructions TAB ================================================*@
+       items.Add()
+           .Text("Add. Instructions")
+           .Enabled(true)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            <table>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Min_Weight)
+                  </td>
+                  <td>
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Min_Weight).Spinners(false).MinValue(0))
+                     @*@Html.AuthorizedEditorFor(m => m.Min_Weight)*@
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Min_Weight_UOM)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Min_Weight_UOM, new { LovType = "UOM" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Max_Weight)
+                  </td>
+                  <td>
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Max_Weight).Spinners(false).MinValue(0))
+                     @*@Html.AuthorizedEditorFor(m => m.Max_Weight)*@
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Max_Weight_UOM)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Max_Weight_UOM, new { LovType = "UOM" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Wooden_Pallet)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Wooden_Pallet)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Shipping_Pickup_Location)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Shipping_Pickup_Location)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Shipping_Return_Location)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Shipping_Return_Location)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Rail_Pickup_Location)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Rail_Pickup_Location)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Rail_Tumin_Location)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Rail_Tumin_Location)
+                  </td>
+               </tr>
+            </table>
+         </td>
+         <td>
+         </td>
+         <td>
+            <table>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Shipper)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Shipper)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Notify)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Notify)
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.AuthorizedLabelFor(m => m.Consignee)
+                  </td>
+                  <td>
+                     @Html.AuthorizedEditorFor(m => m.Consignee)
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+   </table>
+   </text>);
+        
+        @* =============================Inspection Info TAB ===============================================*@
+       items.Add()
+           .Text("Inspection Info")
+           .Enabled(true)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Agent_Name)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Agent_Name)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Agent_Contact)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Agent_Contact)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Inspection_Date)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Inspection_Date)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Inspection_Site)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Inspection_Site)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Supplier_Name)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Supplier_Name)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Reciver_Name)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Reciver_Name)
+         </td>
+      </tr>
+   </table>
+   </text>);
+        
+        @* ===========================Documentation TAB ==================================================*@
+       items.Add()
+           .Text("Documentation")
+           .Enabled(true)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Doc_Set_Date)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Doc_Set_Date)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Courier_Sent_Date)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Courier_Sent_Date)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Courier_Tracking_No)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Courier_Tracking_No)
+         </td>
+      </tr>
+   </table>
+   </text>);
+            
+         @* =========================Booking Closed TAB =================================================*@
+       items.Add()
+         .Text("Booking Closed")
+         .Enabled(true)
+         .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Booking_Status)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Booking_Status, new { LOVType = "STATUS", selectedItem = "Open" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Booking_Closed_By)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Booking_Closed_By, "ContactEnteredByLookup", "ID", "ListText", "_ContactByPartyType", "Contact", new { partytype = "Organization" }, "_GetJson", "Contact", new string[] { "ID", "ListText", "Email" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Booking_Closed_Date)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Booking_Closed_Date)
+         </td>
+      </tr>
+   </table>
+   </text>);
+            
+        
+        @* ========================Notes TAB ============================================================*@
+       items.Add()
+           .Text("Notes")
+           .Enabled(true)
+           .Content(Html.Telerik().Grid<BookingNotes>()
+                             .BuildGrid(
+                                 gridName: "Grid_Booking_Notes",
+                                 ajaxController: "BookingNotes",
+                                 indexID: Model.ID.ToString(),
+                                 feature: smART.Common.EnumFeatures.Transaction_BookingNote
+                             )
+
+                             .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                             .ToHtmlString()
+                  );
+                   
+         @* ======================Attachment TAB =========================================================*@
+       items.Add().Text("Attachments").Content(
+                 Html.Telerik().Grid<BookingAttachments>()
+                     .BuildGrid(
+                         gridName: "Grid_Booking_Attachments",
+                         ajaxController: "BookingAttachments",
+                         indexID: Model.ID.ToString(),
+                         hiddenColumns: new string[] { "ID" },
+                         allowEdit: false,
+                         allowInsert: true,
+                         allowDelete: true,
+                         feature: smART.Common.EnumFeatures.Transaction_BookingAttachment
+                     )
+                     .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new
+                        record</a>
+   <label class="customer-label" for="Customers-input">
+      Show Images</label>
+   <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Booking_Attachments")' />
+   </text>))
+                      .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("Attachment_Grid_onRowDataBound").OnDataBinding("LookupGrid_onDataBinding"))
+                     .ToHtmlString()
+                 );
+
+    })
+   )
+}
+@section DetailsSection
+{
+   <div />
+}

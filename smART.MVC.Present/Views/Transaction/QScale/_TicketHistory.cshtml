@@ -1,0 +1,31 @@
+﻿@model IEnumerable<smART.ViewModel.ScaleDetails>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+ @(
+ Html.Telerik().Grid<ScaleDetails>()
+        .Name("Grid_ScaleDetails_List")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+        .Select("_TicketHistory", "QScaleDetails", new {partyID = @ViewBag.PartyId}))
+        .Columns(columns =>
+        {
+            columns.Bound(o => o.Created_Date).Format("{0:MM/dd/yyyy}").Filterable(true);
+                 columns.Bound(o => o.Scale.Scale_Ticket_No).Filterable(true);
+                 columns.Bound(p => p.Item_Received.Short_Name);
+                 columns.Bound(p => p.NetWeight);
+                 columns.Bound(o => o.Rate);
+                 columns.Bound(o => o.Amount);
+            })
+          .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+         .Sortable(sorting => sorting.Enabled(true).SortMode(GridSortMode.SingleColumn).OrderBy(order => { order.Add(o => o.ID).Descending(); }))
+         
+)
+</div>

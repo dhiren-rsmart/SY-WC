@@ -1,0 +1,29 @@
+﻿@model IEnumerable<smART.ViewModel.Cycle>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+@(
+    Html.Telerik().Grid<Cycle>()
+        .Name("Grid_Cycle_List")
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+                .Select("_Index", "Cycle"))
+        .Columns(columns => 
+            {
+                columns.Bound(o => o.ID).Filterable(false);
+                columns.Bound(o=> o.Start_Date);
+                columns.Bound(o=> o.End_Date);                
+                columns.Bound(o => o.ID).ClientTemplate(Ajax.ActionLink("Select", "Index", "Cycle", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);                 
+            })
+            .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+            
+)
+</div>

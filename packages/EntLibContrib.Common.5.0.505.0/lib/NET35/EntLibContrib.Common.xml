@@ -1,0 +1,1564 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>EntLibContrib.Common</name>
+    </assembly>
+    <members>
+        <member name="T:EntLibContrib.Common.SerializationUtility">
+            <summary>
+            Utility class for serializing and deserializing objects to and from byte streams
+            </summary>
+            <remarks>
+            This utility has been lifted from the Caching block in order to remove the 
+            direct dependancy on the caching block. Although this goes against best practise it
+            enables providers to maintain independence from the other blocks as much as possible.
+            Hopefully one day the MS patterns team will put this utility into
+            Microsoft.Practices.EnterpriseLibrary.Common
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Common.SerializationUtility.ToBytes(System.Object)">
+            <summary>
+            Converts an object into an array of bytes. Object must be serializable.
+            </summary>
+            <param name="value">Object to serialize. May be null.</param>
+            <returns>Serialized object, or null if input was null.</returns>
+        </member>
+        <member name="M:EntLibContrib.Common.SerializationUtility.ToObject(System.Byte[])">
+            <summary>
+            Converts a byte array into an object. 
+            </summary>
+            <param name="serializedObject">Object to deserialize. May be null.</param>
+            <returns>Deserialized object, or null if input was null.</returns>
+        </member>
+        <member name="T:EntLibContrib.Common.Configuration.CommonSettings">
+            <summary>
+            Overall common configuration settings
+            </summary>    
+        </member>
+        <member name="F:EntLibContrib.Common.Configuration.CommonSettings.AssemblyExtension">
+            <summary>
+            manifest extension for all embedded resources.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Common.Configuration.CommonSettings.BinaryExtension">
+            <summary>
+            extension for binary resource files.
+            </summary>
+        </member>
+        <member name="F:EntLibContrib.Common.Configuration.CommonSettings.XmlExtension">
+            <summary>
+            extension for Xml resource files.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.CommonSettings.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Common.Configuration.CommonSettings"/> class.
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Common.INullableReader">
+            <summary>
+            This interface defines the contract that a class must implement to read
+            both non-null and nullable data. Use this interface polymorphically rather
+            than the direct implementations, that way it does not matter how data is read
+            you can use a single nullable reader method to deal with null values.
+            </summary>
+            <remarks>
+            This modified version of the code project article by Steve Michelotti, makes use of
+            the <see langword="default"/> keyword for generic types rather than returning null values.
+            Original article webLink: http://www.codeproject.com/KB/database/NullableReaders.aspx
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetName(System.Int32)">
+            <summary>
+            Gets the column name at the ordinal position.
+            </summary>
+            <param name="ordinal">The column ordinal.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetOrdinal(System.String)">
+            <summary>
+            Gets the ordinal position of the column name.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetBoolean(System.String)">
+            <summary>
+            Gets the boolean value.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableBoolean(System.String)">
+            <summary>
+            Gets the nullable boolean.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetByte(System.String)">
+            <summary>
+            Gets the byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableByte(System.String)">
+            <summary>
+            Gets the nullable byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetChar(System.String)">
+            <summary>
+            Gets the char.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableChar(System.String)">
+            <summary>
+            Gets the nullable char.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetDateTime(System.String)">
+            <summary>
+            Gets the date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableDateTime(System.String)">
+            <summary>
+            Gets the nullable date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetDecimal(System.String)">
+            <summary>
+            Gets the decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableDecimal(System.String)">
+            <summary>
+            Gets the nullable decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetDouble(System.String)">
+            <summary>
+            Gets the double.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableDouble(System.String)">
+            <summary>
+            Gets the nullable double.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetFloat(System.String)">
+            <summary>
+            Gets the float.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableFloat(System.String)">
+            <summary>
+            Gets the nullable float.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetGuid(System.String)">
+            <summary>
+            Gets the Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableGuid(System.String)">
+            <summary>
+            Gets the nullable Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetInt16(System.String)">
+            <summary>
+            Gets the short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableInt16(System.String)">
+            <summary>
+            Gets the nullable short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetInt32(System.String)">
+            <summary>
+            Gets the integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableInt32(System.String)">
+            <summary>
+            Gets the nullable integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetInt64(System.String)">
+            <summary>
+            Gets the long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableInt64(System.String)">
+            <summary>
+            Gets the nullable long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetString(System.String)">
+            <summary>
+            Gets the string.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableString(System.String)">
+            <summary>
+            Gets the nullable string.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetTimeSpan(System.String)">
+            <summary>
+            Gets the time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableTimeSpan(System.String)">
+            <summary>
+            Gets the nullable time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetValue(System.String,System.Type)">
+            <summary>
+            Gets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The data type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetNullableValue(System.String,System.Type)">
+            <summary>
+            Gets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The data type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.GetFieldType(System.String)">
+            <summary>
+            Gets the type information for the column.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.IsField(System.String)">
+            <summary>
+            Determines whether the specified name is valid field.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if the specified name is a field; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableReader.IsDBNull(System.String)">
+            <summary>
+            Determines whether the value of the named column is equal to DBNull.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if DBNull; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Common.INullableReader.FieldCount">
+            <summary>
+            The number of columns in the reader;
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Common.INullableWriter`1">
+            <summary>
+            This interface defines the contract that a class must implement to write
+            both non-null and nullable data. Use this interface polymorphically rather
+            than the direct implementations, that way it does not matter how data is written
+            you can use a single nullable writer method to deal with null values.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.GetName(System.Int32)">
+            <summary>
+            Gets the column name at the ordinal position.
+            </summary>
+            <param name="ordinal">The column ordinal.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.GetOrdinal(System.String)">
+            <summary>
+            Gets the ordinal position of the column name.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetBoolean(System.String,System.Boolean)">
+            <summary>
+            Sets the boolean value.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The boolean value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableBoolean(System.String,System.Boolean)">
+            <summary>
+            Sets the nullable boolean.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable boolean value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetByte(System.String,System.Byte)">
+            <summary>
+            Sets the byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The byte value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableByte(System.String,System.Byte)">
+            <summary>
+            Sets the nullable byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable byte value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetChar(System.String,System.Char)">
+            <summary>
+            Sets the char.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The char value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableChar(System.String,System.Char)">
+            <summary>
+            Sets the nullable char.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable char value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetDateTime(System.String,System.DateTime)">
+            <summary>
+            Sets the date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The datetime value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableDateTime(System.String,System.DateTime)">
+            <summary>
+            Sets the nullable date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable datetime value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetDecimal(System.String,System.Decimal)">
+            <summary>
+            Sets the decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The decimal value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableDecimal(System.String,System.Decimal)">
+            <summary>
+            Sets the nullable decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable decimal value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetDouble(System.String,System.Double)">
+            <summary>
+            Sets the double.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The double value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableDouble(System.String,System.Double)">
+            <summary>
+            Sets the nullable double.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable double value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetFloat(System.String,System.Single)">
+            <summary>
+            Sets the float.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The float value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableFloat(System.String,System.Single)">
+            <summary>
+            Sets the nullable float.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable float value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetGuid(System.String,System.Guid)">
+            <summary>
+            Sets the Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The guid value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableGuid(System.String,System.Guid)">
+            <summary>
+            Sets the nullable Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable guid value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetInt16(System.String,System.Int16)">
+            <summary>
+            Sets the short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The short value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableInt16(System.String,System.Int16)">
+            <summary>
+            Sets the nullable short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable short value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetInt32(System.String,System.Int32)">
+            <summary>
+            Sets the integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The int value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableInt32(System.String,System.Int32)">
+            <summary>
+            Sets the nullable integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable int value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetInt64(System.String,System.Int64)">
+            <summary>
+            Sets the long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The long value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableInt64(System.String,System.Int64)">
+            <summary>
+            Sets the nullable long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable long value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetString(System.String,System.String)">
+            <summary>
+            Sets the string.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The string value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableString(System.String,System.String)">
+            <summary>
+            Sets the nullable string.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable string value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetTimeSpan(System.String,System.TimeSpan)">
+            <summary>
+            Sets the time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The timespan value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableTimeSpan(System.String,System.TimeSpan)">
+            <summary>
+            Sets the nullable time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable timespan value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetValue(System.String,System.Object,System.Type)">
+            <summary>
+            Sets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The object value to insert into the column.</param>
+            <param name="type">The data type of the value to be inserted.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetNullableValue(System.String,System.Object,System.Type)">
+            <summary>
+            Sets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable object value to insert into the column.</param>
+            <param name="type">The data type of the value to be inserted.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.SetFieldType(System.String,System.Type)">
+            <summary>
+            Sets the type information for the column.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The type.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.IsField(System.String)">
+            <summary>
+            Determines whether the specified name is valid field.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if the specified name is a field; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.INullableWriter`1.IsNullable(System.String)">
+            <summary>
+            Determines whether the named column can take a null value.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if nullable; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="P:EntLibContrib.Common.INullableWriter`1.FieldCount">
+            <summary>
+            The number of columns in the underlying row;
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.INullableWriter`1.Row">
+            <summary>
+            Gets the underlying row.
+            </summary>
+            <value>The row.</value>
+        </member>
+        <member name="T:EntLibContrib.Common.NullableDataRowReader">
+            <summary>
+            This class allows a <see cref="T:System.Data.DataRow"/> to be read with a datareader-like interface.
+            Since it implements <see cref="T:EntLibContrib.Common.INullableReader"/>, it provides methods to read both
+            non-null and nullable data fields.
+            </summary>
+            <remarks>
+            This modified version of the code project article by Steve Michelotti, makes use of
+            the <see langword="default"/> keyword for generic types rather than returning null values.
+            Original article webLink: http://www.codeproject.com/KB/database/NullableReaders.aspx
+            </remarks>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.#ctor">
+            <summary>
+            prevents the initialization of new instances of the <see cref="T:NullableDataRowReader"/> class without parameters.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.#ctor(System.Data.DataRow)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NullableDataRowReader"/> class with a given <see cref="T:DataRow"/>.
+            </summary>
+            <param name="dataRow">The data row.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetName(System.Int32)">
+            <summary>
+            Gets the column name at the ordinal position.
+            </summary>
+            <param name="ordinal">The column ordinal.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetOrdinal(System.String)">
+            <summary>
+            Gets the ordinal position of the column name.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetBoolean(System.String)">
+            <summary>
+            Gets the boolean value.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableBoolean(System.String)">
+            <summary>
+            Gets the nullable boolean.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetByte(System.String)">
+            <summary>
+            Gets the byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableByte(System.String)">
+            <summary>
+            Gets the nullable byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetChar(System.String)">
+            <summary>
+            Gets the char.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableChar(System.String)">
+            <summary>
+            Gets the nullable char.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetDateTime(System.String)">
+            <summary>
+            Gets the date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableDateTime(System.String)">
+            <summary>
+            Gets the nullable date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetDecimal(System.String)">
+            <summary>
+            Gets the decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableDecimal(System.String)">
+            <summary>
+            Gets the nullable decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetDouble(System.String)">
+            <summary>
+            Gets the double.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableDouble(System.String)">
+            <summary>
+            Gets the nullable double.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetFloat(System.String)">
+            <summary>
+            Gets the float.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableFloat(System.String)">
+            <summary>
+            Gets the nullable float.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetGuid(System.String)">
+            <summary>
+            Gets the Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableGuid(System.String)">
+            <summary>
+            Gets the nullable Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetInt16(System.String)">
+            <summary>
+            Gets the short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableInt16(System.String)">
+            <summary>
+            Gets the nullable short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetInt32(System.String)">
+            <summary>
+            Gets the integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableInt32(System.String)">
+            <summary>
+            Gets the nullable integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetInt64(System.String)">
+            <summary>
+            Gets the long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableInt64(System.String)">
+            <summary>
+            Gets the nullable long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetString(System.String)">
+            <summary>
+            Gets the string.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableString(System.String)">
+            <summary>
+            Gets the nullable string.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetTimeSpan(System.String)">
+            <summary>
+            Gets the time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableTimeSpan(System.String)">
+            <summary>
+            Gets the nullable time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetValue(System.String,System.Type)">
+            <summary>
+            Gets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The data type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullableValue(System.String,System.Type)">
+            <summary>
+            Gets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The data type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetFieldType(System.String)">
+            <summary>
+            Gets the type information for the column.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.IsField(System.String)">
+            <summary>
+            Determines whether the specified name is valid field.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if the specified name is a field; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.IsDBNull(System.String)">
+            <summary>
+            Determines whether the value of the named column is equal to DBNull.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if DBNull; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetNullable``1(System.String,EntLibContrib.Common.NullableDataRowReader.Conversion{``0})">
+            <summary>
+            This generic method will be called by every interface method in the class.
+            Using a generic method offers significantly less code and type-safety.
+            Additionally, the methods can delegate data conversion to an appropriate
+            method to be executed here.
+            </summary>
+            <param name="name">Column name</param>
+            <param name="convert">Conversion delegate to invoke if the value is not DBNull</param>
+            <returns>non null converted value</returns>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.GetRawValue(System.String,System.Type)">
+            <summary>
+            Gets the raw data value checking for DBNull in the process
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The data type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowReader.CheckIsField(System.String)">
+            <summary>
+            Checks if the field name is valid and throws exception if not.
+            </summary>
+            <param name="name">The column name.</param>
+            <exception cref="T:System.IndexOutOfRangeException">The field name has not been found as a column of the <see cref="T:System.Data.DataRow"/></exception>
+        </member>
+        <member name="P:EntLibContrib.Common.NullableDataRowReader.FieldCount">
+            <summary>
+            The number of columns in the reader;
+            </summary>
+        </member>
+        <member name="T:EntLibContrib.Common.NullableDataRowReader.Conversion`1">
+            <summary>
+            Delegate to be used for value conversion when not null.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="name">column name</param>
+            <returns>converted value</returns>
+        </member>
+        <member name="T:EntLibContrib.Common.NullableDataRowWriter">
+            <summary>
+            This class allows a <see cref="T:System.Data.DataRow"/> to be written to throuigh a common interface.
+            Since it implements <see cref="T:EntLibContrib.Common.INullableWriter`1"/>, it provides methods to write both
+            non-null and nullable data fields.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.#ctor">
+            <summary>
+            prevents the initialization of new instances of the <see cref="T:NullableDataRowWriter"/> class without parameters.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.#ctor(System.Data.DataRow)">
+            <summary>
+            Initializes a new instance of the <see cref="T:NullableDataRowWriter"/> class with a given <see cref="T:DataRow"/>.
+            </summary>
+            <param name="dataRow">The data row.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.GetName(System.Int32)">
+            <summary>
+            Gets the column name at the ordinal position.
+            </summary>
+            <param name="ordinal">The column ordinal.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.GetOrdinal(System.String)">
+            <summary>
+            Gets the ordinal position of the column name.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetBoolean(System.String,System.Boolean)">
+            <summary>
+            Sets the boolean value.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The boolean value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableBoolean(System.String,System.Boolean)">
+            <summary>
+            Sets the nullable boolean.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable boolean value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetByte(System.String,System.Byte)">
+            <summary>
+            Sets the byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The byte value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableByte(System.String,System.Byte)">
+            <summary>
+            Sets the nullable byte.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable byte value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetChar(System.String,System.Char)">
+            <summary>
+            Sets the char.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The char value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableChar(System.String,System.Char)">
+            <summary>
+            Sets the nullable char.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetDateTime(System.String,System.DateTime)">
+            <summary>
+            Sets the date time.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The datetime value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableDateTime(System.String,System.DateTime)">
+            <summary>
+            Sets the nullable date time.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetDecimal(System.String,System.Decimal)">
+            <summary>
+            Sets the decimal.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The decimal value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableDecimal(System.String,System.Decimal)">
+            <summary>
+            Sets the nullable decimal.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetDouble(System.String,System.Double)">
+            <summary>
+            Sets the double.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The double value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableDouble(System.String,System.Double)">
+            <summary>
+            Sets the nullable double.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetFloat(System.String,System.Single)">
+            <summary>
+            Sets the float.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The float value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableFloat(System.String,System.Single)">
+            <summary>
+            Sets the nullable float.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetGuid(System.String,System.Guid)">
+            <summary>
+            Sets the Guid.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The guid value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableGuid(System.String,System.Guid)">
+            <summary>
+            Sets the nullable GUID.
+            </summary>
+            <param name="name">The name.</param>
+            <param name="value">The value.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetInt16(System.String,System.Int16)">
+            <summary>
+            Sets the short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The short value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableInt16(System.String,System.Int16)">
+            <summary>
+            Sets the nullable short integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable short value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetInt32(System.String,System.Int32)">
+            <summary>
+            Sets the integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The int value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableInt32(System.String,System.Int32)">
+            <summary>
+            Sets the nullable integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable int value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetInt64(System.String,System.Int64)">
+            <summary>
+            Sets the long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The long value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableInt64(System.String,System.Int64)">
+            <summary>
+            Sets the nullable long integer.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable long value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetString(System.String,System.String)">
+            <summary>
+            Sets the string.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The string value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableString(System.String,System.String)">
+            <summary>
+            Sets the nullable string.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable string value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetTimeSpan(System.String,System.TimeSpan)">
+            <summary>
+            Sets the time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The timespan value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableTimeSpan(System.String,System.TimeSpan)">
+            <summary>
+            Sets the nullable time span.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable timespan value to insert into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetValue(System.String,System.Object,System.Type)">
+            <summary>
+            Sets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The object value to insert into the column.</param>
+            <param name="type">The data type of the value to be inserted.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullableValue(System.String,System.Object,System.Type)">
+            <summary>
+            Sets a data value with conversion to the given type.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The nullable object value to insert into the column.</param>
+            <param name="type">The data type of the value to be inserted.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetFieldType(System.String,System.Type)">
+            <summary>
+            Sets the type information for the column.
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="type">The type.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.IsField(System.String)">
+            <summary>
+            Determines whether the specified name is valid field.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if the specified name is a field; otherwise, <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.IsNullable(System.String)">
+            <summary>
+            Determines whether the named column can take a null value.
+            </summary>
+            <param name="name">The column name.</param>
+            <returns>
+            	<c>true</c> if nullable; otherwise <c>false</c>.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetNullable``1(System.String,``0,EntLibContrib.Common.NullableDataRowWriter.Conversion{``0})">
+            <summary>
+            This generic method will be called by every interface method in the class.
+            Using a generic method offers significantly less code and type-safety.
+            Additionally, the methods can delegate data conversion to an appropriate
+            method to be executed here.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="name">Column name</param>
+            <param name="value">The value to be inserted into the column.</param>
+            <param name="convert">Conversion delegate to invoke if the value is nullable</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.SetRawValue(System.String,System.Object)">
+            <summary>
+            Sets the raw data value checking for DBNull in the process
+            </summary>
+            <param name="name">The column name.</param>
+            <param name="value">The value to be inserted into the column.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableDataRowWriter.CheckIsField(System.String)">
+            <summary>
+            Checks if the field name is valid and throws exception if not.
+            </summary>
+            <param name="name">The column name.</param>
+            <exception cref="T:System.IndexOutOfRangeException">The field name has not been found as a column of the <see cref="T:System.Data.DataRow"/></exception>
+        </member>
+        <member name="P:EntLibContrib.Common.NullableDataRowWriter.FieldCount">
+            <summary>
+            The number of columns in the underlying row;
+            </summary>
+            <value></value>
+        </member>
+        <member name="P:EntLibContrib.Common.NullableDataRowWriter.Row">
+            <summary>
+            Sets the underlying row.
+            </summary>
+            <value>The row.</value>
+        </member>
+        <member name="T:EntLibContrib.Common.NullableDataRowWriter.Conversion`1">
+            <summary>
+            Delegate to be used for value conversion when nullable.
+            </summary>
+            <typeparam name="T"></typeparam>
+            <param name="name">column name</param>
+            <param name="value">the value </param>
+            <returns>converted value</returns>
+        </member>
+        <member name="T:EntLibContrib.Common.Configuration.AnonymousConfigurationElement">
+            <summary>
+            Defines a configuration element that can be uniquely identified without having to define its name explicitly.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.AnonymousConfigurationElement.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)">
+            <summary>
+            Modifies the <see cref="T:System.Configuration.ConfigurationElement"/> object to remove all values that should not be saved.
+            </summary>
+            <param name="sourceElement">A <see cref="T:System.Configuration.ConfigurationElement"/> at the current level containing a merged view of the properties.</param>
+            <param name="parentElement">The parent <see cref="T:System.Configuration.ConfigurationElement"/>, or null if this is the top level.</param>
+            <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode"/> that determines which property values to include.</param>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.AnonymousConfigurationElement.Name">
+            <summary>
+            Gets the Name.
+            </summary>
+            <value></value>
+        </member>
+        <member name="T:EntLibContrib.Common.NullableException">
+            <summary>
+            Exception class for all errors raised by nullable readers
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableException.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Common.NullableException"/> class.
+            </summary>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableException.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Common.NullableException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableException.#ctor(System.String,System.Exception)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Common.NullableException"/> class.
+            </summary>
+            <param name="message">The message.</param>
+            <param name="innerException">The inner exception.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.NullableException.#ctor(System.Runtime.Serialization.SerializationInfo,System.Runtime.Serialization.StreamingContext)">
+            <summary>
+            Initializes a new instance of the <see cref="T:EntLibContrib.Common.NullableException"/> class.
+            </summary>
+            <param name="info">The <see cref="T:System.Runtime.Serialization.SerializationInfo"/> that holds the serialized object data about the exception being thrown.</param>
+            <param name="context">The <see cref="T:System.Runtime.Serialization.StreamingContext"/> that contains contextual information about the source or destination.</param>
+            <exception cref="T:System.ArgumentNullException">
+            The <paramref name="info"/> parameter is null.
+            </exception>
+            <exception cref="T:System.Runtime.Serialization.SerializationException">
+            The class name is null or <see cref="P:System.Exception.HResult"/> is zero (0).
+            </exception>
+        </member>
+        <member name="T:EntLibContrib.Common.Configuration.TypeConfigurationElement`1">
+            <summary>
+            Defines a Polymorphic Configuration Element without having to be part of a PolymorphicConfigurationElementCollection.
+            Works similar to what XmlSerializer does with xsi:type attribute.
+            </summary>
+            <remarks>The type attribute has to be the first one. If not specified, it is assumed the elements is of type T. 
+            Implementation relies on private reflection as many methods are private on ConfigurationElement.
+            </remarks>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.IsModified">
+            <summary>
+            Indicates whether this configuration element has been modified since it was last saved or loaded, when implemented in a derived class.
+            </summary>
+            <returns>
+            true if the element has been modified; otherwise, false.
+            </returns>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.Deserialize(System.Xml.XmlReader)">
+            <summary>
+            Deserializes the Element from the content of the reader.
+            </summary>
+            <param name="reader">The reader.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.CreateElement">
+            <summary>
+            Creates a new instance of the Element.
+            </summary>
+            <returns>The newly created instance.</returns>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.Unmerge(System.Configuration.ConfigurationElement,System.Configuration.ConfigurationElement,System.Configuration.ConfigurationSaveMode)">
+            <summary>
+            Modifies the <see cref="T:System.Configuration.ConfigurationElement"/> object to remove all values that should not be saved.
+            </summary>
+            <param name="sourceElement">A <see cref="T:System.Configuration.ConfigurationElement"/> at the current level containing a merged view of the properties.</param>
+            <param name="parentElement">The parent <see cref="T:System.Configuration.ConfigurationElement"/>, or null if this is the top level.</param>
+            <param name="saveMode">A <see cref="T:System.Configuration.ConfigurationSaveMode"/> that determines which property values to include.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.GetType(System.Xml.XmlReader)">
+            <summary>
+            Gets the type.
+            </summary>
+            <param name="reader">The reader.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.GetType(System.String)">
+            <summary>
+            Gets the type.
+            </summary>
+            <param name="typeName">Name of the type.</param>
+            <returns></returns>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.SerializeElement(System.Xml.XmlWriter,System.Boolean)">
+            <summary>
+            Writes the contents of this configuration element to the configuration file when implemented in a derived class.
+            </summary>
+            <param name="writer">The <see cref="T:System.Xml.XmlWriter"/> that writes to the configuration file.</param>
+            <param name="serializeCollectionKey">true to serialize only the collection key properties; otherwise, false.</param>
+            <returns>
+            true if any data was actually serialized; otherwise, false.
+            </returns>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException">
+            The current attribute is locked at a higher configuration level.
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.DoSerializeElement(System.Xml.XmlWriter)">
+            <summary>
+            Does the serialize element.
+            </summary>
+            <param name="writer">The writer.</param>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.DeserializeElement(System.Xml.XmlReader,System.Boolean)">
+            <summary>
+            Reads XML from the configuration file.
+            </summary>
+            <param name="reader">The <see cref="T:System.Xml.XmlReader"/> that reads from the configuration file.</param>
+            <param name="serializeCollectionKey">true to serialize only the collection key properties; otherwise, false.</param>
+            <exception cref="T:System.Configuration.ConfigurationErrorsException">
+            The element to read is locked.
+            - or -
+            An attribute of the current node is not recognized.
+            - or -
+            The lock status of the current node cannot be determined.
+            </exception>
+        </member>
+        <member name="M:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.DoDeserializeElement(System.Xml.XmlReader)">
+            <summary>
+            Does the deserialize element.
+            </summary>
+            <param name="reader">The reader.</param>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.Type">
+            <summary>
+            Type provided by the Deserialization.
+            </summary>
+            <value>The type.</value>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.Element">
+            <summary>
+            The Element itself within the TypeConfigurationElement container.
+            </summary>
+            <value>The element.</value>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.ElementType">
+            <summary>
+            The Element type.
+            </summary>
+            <value>The type of the element.</value>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.ElementTypeOrDefault">
+            <summary>
+            Type used to create the Element during Deserialization.
+            </summary>
+            <value>The element type or default.</value>
+        </member>
+        <member name="P:EntLibContrib.Common.Configuration.TypeConfigurationElement`1.ElementTypeName">
+            <summary>
+            Gets the name of the element type.
+            </summary>
+            <value>The name of the element type.</value>
+        </member>
+        <member name="T:EntLibContrib.Common.Properties.InternalResources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.AssembliesLabelText">
+            <summary>
+              Looks up a localized string similar to Assemblies.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.AssemblyFileFilter">
+            <summary>
+              Looks up a localized string similar to Assemblies (*.exe;*.dll) | *.exe;*.dll.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.AssemblyLoadFailedErrorMessage">
+            <summary>
+              Looks up a localized string similar to The assembly failed to load: {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.AssemblyResourceNameDescription">
+            <summary>
+              Looks up a localized string similar to The name of the Assembly holding the resources for the invariant culture.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.BinaryResourceFileNameFilter">
+            <summary>
+              Looks up a localized string similar to Binary Resources (*.resources)|*.resources.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.BinaryResourceNameDescription">
+            <summary>
+              Looks up a localized string similar to The name of the Binary resource file for the invariant culture.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.CategoryCustom">
+            <summary>
+              Looks up a localized string similar to Custom.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.CategoryGeneral">
+            <summary>
+              Looks up a localized string similar to General.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ColumnMissingException">
+            <summary>
+              Looks up a localized string similar to The DataRow does not contain the referenced column name: {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.EnumTypesFailedErrorMessage">
+            <summary>
+              Looks up a localized string similar to Unable to load references for the specified assembly, please ensure all references are in the same directory as the assembly which is loaded..
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionAssemblyResourceAssemblyNameNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to The assembly name given is null or empty.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionAssemblyResourceInvalidAssembly">
+            <summary>
+              Looks up a localized string similar to The assembly described by the assembly name &quot;{0}&quot; could not be found.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionAssemblyResourceNoBaseMatch">
+            <summary>
+              Looks up a localized string similar to No resource was found matching the given base name &quot;{0}&quot;.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionAssemblyResourceNoResources">
+            <summary>
+              Looks up a localized string similar to The assembly &quot;{0}&quot; has no resources.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionFileResourceBaseNameInvalid">
+            <summary>
+              Looks up a localized string similar to The base name &quot;{0}&quot; is invalid, no invariant file was found with this name.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionFileResourcePathNameInvalid">
+            <summary>
+              Looks up a localized string similar to The path name &quot;{0}&quot; is invalid.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionFileResourcePathNameNullOrEmpty">
+            <summary>
+              Looks up a localized string similar to The path name given is null or empty.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionInvalidExtension">
+            <summary>
+              Looks up a localized string similar to the file name given has an invalid extension.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoBaseTypeAttribute">
+            <summary>
+              Looks up a localized string similar to No BaseTypeAttribute was found.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoMethodSelectedCaption">
+            <summary>
+              Looks up a localized string similar to No Method Selected.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoMethodSelectedMessage">
+            <summary>
+              Looks up a localized string similar to You need to select a Method node.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoResources">
+            <summary>
+              Looks up a localized string similar to No resources were found in {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoResourceSelectedCaption">
+            <summary>
+              Looks up a localized string similar to No Resource Selected.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ExceptionNoResourceSelectedMessage">
+            <summary>
+              Looks up a localized string similar to You need to select a Resource node.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.MethodNameDescription">
+            <summary>
+              Looks up a localized string similar to The name of the method to call.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.MethodSelectorClassRootNodeText">
+            <summary>
+              Looks up a localized string similar to Classes that inherit from {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.MethodSelectorClassRootNodeTextWithConfigurationType">
+            <summary>
+              Looks up a localized string similar to Classes that inherit from {0} and have a ConfigurationElementType of &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.MethodSelectorInterfaceRootNodeText">
+            <summary>
+              Looks up a localized string similar to Types that implement {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.MethodSelectorInterfaceRootNodeTextWithConfigurationType">
+            <summary>
+              Looks up a localized string similar to Types that implement {0} and have a ConfigurationElementType of &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.NoResourcesFoundInAssemblyCaption">
+            <summary>
+              Looks up a localized string similar to Invalid Assembly.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.NoResourcesFoundInAssemblyErrorMessage">
+            <summary>
+              Looks up a localized string similar to The assembly {0} does not contain any embedded resources.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.NoTypesFoundInAssemblyCaption">
+            <summary>
+              Looks up a localized string similar to No Types Found In Assembly.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.NoTypesFoundInAssemblyErrorMessage">
+            <summary>
+              Looks up a localized string similar to There were no types found in the assembly &apos;{0}&apos; that implement or inherit from the base type &apos;{1}&apos;.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.NullNotSupportedException">
+            <summary>
+              Looks up a localized string similar to A DBNull value has been found for a value type that is not supported.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.OrdinalOutOfRangeException">
+            <summary>
+              Looks up a localized string similar to The DataRow does not contain a column at ordinal number: {0}.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.ResourcePathNameDescription">
+            <summary>
+              Looks up a localized string similar to The path name to the resource file.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.TypeNameDescription">
+            <summary>
+              Looks up a localized string similar to The name of the class type that hosts the method to call.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.XmlFileNameFilter">
+            <summary>
+              Looks up a localized string similar to Xml data (*.xml)|*.xml|Config files (*.config)|*.config|All files (*.*)|*.*.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.XmlResourceFileNameFilter">
+            <summary>
+              Looks up a localized string similar to Xml Resources (*.resx)|*.resx.
+            </summary>
+        </member>
+        <member name="P:EntLibContrib.Common.Properties.InternalResources.XmlResourceNameDescription">
+            <summary>
+              Looks up a localized string similar to The name of the Xml Resource File holding the invariant culture.
+            </summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>EntLibContrib.Common</id>
+    <version>5.0.505.0</version>
+    <title>EntLibContrib 5.0 - Common Extensions</title>
+    <authors>EntLibContrib Project Contributors</authors>
+    <owners>EntLibContrib Project Contributors</owners>
+    <licenseUrl>http://entlibcontrib.codeplex.com/license</licenseUrl>
+    <projectUrl>http://entlibcontrib.codeplex.com/</projectUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>The EntLibContrib Common Extensions extends the Microsoft Enterprise Library Common Infrastructure by providing new configuration element classes (TypeConfigurationElement and AnonymousConfigurationElement) that help dealing with design-time support for your custom providers.</description>
+    <summary>The EntLibContrib Common Extensions provides additionnal support for the Microsoft Enterprise Library Common Infrastructure.</summary>
+    <tags>entlib enterprise library entlibcontrib contrib application block common</tags>
+    <dependencies>
+      <dependency id="EnterpriseLibrary.Common" version="5.0" />
+    </dependencies>
+    <frameworkAssemblies>
+      <frameworkAssembly assemblyName="mscorlib" targetFramework=".NETFramework3.5, .NETFramework4.0" />
+    </frameworkAssemblies>
+  </metadata>
+</package>

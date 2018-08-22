@@ -1,0 +1,72 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model ExpensesRequest
+@{
+   ViewBag.Title = "Expense Request";
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+}
+@section MasterSection
+{
+   <div id="result">
+      @(Html.Telerik().Grid<ExpensesRequest>()
+        .Name("GenericExpRequest")
+        .Columns(columns => {
+           columns.Command(commands => { commands.Edit().ButtonType(GridButtonType.Image); }).Width("40px");
+           columns.Command(commands => { commands.Delete().ButtonType(GridButtonType.Image); }).Width("40px");
+           columns.Bound(e => e.ID).Width("50px").Filterable(true);
+           columns.Bound(e => e.EXPENSE_TYPE).Width("130px").Filterable(true);
+           //columns.Bound(e => e.EXPENSE_Sub_TYPE).Width("110px").Filterable(true);
+           //columns.Bound(e => e.Paid_By).Width("90px").Filterable(true);
+           columns.Bound(e => e.Amount_Paid).Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(true);
+           columns.Bound(p => p.Paid_Party_To.Party_Name).Width("150px").ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Title("Receiving Party").Filterable(true);
+           columns.Bound(e => e.Amount_Paid_Till_Date).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(false);
+           //columns.Bound(e => e.Reference_ID).Filterable(true);
+           //columns.Bound(e => e.Reference_Table).Width("150px").Filterable(true);
+           columns.Bound(p => p.Dispatcher_Request_Ref.ID).ClientTemplate("<#= Dispatcher_Request_Ref? Dispatcher_Request_Ref.ID  : '' #>").Filterable(true).Title("Dispatcher#");
+           columns.Bound(p => p.Dispatcher_Request_Ref.Booking_No).ClientTemplate("<#= Dispatcher_Request_Ref ? Dispatcher_Request_Ref.Booking_No   : '' #>").Filterable(true);
+           columns.Bound(p => p.Dispatcher_Request_Ref.Container.Container_No).ClientTemplate("<#= Dispatcher_Request_Ref != null && Dispatcher_Request_Ref.Container != null ? Dispatcher_Request_Ref.Container.Container_No  : '' #>").Filterable(true);
+           //columns.Bound(p => p.Dispatcher_Request_Ref.TruckingCompany.Party_Name).ClientTemplate("<#= Dispatcher_Request_Ref? Dispatcher_Request_Ref.TruckingCompany.Party_Name  : '' #>").Title("Trucking Co.").Filterable(true);
+           columns.Bound(p => p.Scale_Ref.ID).ClientTemplate("<#= Scale_Ref ? Scale_Ref.ID  : '' #>").Filterable(true).Title("Scale#");
+           //columns.Bound(p => p.Scale_Ref.Party_Name).ClientTemplate("<#= Scale_Ref? Scale_Ref.Party_Name  : '' #>").Filterable(true).Title("Scale Party");
+        })
+
+        .DataKeys(keys => { keys.Add(o => o.ID); })
+        .DataBinding(dataBinding => dataBinding.Ajax()
+                          .Select("_Index", "GenericExpensesRequest", new { id = "0" })
+                          .Insert("_Insert", "GenericExpensesRequest")
+                          .Update("_Update", "GenericExpensesRequest")
+                          .Delete("_DeleteExpense", "GenericExpensesRequest")
+                        )
+
+        .Editable(editing => editing.Enabled(true).Mode(Telerik.Web.Mvc.UI.GridEditMode.PopUp).TemplateName("GenericExpensesRequest")
+        .Window(w => w.Modal(true))).ToolBar(commands => commands.Insert())
+        .EnableCustomBinding(true)
+        .Pageable(paging => paging.PageSize(20)
+        .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+        .Total(100))      
+        .Resizable(rs => rs.Columns(true))
+        .Scrollable(sc => sc.Height("*").Enabled(true))
+        .Filterable(f => f.Enabled(true))
+        .Resizable(rs => rs.Columns(true))        
+        .ClientEvents(events => events.OnEdit("Child_Grid_onEdit_Local").OnSave("Grid_onSave").OnLoad("Grid_OnLoad").OnError("Grid_onError"))
+      )
+   </div>
+
+   <script type="text/javascript" language="javascript">
+
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Paid_Party_To"] != null) {
+            $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+         }
+      }
+
+      function Grid_OnLoad() {
+         HideStandardButtonSection();
+      }
+
+   </script>
+}

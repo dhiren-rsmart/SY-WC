@@ -1,0 +1,16 @@
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe.config
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe.config
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.csprojResolveAssemblyReference.cache
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY\Rsmart-SY-Project\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY\Server\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe.config
+D:\Rsmart\Rsmart-SY\Server\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY\Server\smART.Integration.Scale.Service.Test\bin\Debug\smART.Integration.Scale.Service.Test.pdb
+D:\Rsmart\Rsmart-SY\Server\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.exe
+D:\Rsmart\Rsmart-SY\Server\smART.Integration.Scale.Service.Test\obj\x86\Debug\smART.Integration.Scale.Service.Test.pdb

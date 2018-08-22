@@ -1,0 +1,56 @@
+﻿@model smART.ViewModel.RoleFeature
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Feature)
+            </td>
+            <td>
+                @Html.LookupHtml(l => l.Feature, "FeatureLookup", "ID", "FeatureName", "_Index", "Feature", null, "_GetJson", "Feature", new string[] { "ID", "FeatureName" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ViewAccessInd)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.ViewAccessInd)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.NewAccessInd)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.NewAccessInd)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.EditAccessInd)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.EditAccessInd)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.DeleteAccessInd)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.DeleteAccessInd)
+            </td>
+        </tr>
+        
+    </table>
+</div>

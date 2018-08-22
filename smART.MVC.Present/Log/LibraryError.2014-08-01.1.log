@@ -1,0 +1,550 @@
+----------------------------------------
+Timestamp : 7/16/2014 11:19:14 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+Method Name: GetSingleByCriteria
+Line No.: 434
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:19:14 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+Method Name: GetSingleByExpression
+Line No.: 374
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:19:14 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 379
+   at smART.Library.LOVLibrary.GetByValueAndParent(String lovValue, String parentLovValue) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Administration\LOVLibrary.cs:line 137
+Method Name: GetByValueAndParent
+Line No.: 137
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:21:02 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+Method Name: GetSingleByCriteria
+Line No.: 434
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:21:02 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+Method Name: GetSingleByExpression
+Line No.: 374
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:21:02 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: Sequence contains more than one element
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 379
+   at smART.Library.LOVLibrary.GetByValueAndParent(String lovValue, String parentLovValue) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Administration\LOVLibrary.cs:line 137
+Method Name: GetByValueAndParent
+Line No.: 137
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:23 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+Method Name: GetSingleByCriteria
+Line No.: 434
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:23 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+Method Name: GetSingleByExpression
+Line No.: 374
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:23 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 379
+   at smART.Library.LOVLibrary.GetByValueAndParent(String lovValue, String parentLovValue) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Administration\LOVLibrary.cs:line 137
+Method Name: GetByValueAndParent
+Line No.: 137
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:58 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+Method Name: GetSingleByCriteria
+Line No.: 434
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:58 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+Method Name: GetSingleByExpression
+Line No.: 374
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:30:58 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 379
+   at smART.Library.LOVLibrary.GetByValueAndParent(String lovValue, String parentLovValue) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Administration\LOVLibrary.cs:line 137
+Method Name: GetByValueAndParent
+Line No.: 137
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:31:34 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+Method Name: GetSingleByCriteria
+Line No.: 434
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------
+----------------------------------------
+Timestamp : 7/16/2014 11:31:34 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: smART.Library.LibraryException: An error has occurred while processing your request. Please contact your system administrator for help. ---> System.InvalidOperationException: A specified Include path is not valid. The EntityType 'smART.Model.LOV' does not declare a navigation property with the name 'LOV_Value'.
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter.ConvertSpanPath(SpanPathInfo parentInfo, List`1 navPropNames, Int32 pos)
+   at System.Data.Objects.Internal.ObjectFullSpanRewriter..ctor(DbCommandTree tree, DbExpression toRewrite, Span span, AliasGenerator aliasGenerator)
+   at System.Data.Objects.Internal.ObjectSpanRewriter.TryRewrite(DbQueryCommandTree tree, Span span, MergeOption mergeOption, AliasGenerator aliasGenerator, DbExpression& newQuery, SpanIndex& spanInfo)
+   at System.Data.Objects.Internal.ObjectQueryExecutionPlan.Prepare(ObjectContext context, DbQueryCommandTree tree, Type elementType, MergeOption mergeOption, Span span, ReadOnlyCollection`1 compiledQueryParameters, AliasGenerator aliasGenerator)
+   at System.Data.Objects.ELinq.ELinqQueryState.GetExecutionPlan(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.GetResults(Nullable`1 forMergeOption)
+   at System.Data.Objects.ObjectQuery`1.System.Collections.Generic.IEnumerable<T>.GetEnumerator()
+   at System.Linq.Enumerable.SingleOrDefault[TSource](IEnumerable`1 source)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.<GetElementFunction>b__2[TResult](IEnumerable`1 sequence)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.ExecuteSingle[TResult](IEnumerable`1 query, Expression queryRoot)
+   at System.Data.Objects.ELinq.ObjectQueryProvider.System.Linq.IQueryProvider.Execute[S](Expression expression)
+   at System.Data.Entity.Internal.Linq.DbQueryProvider.Execute[TResult](Expression expression)
+   at System.Linq.Queryable.SingleOrDefault[TSource](IQueryable`1 source, Expression`1 predicate)
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 434
+   --- End of inner exception stack trace ---
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.IntentionalRethrow(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 102
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.RethrowRecommended(Exception chainException, Exception originalException) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 118
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyEntry.Handle(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyEntry.cs:line 91
+   at Microsoft.Practices.EnterpriseLibrary.ExceptionHandling.ExceptionPolicyImpl.HandleException(Exception exceptionToHandle) in e:\Builds\EntLib\Latest\Source\Blocks\ExceptionHandling\Src\ExceptionHandling\ExceptionPolicyImpl.cs:line 84
+   at smART.Common.PolicyHandler.Handle(String policyName, Exception& ex) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\ExceptionPolicyHandler.cs:line 75
+   at smART.Common.ExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message, String policyName) in d:\Rsmart\Rsmart-SY-Project\smART.Common\Exception\ExceptionHandlers\OldExceptionHandler.cs:line 26
+   at smART.Library.LibraryExceptionHandler.HandleException(Exception& ex, TraceEventType severity, String message) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\Exception\LibraryExceptionHandler.cs:line 27
+   at smART.Library.GenericLibrary`2.GetSingleByCriteria(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 443
+   at smART.Library.GenericLibrary`2.GetSingleByExpression(Expression`1 predicate, String[] includePredicate) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Library\GenericLibrary.cs:line 374
+Method Name: GetSingleByExpression
+Line No.: 374
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------

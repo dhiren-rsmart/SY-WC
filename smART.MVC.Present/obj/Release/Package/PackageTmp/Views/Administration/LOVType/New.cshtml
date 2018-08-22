@@ -1,0 +1,145 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model LOVType
+@{
+   ViewBag.Title = "List Of Values";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "LOVType";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+   
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "LOVType";
+   ViewBag.Administration = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+   @Html.ValidationSummary()
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.ID)
+           @* @if(Model.ParentType!= null ){
+              @Html.TextBoxFor(m => m.ParentType.ID);
+             }
+            else  
+            {
+              @Html.TextBox("ParentType", "0");
+            }*@
+         </td>
+         <td>@Html.TextBoxFor(m => m.ID, new {
+          @readonly = "readonly"
+        })
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.LOVType_Name)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.LOVType_Name)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.LOVType_Description)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.LOVType_Description)
+         </td>
+      </tr>
+       <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.ParentType)
+         </td>
+         <td>
+          @Html.LookupHtml(m => m.ParentType, "ParentTypeLookup", "ID", "LOVType_Name", "_Index", "LOVType", null, "_GetJson", "LOVType", new string[] { "ID", "LOVType_Name" })
+         
+         </td>
+      </tr>
+   </table>
+}
+@section DetailsSection
+{
+   <script language="javascript" type="text/javascript">
+
+      //#region Events
+
+      function deleteEntity()
+      {
+         alert("Deleting of LOV is not Allowed.");
+      }
+      function Child_Grid_onSave(e)
+      {
+         // Set Party.ID to the Parent ID
+         e.values["LOVType.ID"] = eval('@Model.ID');
+                  
+         // The following are "required" fields for thr Party object; 
+         // setting them to ANY value has no effect, 
+         // as these values are overwritten based on the ID
+         // set in the "Party.ID" field above
+         e.values["LOVType.LOVType_Name"] = 'Test';
+         e.values["LOVType.LOVType_Description"] = 'Test';
+
+         e.values["Parent.LOVType_Name"] = 'Test';
+         e.values["Parent.LOVType_Description"] = 'Test';
+      }
+
+      function Child_Grid_onEdit_Local(e)
+      {
+        Child_Grid_onEdit(e);
+
+        if (e.dataItem["Parent"] != null)
+        {    
+          $("#LabelID_Parent").val(e.dataItem["Parent"].LOV_Value);
+        }
+    
+
+//        Child_Grid_onEdit(e);
+//        var parentTypeId = $("#ParentType_ID").val();
+//        e.dataItem["Parent_Type_ID"] = parentTypeId;
+//        alert(e.dataItem.Parent_Type_ID);     
+//        $("#Parent_Type_ID").val(parentTypeId);
+//        var tGrid = $('#SearchWindowGrid_Parent').data('tGrid');
+//        tGrid.rebind({ id: parentTypeId });
+      }
+
+      //#endregion Evetns      
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+   <hr />
+   @( Html.Telerik().TabStrip()
+                .Name("Tab_LOVType_LOV")
+                .SelectedIndex(0)
+                .Items(items => {
+                   items.Add()
+                        .Text("LOV")
+                        .Enabled(true)
+                        .Content(Html.Telerik().Grid<LOV>()
+                                           .Columns(columns => {
+                                             columns.Bound(p => p.Parent.LOV_Value).ClientTemplate("<#= Parent ? Parent.LOV_Value : '' #>").Title("Parent");
+                                             columns.Bound(p => p.Parent.ID).ClientTemplate("<#= Parent ? Parent.ID: '' #>").Hidden();                                             
+                                           })
+                                          .BuildGrid(
+                                              gridName: "Grid_LOVType_LOV",
+                                              ajaxController: "LOV",
+                                              indexID: Model.ID.ToString(), allowDelete: false, allowInsert: true, allowEdit: true, feature: smART.Common.EnumFeatures.Master_LOV
+                                 )
+
+                          .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+                          .ToHtmlString()
+                    );
+
+                })
+
+       )
+}

@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<job-scheduling-data xmlns="http://quartznet.sourceforge.net/JobSchedulingData" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.0">
+
+  <processing-directives>
+    <overwrite-existing-data>true</overwrite-existing-data>
+  </processing-directives>
+
+  <!--Post ticket on lead server-->
+  <schedule>
+    <job>
+      <name>PostTicketOnLeadServer-Job</name>
+      <group>Rsmart_GROUP</group>
+      <description>The job description</description>
+      <job-type>smART.Integration.LeadsOnline.PostTicketOnLeadServerJob, smART.Integration.LeadsOnline</job-type>
+      <durable>true</durable>
+      <recover>false</recover>
+      <job-data-map>
+        <entry>
+          <key>QBUtilsFilePath</key>
+          <value>D:\RecyclesmART_Dallas\V1.1\smART.Integration.QB\bin\Debug\smART.Integration.QB</value>
+        </entry>
+        <entry>
+          <key>Argument</key>
+          <value>2</value>
+        </entry>
+      </job-data-map>
+    </job>
+    <trigger>    
+      <cron>
+        <name>PostTicketOnLeadServer_Trigger</name>
+        <group>Rsmart_TriggerGroup</group>
+        <description>Log File 1</description>
+        <job-name>PostTicketOnLeadServer-Job</job-name>
+        <job-group>Rsmart_GROUP</job-group>
+        <!--<cron-expression>0 0/5 * * * ?</cron-expression>-->  
+       <cron-expression>0 0 8 * * ?</cron-expression> 
+      </cron>
+    </trigger>
+  </schedule> 
+
+</job-scheduling-data>

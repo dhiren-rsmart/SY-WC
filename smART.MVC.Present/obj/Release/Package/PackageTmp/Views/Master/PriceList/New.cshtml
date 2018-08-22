@@ -1,0 +1,227 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model PriceList
+@{
+   ViewBag.Title = "Price List Master";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "PriceList";
+   ViewBag.DeleteData = Model.ID;
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+   
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "PriceList";
+
+   //ViewBag.Administration = true;
+   ViewBag.Feature = smART.Common.EnumFeatures.Master_PriceList;
+
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+   @Html.ValidationSummary()
+   <table>
+      <tr>
+         <td>
+            <table>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.ID)
+                  </td>
+                  <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.PriceList_Name)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.PriceList_Name)
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.Effective_Date_From)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.Effective_Date_From)
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.Effective_Date_To)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.Effective_Date_To)
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.UOM)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.UOM, new { LovType = "UOM", selectedItem="LBS" })
+                  </td>
+               </tr>
+            </table>
+         </td>
+         <td style="text-align: left; vertical-align: top;">
+            <table>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.Comments)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.Comments)
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.Active)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.Active)
+                  </td>
+               </tr>
+               <tr>
+                  <td>@Html.AuthorizedLabelFor(m => m.IsDefault)
+                  </td>
+                  <td>@Html.AuthorizedEditorFor(m => m.IsDefault)
+                  </td>
+               </tr>
+            </table>
+         </td>
+      </tr>
+   </table>
+}
+@section DetailsSection
+{
+   <script language="javascript" type="text/javascript">
+
+      //#region Events
+
+      function Child_Grid_onEdit_Local(e)
+      {
+
+         Child_Grid_onEdit(e);
+
+         if (e.dataItem["Item"] != null)
+            $("#LabelID_Item").val(e.dataItem["Item"].Short_Name);
+      }
+
+      function Child_Grid_onSave(e)
+      {
+         // Set PriceList.ID to the Parent ID
+         e.values["PriceList.ID"] = eval('@Model.ID');
+      }
+
+      function btnAddAllItems_onclick(e)
+      {
+         //e.preventDefault();
+         var tGrid = $('#Grid_PriceList_PriceListItem').data('tGrid');
+         tGrid.rebind({ isNew: true, Id: -1 });
+         return false;
+      }
+
+      //#endregion Events
+
+   </script>
+
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+
+   <hr />
+   @{ Html.Telerik().ScriptRegistrar().OnDocumentReady(
+      @<text> 
+         var mailBoxDiv = $('#btnAddAllItems'); mailBoxDiv.bind('click',function(e) { btnAddAllItems_onclick();});
+      </text>);
+   }
+   @(              
+ Html.Telerik().TabStrip()
+                .Name("Tab_PriceList_Item")
+
+                .SelectedIndex(0)
+                .Items(items => {
+                        @* The following section needs to be duplicated for more tabs *@
+                        @* PriceListItems TAB *@
+                   items.Add().Text("Price List Items").Content(
+                      //Html.Telerik().Grid<PriceListItem>()
+                      //.Name("Grid_PriceList_PriceListItem")
+                      //.DataKeys(keys => keys.Add(key => key.ID))
+                      //.EnableCustomBinding(true)
+                      //.Pageable(paging => paging.PageSize(20)
+                      //    .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+                      //    .Total(100))
+                      //.DataBinding(bindings => bindings.Ajax()
+                      //    .Select("_Index", "PriceListItem", new { id = Model.ID.ToString() })
+                      //    .Insert("_Insert", "PriceListItem", new { isNew = (Model.ID.ToString().Equals("0") ? true : false) })
+                      //    .Update("_Update", "PriceListItem", new { isNew = (Model.ID.ToString().Equals("0") ? true : false) })
+                      //    .Delete("_Delete", "PriceListItem", new { MasterID = Model.ID.ToString(),  isNew = (Model.ID.ToString().Equals("0") ? true : false) }))
+
+
+                       ////.Editable(editing => editing.Enabled(true).Mode(Telerik.Web.Mvc.UI.GridEditMode.PopUp).Window(w => w.Modal(true))).ToolBar(commands => commands.Insert())
+
+
+                       ////.BuildGrid(
+                      ////        gridName: "Grid_PriceList_PriceListItem",
+                      ////        ajaxController: "PriceListItem",
+                      ////        indexID: Model.ID.ToString()
+                      ////    )
+
+                       //     .Columns(columns =>
+                      //    {
+
+                       //        columns.Bound(o => o.Item.Short_Name).Title("Item"); ;
+                      //        columns.Bound(o => o.Price);
+                      //        columns.Bound(o => o.Comments);
+
+                       //        columns.Command(commands =>
+                      //        {
+                      //            commands.Edit().ButtonType(Telerik.Web.Mvc.UI.GridButtonType.Text);
+                      //            //commands.Delete().ButtonType(Telerik.Web.Mvc.UI.GridButtonType.Text);
+                      //        });
+                      //    })
+                      //   .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local_Local"))
+
+                       //.ToHtmlString()
+                      //);
+
+
+                       Html.Telerik().Grid<PriceListItem>()
+
+                        .Columns(columns => {
+
+                           columns.Bound(o => o.Item.Short_Name).Title("Item");
+                           columns.Bound(o => o.Price).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.0000}");
+
+                        })
+
+                       .BuildGrid(
+                               gridName: "Grid_PriceList_PriceListItem",
+                               ajaxController: "PriceListItem",
+                               indexID: Model.ID.ToString(),
+                               allowInsert: true, allowEdit: true, allowDelete: true,
+                               hiddenColumns: new string[] { "Item","Price" },
+                               feature: smART.Common.EnumFeatures.Master_PriceList
+                       )
+                      //.ToolBar(commands => commands.Custom().Text("Add All Items").HtmlAttributes( new {onclick = "btnAddAllItems_onclick(this)"}))  
+                        .ToolBar(toolBar => toolBar.Template(@<text>
+   <div class="t-grid-action t-button t-state-default t-grid-add">
+      Add New Item
+   </div>
+   <div id="btnAddAllItems" class="t-button t-state-default">
+      Add All Items
+   </div>
+   @* <a href="#" class="t-grid-action t-button t-state-default t-grid-add">Add new record</a>*@
+   </text>))
+                       .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+                       .ToHtmlString()
+                       );
+                            
+                            
+                            
+                            
+                        @* The above section needs to be duplicated for more tabs *@
+
+                }
+                )
+        )
+}

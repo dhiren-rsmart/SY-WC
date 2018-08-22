@@ -1,0 +1,78 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model UOMConversion
+@{
+    ViewBag.Title = "UOM Conversion";
+    
+    ViewBag.AjaxFormSubmitMethod = "Save";
+    ViewBag.NewUrl = "New";
+    
+    ViewBag.DeleteAction = "_Delete";
+    ViewBag.DeleteController = "UOMConversion";
+    ViewBag.DeleteData = Model.ID.ToString();
+
+    ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+    
+    ViewBag.SearchAction = "_Index";
+    ViewBag.SearchController = "UOMConversion";
+    ViewBag.Administration = true;
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section MasterSection
+{
+    @* Print *@
+   <script type="text/javascript" language="javascript">
+      function ValidatePrint()
+      {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+
+    @Html.ValidationSummary() 
+    <table>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>     
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Conversion_UOM)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Conversion_UOM, new { LovType = "UOM" })
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Conversion_UOM_Desc)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Conversion_UOM_Desc)
+            </td>
+        </tr>   
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Base_UOM)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Base_UOM, new { LovType = "UOM" })
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Base_UOM_Desc)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Base_UOM_Desc)
+            </td>
+        </tr>
+        <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Factor)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Factor)
+            </td>
+        </tr>     
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Is_Base_UOM)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Is_Base_UOM)
+            </td>
+        </tr>          
+    </table>
+}

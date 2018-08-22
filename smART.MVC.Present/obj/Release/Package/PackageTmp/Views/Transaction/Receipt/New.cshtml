@@ -1,0 +1,593 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model PaymentReceipt
+@{
+   ViewBag.Title = "Receipts";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Receipt";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Receipt";
+
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+
+   ViewBag.PrintID = Model.ID;
+   ViewBag.PrintAction = "Receipt";
+   ViewBag.PrintController = "Reports"; 
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}";  
+
+   ViewBag.SearchUnPaidInvoiceAction = "_UnPaidInvoices";
+   ViewBag.UnPaidInvoiceController = "Invoice";
+
+   Model.Transaction_Type = "Receipt";    
+}
+@section ButtonSection{
+  @* @Html.AuthorizedButton("UnpaidInvoices", "Unpaid Invoices", "button", new { onclick = "ShowUnPaidInvoiceWindow()", @class = "t-button" })*@
+    @Html.AuthorizedButton("UnpaidInvoices", "Unpaid Invoices", "button"
+                           , new {
+                                   onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.UnPaidInvoiceController, ViewBag.SearchUnPaidInvoiceAction),
+                                   @class = "t-button"
+                                 }
+                          )
+}
+@section MasterSection
+{
+   @*<div>
+      @(Html.Telerik().Window().BuildWindow("UnPaidInvoiceWindow")
+           .LoadContentFrom((string)ViewBag.SearchUnPaidInvoiceAction, (string)ViewBag.UnPaidInvoiceController)
+         )
+   </div>*@
+   <script language="javascript" type="text/javascript">
+
+      //       $(document).ready(function(){           
+      //         updateCalculatedValues();
+      //      });
+
+//      function ShowUnPaidInvoiceWindow() {
+//         var window = $("#UnPaidInvoiceWindow").data("tWindow");
+//         window.center().open();
+//      }
+
+     function onTabStrib_Select(e){
+       var item = $(e.item);
+       var selectedIndex = item.index();  
+       if (selectedIndex == 2) // Scale Tickets
+         refreshGrid("#Grid_Expense_List");
+       else if (selectedIndex == 3) // Notes
+         refreshGrid("#Grid_Receipt_Notes");
+       else if (selectedIndex == 4) // Attachments
+         refreshGrid("#Grid_Receipt_Attachments");
+     }
+
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+      }
+
+      function Child_Grid_onSave(e) {
+         Grid_onSave(e);
+         // Set Party.ID to the Parent ID     
+         e.values["Parent.ID"] = eval('@Model.ID');
+         e.values["Reference_ID"] = eval('@Model.ID');
+      }
+
+
+      function Invoice_Grid_onSave_Local(e) {
+         if (Validate_Child_Grid_onSave(e) == false) return;
+
+         Grid_onSave(e);
+
+         if (e.dataItem.Invoice != null) {
+            e.values["Invoice.ID"] = e.dataItem.Invoice.ID;
+            e.values["Invoice.Booking.Booking_Ref_No"] = e.dataItem.Invoice.Booking.Booking_Ref_No;
+            e.values["Invoice.Invoice_SO"] = e.dataItem.Invoice.Invoice_SO;
+            e.values["Invoice.Net_Amt"] = e.dataItem.Invoice.Net_Amt;
+            e.values["Invoice.Amount_Paid_Till_Date"] = e.dataItem.Invoice.Amount_Paid_Till_Date;
+            if (e.dataItem.Invoice.Sales_Order_No != null)
+               e.values["Invoice.Sales_Order_No.ID"] = e.dataItem.Invoice.Sales_Order_No.ID;
+            if (e.dataItem.Invoice.Booking != null && e.dataItem.Invoice.Booking.Sales_Order_No != null)
+               e.values["Invoice.Booking.Sales_Order_No.ID"] = e.dataItem.Invoice.Booking.Sales_Order_No.ID;
+         }
+         e.values["Balance_Amount"] = e.dataItem.Balance_Amount;
+      }
+
+      function Validate_Child_Grid_onSave(e) {
+        if (parseFloat(e.values["Apply_Amount"]) > parseFloat(e.values["Balance_Amount"]))
+        {
+            alert("Eenter amount can not be larger than amount due.");
+            e.preventDefault();
+            return false;
+         }
+
+         if (e.values["Paid_In_Full"] === true) {
+            e.values["Apply_Amount"] = e.values["Balance_Amount"];
+         }
+          else if (parseFloat(e.values["Apply_Amount"]) === parseFloat(e.values["Balance_Amount"]))
+          {
+            e.values["Paid_In_Full"] == true;
+         }
+         return true;
+      }
+
+      function Invoice_Child_Grid_onEdit_Local(e) {
+         if (e.mode == "edit") {
+            $('#Invoice_ID').attr('readonly', 'readonly');
+            $('#Invoice_Booking_Booking_Ref_No').attr('readonly', 'readonly');
+            $('#Invoice_Invoice_SO').attr('readonly', 'readonly');
+            $('#Invoice_Net_Amt').attr('readonly', 'readonly');
+            $('#Invoice_Amount_Paid_Till_Date').attr('readonly', 'readonly');
+            $('#Balance_Amount').attr('readonly', 'readonly');
+         }
+      }
+          
+                       
+   </script>
+   <script type="text/javascript">
+
+      // Cash Amount + Cehque Amount
+      function get_AmountToBeReceived() {
+         var sum = 0;
+         var cashAmount = $("#Cash_Amount").val();
+         var bankAmount = $("#Bank_Amount").val();
+
+         //add only if the value is number
+         if (!isNaN(cashAmount) && cashAmount.length != 0) {
+            sum += parseFloat(cashAmount);
+         }
+
+         //add only if the value is number
+         if (!isNaN(bankAmount) && bankAmount.length != 0) {
+            sum += parseFloat(bankAmount);
+         }
+         sum = sum.toFixed(2);
+         return sum;
+      }
+
+      function get_TotalExpensePaidByParty() {
+         var totalExp = 0;
+         var grid = $("#Grid_Expense_List").data("tGrid");
+         var Rows = grid.$rows();
+         var masterRow;
+         if (grid != null && Rows.length > 0) {
+            for (var i = 0; i < Rows.length; i++) {
+               var row = Rows[i];
+               var dataItem = grid.dataItem(row);
+               if (dataItem != null) {
+                  if (dataItem.Paid_By == 'PARTY')
+                     totalExp += dataItem.Amount_Paid;
+                  else if (dataItem.Paid_By === 'SELF' && dataItem.EXPENSE_TYPE === 'Bank Fees')
+                    totalExp -= dataItem.Amount_Paid;
+               }
+            }
+         }
+         return totalExp.toFixed(2);
+      }
+
+      function get_NetAmount() {
+         var netAmt = 0;
+
+         var amountToBePaid = $("#Total_Amount_Paid").val();
+         //add only if the value is number
+         if (!isNaN(amountToBePaid) && amountToBePaid.length != 0) {
+            netAmt += parseFloat(amountToBePaid);
+         }
+
+         var amtExp = $("#Expenses_Amt").val();
+         //add only if the value is number
+         if (!isNaN(amtExp) && amtExp.length != 0) {
+            netAmt += parseFloat(amtExp);
+         }
+
+         netAmt = netAmt.toFixed(2);
+         return netAmt;
+      }
+
+      function get_AmountToBeApplied() {
+         var amtToBeApplied = 0;
+         var amtPaid = $("#Total_Amount_Paid").val();
+         if (!isNaN(amtPaid) && amtPaid.length != 0) {
+            amtToBeApplied += parseFloat(amtPaid);
+         }
+         var amtApplied = $("#Applied_Amount").val();
+         if (!isNaN(amtApplied) && amtApplied.length != 0) {
+            amtToBeApplied -= parseFloat(amtApplied);
+         }
+         amtToBeApplied = amtToBeApplied.toFixed(2);
+         return amtToBeApplied;
+      }
+
+      function get_AmountApplied() {
+         var appliedAmount = 0;
+         var grid = $("#Grid_ReceiptDetails").data("tGrid");
+         var Rows = grid.$rows();
+         var masterRow;
+         if (grid != null && Rows.length > 0) {
+            for (var i = 0; i < Rows.length; i++) {
+               var row = Rows[i];
+               var dataItem = grid.dataItem(row);
+               if (dataItem != null) {
+                  appliedAmount += dataItem.Apply_Amount;
+               }
+            }
+         }
+         appliedAmount = appliedAmount.toFixed(2);
+         return appliedAmount;
+      }
+
+      function set_TotalDueAmt(partyId) {
+         var total = 0;
+         var postData = { id: partyId.toString() };
+         $.ajax({
+            url: '@(Url.Action("_GetTotalDueAmount", "ReceiptDetails"))',
+            type: "GET",
+            dataType: "json",
+            data: postData,
+            cache: false,
+            success: function (data) {
+               if (data != null) {
+                  total = parseFloat(data);
+                  $("#Total_Amount_Due").val(total.toFixed(2));
+               }
+            },
+            error: function () {
+               alert('An error occured due to Get Total Due Amount.')
+            }
+         });
+      }  
+   </script>
+   <script type="text/javascript">
+
+      function OnTabStripLoad(e) {
+         //var selectedValue = $("#Ticket_Type").val();
+         //SelectTab(selectedValue);
+      }
+
+      function on_PartyChange(e) {
+         $("#Party_ID").val(e.ID);
+         var tGrid = $('#Grid_ReceiptDetails').data('tGrid');
+         var params = {
+            id: '0',
+            partyId: e.ID.toString()
+         };
+         tGrid.rebind(params);
+
+         // Set total due amount.
+         set_TotalDueAmt(e.ID.toString());
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../ReceiptDetails/_BindReceiptDetails/?id=0&partyId=" + e.ID,
+            updateUrl: "../ReceiptDetails/_Update/?isNew=true"
+         };
+      }
+
+      function Invoice_Grid_onDataBound(e) {
+         $("#Applied_Amount").val(get_AmountApplied());
+         $("#Applied_Amount_To_Be").val(get_AmountToBeApplied());
+         $("#Net_Amt").val(get_NetAmount);
+      }
+
+
+      function on_CashBankAmountChange() {
+         $("#Total_Amount_Paid").val(get_AmountToBeReceived());
+         $("#Applied_Amount_To_Be").val(get_AmountToBeApplied());
+         $("#Net_Amt").val(get_NetAmount());
+      }
+
+      function Expense_Grid_onDataBound(e) {
+         $("#Expenses_Amt").val(get_TotalExpensePaidByParty());
+         $("#Net_Amt").val(get_NetAmount());
+      }   
+ 
+
+   </script>
+   <script type="text/javascript" language="javascript">
+      function OnShowHideImage_Clicked(e) {
+         var grid = $("#Grid_Receipt_Attachments").data('tGrid');
+         var Rows = grid.$rows();
+         for (var i = 0; i < Rows.length; i++) {
+            var row = Rows[i];
+            ShowHideAttchmentImage(row, grid);
+         }
+      }
+      function Attachment_Grid_onRowDataBound(e) {
+         var grid = $("#Grid_Receipt_Attachments").data('tGrid');
+         ShowHideAttchmentImage(e.row, grid);
+      }
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+
+      function ValidatePrint() {
+         alert('Printing function not available for this module.');
+         return false;
+      }
+   </script>
+   @* Expense *@
+   <script type="text/javascript" language="javascript">
+
+      function Expense_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+         if (e.dataItem["Paid_Party_To"] != null) {
+            $("#LabelID_Paid_Party_To").val(e.dataItem["Paid_Party_To"].Party_Name);
+         }
+      }
+   </script>
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+               @Html.HiddenFor(m => m.Transaction_Type)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Party)
+            </td>
+            <td>
+               @if (Model.ID == 0) {
+                  @Html.LookupHtml(m => m.Party, "PartyLookup", "ID", "Party_Name", "_PartyForReceipt", "Party", null, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "on_PartyChange")                                
+                                
+               }
+               else {
+                  @Html.TextBoxFor(m => m.Party.Party_Name, new { @readonly = "readonly" })                        
+
+               }
+               @Html.HiddenFor(m => m.Party.ID)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Mode, "Receipt Mode")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Mode, new { LovType = "Tran_mode", selectedItem = "Check" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Date, "Receipt Date")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Date)
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Transaction_Status, "Receipt Status")
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Status, new { LovType = "STATUS", selectedItem = "Open" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Override_Name)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Override_Name)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Total_Amount_Due)
+            </td>
+            <td>
+               @Html.TextBox("Total_Amount_Due", String.Format("{0:0.00}", Model.Total_Amount_Due), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Cash_Amount)
+            </td>
+            <td>
+               @Html.Telerik().NumericTextBoxFor(m => m.Cash_Amount).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("on_CashBankAmountChange"))
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Bank_Amount)
+            </td>
+            <td>
+               @Html.Telerik().NumericTextBoxFor(m => m.Bank_Amount).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("on_CashBankAmountChange"))
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Total_Amount_Paid, "Amount to be Received")
+            </td>
+            <td>
+               @Html.TextBox("Total_Amount_Paid", String.Format("{0:0.00}", Model.Total_Amount_Paid), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Applied_Amount)
+            </td>
+            <td>
+               @Html.TextBox("Applied_Amount", String.Format("{0:0.00}", Model.Applied_Amount), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td style="border-bottom: 1px solid black;">
+               @Html.AuthorizedLabelFor(m => m.Applied_Amount_To_Be)
+            </td>
+            <td style="border-bottom: 1px solid black;">
+               @Html.TextBox("Applied_Amount_To_Be", String.Format("{0:0.00}", Model.Applied_Amount_To_Be), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Expenses_Amt)
+            </td>
+            <td>
+               @Html.TextBox("Expenses_Amt", String.Format("{0:0.00}", Model.Expenses_Amt), new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Net_Amt, "Net Received")
+            </td>
+            <td>
+               @Html.TextBox("Net_Amt", String.Format("{0:0.00}", Model.Net_Amt), new { @readonly = "readonly" })
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @* =============================Unpaid Invoice===============================================*@
+   @(Html.Telerik().TabStrip().Name("PaymentReceipt_TabStrip").ClientEvents(e => e.OnSelect("onTabStrib_Select"))
+   .Items(items => {
+        items.Add().Text("Invoices").Enabled(true).Selected(true)       
+       .Content(Html.Telerik().Grid<PaymentReceiptDetails>()
+       .Columns(columns => {
+          columns.Bound(o => o.ID).ReadOnly();
+          columns.Bound(o => o.Invoice.ID).Title("Invoice#").ReadOnly();
+          columns.Bound(o => o.Invoice.Booking.Booking_Ref_No).ReadOnly();
+          columns.Bound(o => o.Invoice.Invoice_SO).Title("Sales Order#").ReadOnly();
+          columns.Bound(o => o.Invoice.Net_Amt).Title("Invoice Amount").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+          columns.Bound(o => o.Invoice.Amount_Paid_Till_Date).Title("Amount Received Till Date").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+          columns.Bound(o => o.Balance_Amount);
+          columns.Bound(o => o.PaymentReceipt.ID).Hidden(true);
+       })
+       .BuildGrid(gridName: "Grid_ReceiptDetails",
+                   ajaxController: "ReceiptDetails",
+                   indexID: Model.ID.ToString(),
+                   hiddenColumns: new string[] { "ID", "Balance_Amount" },
+                   allowInsert: false,
+                   allowDelete: false,
+                   allowEdit: true,
+                   feature: smART.Common.EnumFeatures.Transaction_PaymentDetails
+                 )
+       .DataBinding(bindings => bindings.Ajax()
+                       .Select("_BindReceiptDetails", "ReceiptDetails", new { id = Model.ID.ToString(), partyId = '0' })
+                       .Insert("_Insert", "ReceiptDetails", new { isNew = (Model.ID.ToString().Equals("0") ? true : false) })
+                       .Update("_Update", "ReceiptDetails", new { isNew = (Model.ID.ToString().Equals("0") ? true : false) })
+                       .Delete("_Delete", "ReceiptDetails", new { MasterID = Model.ID.ToString(), isNew = (Model.ID.ToString().Equals("0") ? true : false) })
+                   )
+     .Pageable(paging => paging.PageSize(200)
+     .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+     .Total(100))
+     .ClientEvents(events => events.OnDataBound("Invoice_Grid_onDataBound").OnSave("Invoice_Grid_onSave_Local").OnEdit("Invoice_Child_Grid_onEdit_Local").OnError("Grid_onError"))
+     .Scrollable(sc => sc.Enabled(false))
+     .Resizable(rs => rs.Columns(true))
+     .Editable(editing => editing.Mode(GridEditMode.InLine))
+     .ToHtmlString()
+    );            
+
+     @* =============================Bank/Cash Details===============================================*@
+   items.Add()
+     .Text("Bank/Cash Details")
+     .Enabled(true)
+    .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Account_Name)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Account_Name, "BankLookup", "ID", "Account_Name", "_BankByPartyType", "Bank", new { partytype = "Organization" }, "_GetJson", "Bank", new string[] { "Bank_Name", "Account_Name", "Account_No" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Check_Wire_Transfer)
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Check_Wire_Transfer)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Cash_Drawer)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Cash_Drawer, new { LovType = "Drawer" })
+         </td>
+      </tr>
+   </table>
+   </text>);     
+   
+   @* ========================Expense TAB ============================================================*@
+   items.Add()
+       .Text("Expenses")
+       .Enabled(true)
+       .Content(Html.Telerik().Grid<PaymentReceiptExpense>()
+                            .Columns(columns => {
+                               columns.Bound(p => p.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+                            })
+                           .BuildGrid(
+                               gridName: "Grid_Expense_List",
+                               ajaxController: "ReceiptExpense",
+                               hiddenColumns: new string[] { "Paid_Party_To" },
+                               indexID: Model.ID.ToString(),
+                               feature: smART.Common.EnumFeatures.Transaction_ReceiptExpense
+                           )
+                           .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Expense_Grid_onEdit_Local").OnRowDataBound("Expense_Grid_onDataBound").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                           .ToHtmlString()
+               );     
+    @* ========================Notes TAB ============================================================*@
+   items.Add()
+       .Text("Notes")
+       .Enabled(true)
+       .Content(Html.Telerik().Grid<PaymentReceiptNotes>()
+                           .BuildGrid(
+                               gridName: "Grid_Receipt_Notes",
+                               ajaxController: "ReceiptNotes",
+                               indexID: Model.ID.ToString(),
+                               feature: smART.Common.EnumFeatures.Transaction_ReceiptNote
+                           )
+
+                           .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnDataBinding("LookupGrid_onDataBinding"))
+                           .ToHtmlString()
+               );
+                   
+   @* ======================Attachment TAB =========================================================*@
+   items.Add()
+       .Text("Attachments")
+       .Content(Html.Telerik().Grid<PaymentReceiptAttachments>()
+                              .BuildGrid(
+                                   gridName: "Grid_Receipt_Attachments",
+                                   ajaxController: "ReceiptAttachments",
+                                   indexID: Model.ID.ToString(),
+                                   hiddenColumns: new string[] { "ID" },
+                                   allowEdit: false,
+                                   allowInsert: true,
+                                   allowDelete: true,
+                                   feature: smART.Common.EnumFeatures.Transaction_ReceiptAttachment
+                               )
+                               .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new
+                                  record</a>
+   <label class="customer-label" for="Customers-input">
+      Show Images</label>
+   <input type='checkbox' id='chkImage' name='chkImages' onclick='OnShowHideImage_Clicked("Grid_Receipt_Attachments")' />
+   </text>))
+                               .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnRowDataBound("Attachment_Grid_onRowDataBound").OnDataBinding("LookupGrid_onDataBinding"))
+                               .ToHtmlString()
+               );
+}
+  )
+
+ )
+}

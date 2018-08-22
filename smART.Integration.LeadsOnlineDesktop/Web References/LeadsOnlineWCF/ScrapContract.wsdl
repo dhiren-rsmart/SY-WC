@@ -1,0 +1,469 @@
+<?xml version="1.0" encoding="utf-8"?>
+<wsdl:definitions xmlns:wsap="http://schemas.xmlsoap.org/ws/2004/08/addressing/policy" xmlns:wsa10="http://www.w3.org/2005/08/addressing" xmlns:tns="http://www.leadsonline.com/" xmlns:msc="http://schemas.microsoft.com/ws/2005/12/wsdl/contract" xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsx="http://schemas.xmlsoap.org/ws/2004/09/mex" xmlns:wsp="http://schemas.xmlsoap.org/ws/2004/09/policy" xmlns:wsam="http://www.w3.org/2007/05/addressing/metadata" xmlns:wsa="http://schemas.xmlsoap.org/ws/2004/08/addressing" xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/" xmlns:wsaw="http://www.w3.org/2006/05/addressing/wsdl" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="ScrapContract" targetNamespace="http://www.leadsonline.com/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/">
+  <wsp:Policy wsu:Id="ticketScrapWSSoap_ticketScrapWSSoap_policy">
+    <wsp:ExactlyOne>
+      <wsp:All>
+        <sp:TransportBinding xmlns:sp="http://schemas.xmlsoap.org/ws/2005/07/securitypolicy">
+          <wsp:Policy>
+            <sp:TransportToken>
+              <wsp:Policy>
+                <sp:HttpsToken RequireClientCertificate="false" />
+              </wsp:Policy>
+            </sp:TransportToken>
+            <sp:AlgorithmSuite>
+              <wsp:Policy>
+                <sp:Basic256 />
+              </wsp:Policy>
+            </sp:AlgorithmSuite>
+            <sp:Layout>
+              <wsp:Policy>
+                <sp:Strict />
+              </wsp:Policy>
+            </sp:Layout>
+          </wsp:Policy>
+        </sp:TransportBinding>
+      </wsp:All>
+    </wsp:ExactlyOne>
+  </wsp:Policy>
+  <wsdl:types>
+    <xs:schema elementFormDefault="qualified" targetNamespace="http://www.leadsonline.com/" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:element name="CheckLogin">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="LoginInfo">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="storeId" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="userName" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="password" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="CheckLoginResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="CheckLoginResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="Response">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="errorCode" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="errorResponse" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SubmitTransaction">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+            <xs:element minOccurs="1" maxOccurs="1" name="ticket" type="tns:Ticket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="Ticket">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="key" type="tns:TicketKey" />
+          <xs:element minOccurs="0" maxOccurs="1" name="redeemByDate" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="customer" type="tns:Customer" />
+          <xs:element minOccurs="0" maxOccurs="1" name="items" type="tns:ArrayOfItem" />
+          <xs:element minOccurs="1" maxOccurs="1" name="isVoid" type="xs:boolean" />
+          <xs:element minOccurs="0" maxOccurs="1" name="extraTicket" type="tns:ArrayOfPropertyValue" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="TicketKey">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="ticketnumber" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ticketDateTime" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Customer">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="fname" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="lname" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="address1" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="address2" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="city" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="postalCode" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="phone" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="idType" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="idNumber" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="idType2" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="idNumber2" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="dob" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="weight" type="xs:int" />
+          <xs:element minOccurs="1" maxOccurs="1" name="height" type="xs:int" />
+          <xs:element minOccurs="0" maxOccurs="1" name="eyeColor" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="hairColor" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="race" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="sex" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="remarks" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="images" type="tns:ArrayOfImage" />
+          <xs:element minOccurs="1" maxOccurs="1" name="vehicle" type="tns:Vehicle" />
+          <xs:element minOccurs="0" maxOccurs="1" name="extraCustomer" type="tns:ArrayOfPropertyValue" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ArrayOfImage">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Image" type="tns:Image" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Image">
+        <xs:sequence>
+          <xs:element minOccurs="1" maxOccurs="1" name="imageCategory" type="tns:ImageCategory" />
+          <xs:element minOccurs="1" maxOccurs="1" name="imageType" type="tns:ImageType" />
+          <xs:element minOccurs="0" maxOccurs="1" name="imageData" type="xs:base64Binary" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:simpleType name="ImageCategory">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Customer" />
+          <xs:enumeration value="CustomerID" />
+          <xs:enumeration value="Thumbprint" />
+          <xs:enumeration value="Signature" />
+          <xs:enumeration value="Item" />
+          <xs:enumeration value="Vehicle" />
+          <xs:enumeration value="VehicleLicense" />
+          <xs:enumeration value="Document" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:simpleType name="ImageType">
+        <xs:restriction base="xs:string">
+          <xs:enumeration value="Jpeg" />
+          <xs:enumeration value="Png" />
+          <xs:enumeration value="Gif" />
+          <xs:enumeration value="Pdf" />
+        </xs:restriction>
+      </xs:simpleType>
+      <xs:complexType name="Vehicle">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="make" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="model" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="year" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="license" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="color" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ArrayOfPropertyValue">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="PropertyValue" type="tns:PropertyValue" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="PropertyValue">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="Value" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="ArrayOfItem">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="Item" nillable="true" type="tns:Item" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="Item">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="make" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="model" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="serialNumber" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="description" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="amount" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="itemStatus" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="images" type="tns:ArrayOfImage" />
+          <xs:element minOccurs="1" maxOccurs="1" name="isVoid" type="xs:boolean" />
+          <xs:element minOccurs="0" maxOccurs="1" name="employee" type="xs:string" />
+          <xs:element minOccurs="1" maxOccurs="1" name="weight" type="xs:double" />
+          <xs:element minOccurs="0" maxOccurs="1" name="extraItem" type="tns:ArrayOfPropertyValue" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="SubmitTransactionResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="SubmitTransactionResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UpdateTransaction">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+            <xs:element minOccurs="1" maxOccurs="1" name="oldTicket" type="tns:TicketKey" />
+            <xs:element minOccurs="1" maxOccurs="1" name="ticket" type="tns:Ticket" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UpdateTransactionResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="UpdateTransactionResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="CheckDoNotBuy">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="ID" type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+            <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="CheckDoNotBuyResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="CheckDoNotBuyResult" type="tns:ArrayOfDoNotBuyInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:complexType name="ArrayOfDoNotBuyInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="unbounded" name="DoNotBuyInfo" type="tns:DoNotBuyInfo" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:complexType name="DoNotBuyInfo">
+        <xs:sequence>
+          <xs:element minOccurs="0" maxOccurs="1" name="agency" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="ID" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="state" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="name" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="dob" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="contactName" type="xs:string" />
+          <xs:element minOccurs="0" maxOccurs="1" name="contactNumber" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+      <xs:element name="CheckDoNotBuy2">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="BirthDate" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="ID" type="xs:string" />
+            <xs:element minOccurs="0" maxOccurs="1" name="Name" type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="CheckDoNotBuy2Response">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="CheckDoNotBuy2Result" type="tns:ArrayOfDoNotBuyInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UploadImage">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="img" type="tns:Image" />
+            <xs:element minOccurs="1" maxOccurs="1" name="itemIndex" type="xs:int" />
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+            <xs:element minOccurs="1" maxOccurs="1" name="ticketKey" type="tns:TicketKey" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="UploadImageResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="UploadImageResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="DeleteImage">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="filename" type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1" name="imageCategory" type="tns:ImageCategory" />
+            <xs:element minOccurs="1" maxOccurs="1" name="itemIndex" type="xs:int" />
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+            <xs:element minOccurs="1" maxOccurs="1" name="ticketKey" type="tns:TicketKey" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="DeleteImageResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="DeleteImageResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SetNoTransactionDayForStore">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="0" maxOccurs="1" name="TransactionDate" type="xs:string" />
+            <xs:element minOccurs="1" maxOccurs="1" name="login" type="tns:LoginInfo" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="SetNoTransactionDayForStoreResponse">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element minOccurs="1" maxOccurs="1" name="SetNoTransactionDayForStoreResult" type="tns:Response" />
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:schema>
+  </wsdl:types>
+  <wsdl:message name="CheckLoginSoapIn">
+    <wsdl:part name="parameters" element="tns:CheckLogin" />
+  </wsdl:message>
+  <wsdl:message name="CheckLoginSoapOut">
+    <wsdl:part name="parameters" element="tns:CheckLoginResponse" />
+  </wsdl:message>
+  <wsdl:message name="SubmitTransactionSoapIn">
+    <wsdl:part name="parameters" element="tns:SubmitTransaction" />
+  </wsdl:message>
+  <wsdl:message name="SubmitTransactionSoapOut">
+    <wsdl:part name="parameters" element="tns:SubmitTransactionResponse" />
+  </wsdl:message>
+  <wsdl:message name="UpdateTransactionSoapIn">
+    <wsdl:part name="parameters" element="tns:UpdateTransaction" />
+  </wsdl:message>
+  <wsdl:message name="UpdateTransactionSoapOut">
+    <wsdl:part name="parameters" element="tns:UpdateTransactionResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckDoNotBuySoapIn">
+    <wsdl:part name="parameters" element="tns:CheckDoNotBuy" />
+  </wsdl:message>
+  <wsdl:message name="CheckDoNotBuySoapOut">
+    <wsdl:part name="parameters" element="tns:CheckDoNotBuyResponse" />
+  </wsdl:message>
+  <wsdl:message name="CheckDoNotBuy2SoapIn">
+    <wsdl:part name="parameters" element="tns:CheckDoNotBuy2" />
+  </wsdl:message>
+  <wsdl:message name="CheckDoNotBuy2SoapOut">
+    <wsdl:part name="parameters" element="tns:CheckDoNotBuy2Response" />
+  </wsdl:message>
+  <wsdl:message name="UploadImageSoapIn">
+    <wsdl:part name="parameters" element="tns:UploadImage" />
+  </wsdl:message>
+  <wsdl:message name="UploadImageSoapOut">
+    <wsdl:part name="parameters" element="tns:UploadImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="DeleteImageSoapIn">
+    <wsdl:part name="parameters" element="tns:DeleteImage" />
+  </wsdl:message>
+  <wsdl:message name="DeleteImageSoapOut">
+    <wsdl:part name="parameters" element="tns:DeleteImageResponse" />
+  </wsdl:message>
+  <wsdl:message name="SetNoTransactionDayForStoreSoapIn">
+    <wsdl:part name="parameters" element="tns:SetNoTransactionDayForStore" />
+  </wsdl:message>
+  <wsdl:message name="SetNoTransactionDayForStoreSoapOut">
+    <wsdl:part name="parameters" element="tns:SetNoTransactionDayForStoreResponse" />
+  </wsdl:message>
+  <wsdl:portType name="ticketScrapWSSoap">
+    <wsdl:operation name="CheckLogin">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/CheckLogin" name="CheckLoginSoapIn" message="tns:CheckLoginSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/CheckLoginResponse" name="CheckLoginSoapOut" message="tns:CheckLoginSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SubmitTransaction">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/SubmitTransaction" name="SubmitTransactionSoapIn" message="tns:SubmitTransactionSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/SubmitTransactionResponse" name="SubmitTransactionSoapOut" message="tns:SubmitTransactionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTransaction">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/UpdateTransaction" name="UpdateTransactionSoapIn" message="tns:UpdateTransactionSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/UpdateTransactionResponse" name="UpdateTransactionSoapOut" message="tns:UpdateTransactionSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckDoNotBuy">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/CheckDoNotBuy" name="CheckDoNotBuySoapIn" message="tns:CheckDoNotBuySoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/CheckDoNotBuyResponse" name="CheckDoNotBuySoapOut" message="tns:CheckDoNotBuySoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="CheckDoNotBuy2">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/CheckDoNotBuy2" name="CheckDoNotBuy2SoapIn" message="tns:CheckDoNotBuy2SoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/CheckDoNotBuy2Response" name="CheckDoNotBuy2SoapOut" message="tns:CheckDoNotBuy2SoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="UploadImage">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/UploadImage" name="UploadImageSoapIn" message="tns:UploadImageSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/UploadImageResponse" name="UploadImageSoapOut" message="tns:UploadImageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImage">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/DeleteImage" name="DeleteImageSoapIn" message="tns:DeleteImageSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/DeleteImageResponse" name="DeleteImageSoapOut" message="tns:DeleteImageSoapOut" />
+    </wsdl:operation>
+    <wsdl:operation name="SetNoTransactionDayForStore">
+      <wsdl:input wsaw:Action="http://www.leadsonline.com/SetNoTransactionDayForStore" name="SetNoTransactionDayForStoreSoapIn" message="tns:SetNoTransactionDayForStoreSoapIn" />
+      <wsdl:output wsaw:Action="http://www.leadsonline.com/SetNoTransactionDayForStoreResponse" name="SetNoTransactionDayForStoreSoapOut" message="tns:SetNoTransactionDayForStoreSoapOut" />
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ticketScrapWSSoap_ticketScrapWSSoap" type="tns:ticketScrapWSSoap">
+    <wsp:PolicyReference URI="#ticketScrapWSSoap_ticketScrapWSSoap_policy" />
+    <soap:binding transport="http://schemas.xmlsoap.org/soap/http" />
+    <wsdl:operation name="CheckLogin">
+      <soap:operation soapAction="http://www.leadsonline.com/CheckLogin" style="document" />
+      <wsdl:input name="CheckLoginSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CheckLoginSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SubmitTransaction">
+      <soap:operation soapAction="http://www.leadsonline.com/SubmitTransaction" style="document" />
+      <wsdl:input name="SubmitTransactionSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="SubmitTransactionSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UpdateTransaction">
+      <soap:operation soapAction="http://www.leadsonline.com/UpdateTransaction" style="document" />
+      <wsdl:input name="UpdateTransactionSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UpdateTransactionSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckDoNotBuy">
+      <soap:operation soapAction="http://www.leadsonline.com/CheckDoNotBuy" style="document" />
+      <wsdl:input name="CheckDoNotBuySoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CheckDoNotBuySoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="CheckDoNotBuy2">
+      <soap:operation soapAction="http://www.leadsonline.com/CheckDoNotBuy2" style="document" />
+      <wsdl:input name="CheckDoNotBuy2SoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="CheckDoNotBuy2SoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="UploadImage">
+      <soap:operation soapAction="http://www.leadsonline.com/UploadImage" style="document" />
+      <wsdl:input name="UploadImageSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="UploadImageSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="DeleteImage">
+      <soap:operation soapAction="http://www.leadsonline.com/DeleteImage" style="document" />
+      <wsdl:input name="DeleteImageSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="DeleteImageSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+    <wsdl:operation name="SetNoTransactionDayForStore">
+      <soap:operation soapAction="http://www.leadsonline.com/SetNoTransactionDayForStore" style="document" />
+      <wsdl:input name="SetNoTransactionDayForStoreSoapIn">
+        <soap:body use="literal" />
+      </wsdl:input>
+      <wsdl:output name="SetNoTransactionDayForStoreSoapOut">
+        <soap:body use="literal" />
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ScrapContract">
+    <wsdl:port name="ticketScrapWSSoap_ticketScrapWSSoap" binding="tns:ticketScrapWSSoap_ticketScrapWSSoap">
+      <soap:address location="https://sandbox.leadsonline.com/leads/ws/Scrap/ticketScrapWS.asmx" />
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

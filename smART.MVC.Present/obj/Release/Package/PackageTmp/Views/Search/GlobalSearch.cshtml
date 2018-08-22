@@ -1,0 +1,30 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+
+@{
+   ViewBag.Title = "Scale Search";
+   Layout = "~/Views/Shared/_Layout.cshtml"; 
+}
+
+<div style="height: 100%; width: 100%;">
+
+   @{ Html.Telerik().Splitter()
+    .Name("Splitter").HtmlAttributes(new {style ="height:550px;"})
+    .Orientation(SplitterOrientation.Horizontal)
+    .Panes(hpanes => {
+       //add the first pane and set its properties
+       hpanes.Add()
+         .Size("300px")
+         .MinSize("40px")
+         .MaxSize("300px")
+         .Collapsible(true)
+          .LoadContentFrom("FocusArea","GlobalSearch");
+       //add the second pane
+       hpanes.Add()
+          .Collapsible(false)
+          .LoadContentFrom("SearchContent","GlobalSearch" );
+    })
+    .Render();
+   }
+</div>

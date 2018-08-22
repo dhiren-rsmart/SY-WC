@@ -1,0 +1,31 @@
+﻿@model IEnumerable<smART.ViewModel.Party>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+
+<div>
+@(
+    Html.Telerik().Grid<Party>()
+        .Name("Grid_Party_List")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+        .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "Party"))
+        .Columns(columns => 
+            {
+                //columns.Bound(o => o.ID);                
+                columns.Bound(o=> o.Party_Name);
+                columns.Bound(o => o.License_No);
+                columns.Bound(o => o.Party_Type);                
+                columns.Bound(o => o.ID).ClientTemplate(Ajax.ActionLink("Select", "Index", "Party", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+            })
+             .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+            
+)
+</div>

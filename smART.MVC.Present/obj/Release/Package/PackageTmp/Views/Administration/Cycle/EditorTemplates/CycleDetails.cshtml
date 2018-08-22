@@ -1,0 +1,57 @@
+﻿@model smART.ViewModel.CycleDetails
+@using smART.MVC.Present.Extensions
+<div class="editor">
+  <div id="CycleDetailsValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>  
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(l => l.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Item)
+            </td>
+            <td>
+                @Html.LookupHtml(l => l.Item, "ItemLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" })
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Purchase_Qty,"Opening Qty")
+            </td>
+            <td>                
+                @(Html.Telerik().NumericTextBoxFor(l => l.Purchase_Qty).Spinners(false).MinValue(0))
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Average_Cost,"Opening Cost")
+            </td>
+            <td>                
+                @(Html.Telerik().NumericTextBoxFor(l => l.Average_Cost).Spinners(false).MinValue(0))
+            </td>
+        </tr>
+          <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Purchase_Qty,"Opening Amount")
+            </td>
+            <td>                
+                @(Html.Telerik().NumericTextBoxFor(l => l.Purchase_Amount).Spinners(false).MinValue(0))
+            </td>
+        </tr>
+           <tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Override_OpCost)
+            </td>
+            <td>                
+               @Html.AuthorizedEditorFor(l => l.Override_OpCost)
+            </td>
+        </tr> 
+    </table>
+</div>

@@ -1,0 +1,69 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@using Telerik.Web.Mvc.UI;
+
+@model IList<Telerik.Web.Mvc.UI.TreeViewItem>
+@{Html.Telerik().TreeView().Name("treeFocusAre")
+      .BindTo(Model, mappings => {
+         mappings.For<Telerik.Web.Mvc.UI.TreeViewItem>(binding => binding.ItemDataBound((item, myItem) => {
+            item.Text = myItem.Text;
+           
+            if (!String.IsNullOrEmpty(myItem.Value))
+
+               item.Value = myItem.Value;
+
+            if (!String.IsNullOrEmpty(myItem.Url))
+
+               item.Url = myItem.Url;
+
+            item.Checkable = myItem.Checkable;
+
+            item.Expanded = myItem.Expanded;
+
+            //item.LoadOnDemand = myItem.LoadOnDemand; 
+
+            item.Visible = myItem.Visible;
+          
+         })
+            .Children(myItem => myItem.Items));
+
+
+      })
+      .ClientEvents(events => events.OnSelect("On_TreeNodeSelect").OnLoad("On_TreeLoad"))
+      .Render();
+}
+<script type="text/javascript" language="javascript">
+
+   function treeView() {
+      return $('#treeFocusAre').data('tTreeView');
+   }
+
+   function On_TreeNodeSelect(e) {
+      var viewName = treeView().getItemValue(e.item);
+      var url = "/GlobalSearch/SearchContent?viewName=" + viewName;
+
+      //get a reference to the splitter and load the corresponding content in the second pane
+      splitter = $("#Splitter");
+
+      if (splitter[0] && url) {
+         splitter.data("tSplitter").ajaxRequest(splitter.find(".t-pane")[1], url);
+      }
+   }
+
+   function On_TreeLoad(e) {
+      //      alert("hi");
+      //      var treeView = treeView();
+      //      alert(treeView);
+      //      var firstNodeElement = $("li:first", treeview.element)[0];
+      //      alert(firstNodeElement);
+      //      var item1 = $("#treeFocustAre").find(".t-input[name='itemValue'][value='1']").closest("li");
+      //      alert("hi");
+      //      firstNodeElement.find(".t-in:first").trigger("click");
+      //      alert(item1.toString);   
+      //      var treeview = $('#treeFocustAre').data('tTreeView');
+      //      var firstNodeElement = $("li:first", treeview.element)[0];
+      //      treeview.trigger("click");
+   }
+ 
+</script>

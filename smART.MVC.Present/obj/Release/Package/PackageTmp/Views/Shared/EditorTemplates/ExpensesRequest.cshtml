@@ -1,0 +1,68 @@
+﻿@model smART.ViewModel.ExpensesRequest 
+@using smART.MVC.Present.Extensions
+<div class="editor">
+   <div id="ExpenseValidSum" class="validation-summary-errors">
+      @Html.ValidationSummary()
+   </div>
+   <script type="text/javascript">
+
+      function On_PartyChange(e) {
+         $("#HiddenID_Paid_Party_ToID").val(e.ID);
+         $("#Paid_Party_To_ID").val(e.ID);
+      }
+   </script>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.EXPENSE_TYPE)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.EXPENSE_TYPE, new { LovType = "EXPENSE_TYPE" })
+            @Html.HiddenFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+            @Html.HiddenFor(l => l.Reference_ID)
+            @Html.HiddenFor(l => l.Reference_Table)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.EXPENSE_Sub_TYPE)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.EXPENSE_Sub_TYPE, new { LovType = "EXPENSE_Sub_TYPE" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Amount_Paid)
+         </td>
+         <td>
+            @Html.Telerik().NumericTextBoxFor(l => l.Amount_Paid).Spinners(false).MinValue(0)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Paid_Party_To)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Paid_Party_To, "PartyLookup", "ID", "Party_Name", "_Index", "Party", null, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" },"On_PartyChange")
+            @Html.HiddenFor(m => m.Paid_Party_To.ID)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Paid_By)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Paid_By, new { LovType = "PAID_BY" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Comments)
+         </td>
+         <td>
+            @Html.TextAreaFor(l => l.Comments, new { style = "width:225px;" })
+         </td>
+      </tr>
+   </table>
+</div>

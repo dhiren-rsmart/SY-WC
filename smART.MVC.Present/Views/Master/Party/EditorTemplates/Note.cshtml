@@ -1,0 +1,49 @@
+﻿@model smART.ViewModel.Note
+@using smART.MVC.Present.Extensions
+<div class="editor">
+    @Html.ValidationSummary()
+    <table>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.ID)
+            </td>
+            <td>
+                @Html.TextBoxFor(o => o.ID, new { @readonly = "readonly" })
+            </td>
+        </tr>
+        @*
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Party)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Party)
+            </td>
+        </tr>
+        *@
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Date)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Date)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Notes_Desc)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Notes_Desc)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Reminder)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Reminder)
+            </td>
+        </tr>
+    </table>
+</div>

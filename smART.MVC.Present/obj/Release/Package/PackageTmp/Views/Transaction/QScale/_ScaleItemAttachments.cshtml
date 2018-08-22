@@ -1,0 +1,41 @@
+﻿@model IEnumerable<smART.ViewModel.ScaleAttachments>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+  <script type="text/javascript">
+
+      function QScaleAttachment_Grid_onRowDataBound(e) {
+          var grid = $("#Grid_QScale_Attachments").data('tGrid');        
+          ShowAttchmentImage(e.row, grid);
+      }
+
+    function On_RowSelect_OpentItemImage(e)
+    {
+      var grid = $(this).data('tGrid');
+      var dataItem = grid.dataItem(e.row);
+      if (dataItem != null)
+      {
+        RefreshContent("/QScale/Index/" + dataItem.Scale_Ticket_No)
+        closeWindow();
+      }
+    }
+  </script>
+  @(   
+ Html.Telerik().Grid<ScaleAttachments>()
+        .Name("Grid_QScaleItem_Attachments")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+        .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+        .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+        .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+        .Select("_ShowScaleItemAttachments", "ScaleAttachments"))
+        .Columns(columns => {
+          columns.Bound("Image").Width(250).ClientTemplate("<img alt='<#= Image #>' width='250' height='100' src='<#= Image #>' />");
+        })
+        .ClientEvents(events => events.OnRowDataBound("QScaleAttachment_Grid_onRowDataBound"))    
+      );
+</div>

@@ -1,0 +1,58 @@
+﻿@model IEnumerable<smART.ViewModel.ExpensesRequest>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+   function onRowDataBoundGrid_ExpenseRequest(e) {
+      if (e.dataItem.Amount_Paid_Till_Date > 0) {
+         e.row.cells[8].innerText = "";
+      }
+   }
+
+</script>
+<div>
+@(
+ Html.Telerik().Grid<ExpensesRequest>()
+           .Name("Grid_ExpensesRequest")
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+           .Select("_SettledExpenses", "GenericExpensesRequest"))
+        //.Columns(columns => {
+        //      columns.Bound(e => e.ID).Title("Expense#").Filterable(true);
+        //      columns.Bound(e => e.EXPENSE_TYPE).Filterable(true);
+        //      columns.Bound(e => e.EXPENSE_Sub_TYPE).Filterable(true);                           
+        //      columns.Bound(e => e.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+        //      columns.Bound(e => e.Amount_Paid).Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(true);
+        //      columns.Bound(e => e.Amount_Paid_Till_Date).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(false);
+        //      columns.Bound(e => e.Balance_Amount).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(false);
+        //      columns.Bound(e => e.Reference_Table).Filterable(true);
+        //      columns.Bound(e => e.ID).Title("Undo").ClientTemplate(Ajax.ActionLink("Undo", "Undo", "GenericExpensesRequest", new {expenseId = "<#= ID #>"}, null)
+        //      .ToHtmlString()).Filterable(false);
+        //    })
+            .Columns(columns => {         
+               columns.Bound(e => e.ID).Width("50px").Filterable(true);
+               columns.Bound(e => e.EXPENSE_TYPE).Width("130px").Filterable(true);          
+               columns.Bound(e => e.Amount_Paid).Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(true);
+               columns.Bound(p => p.Paid_Party_To.Party_Name).Width("150px").ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Title("Receiving Party").Filterable(true);
+               columns.Bound(e => e.Amount_Paid_Till_Date).Filterable(false).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}").Filterable(false);               
+               columns.Bound(p => p.Dispatcher_Request_Ref.ID).ClientTemplate("<#= Dispatcher_Request_Ref? Dispatcher_Request_Ref.ID  : '' #>").Filterable(true).Title("Dispatcher#");
+               columns.Bound(p => p.Dispatcher_Request_Ref.Booking_No).ClientTemplate("<#= Dispatcher_Request_Ref ? Dispatcher_Request_Ref.Booking_No   : '' #>").Filterable(true).Width(150);
+               columns.Bound(p => p.Dispatcher_Request_Ref.Container.Container_No).ClientTemplate("<#= Dispatcher_Request_Ref != null && Dispatcher_Request_Ref.Container != null ? Dispatcher_Request_Ref.Container.Container_No  : '' #>").Filterable(true);
+               columns.Bound(p => p.Scale_Ref.ID).ClientTemplate("<#= Scale_Ref? Scale_Ref.ID  : '' #>").Filterable(true).Title("Scale#");
+               columns.Bound(p => p.Scale_Ref.Party_Name).ClientTemplate("<#= Scale_Ref? Scale_Ref.Party_Name  : '' #>").Filterable(true).Title("Scale Party");
+               columns.Bound(e => e.ID).Title("Undo").ClientTemplate(Ajax.ActionLink("Undo", "Undo", "GenericExpensesRequest", new {expenseId = "<#= ID #>"}, null).ToHtmlString()).Filterable(false);
+            })
+           .Resizable(rs => rs.Columns(true))
+           .Scrollable(sc => sc.Height("*").Enabled(true))
+           .Filterable(f => f.Enabled(true))
+           .Resizable(rs => rs.Columns(true))               
+           .ClientEvents(events => events.OnRowDataBound("onRowDataBoundGrid_ExpenseRequest"))
+           .Filterable()
+   )
+</div>

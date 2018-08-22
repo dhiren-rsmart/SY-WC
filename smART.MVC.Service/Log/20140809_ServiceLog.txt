@@ -1,0 +1,18 @@
+Date: 8/9/2014 9:04:53 PM
+Title: An error occured in SaveTicketImage utils.
+Exception: System.Exception: Invalid document type.
+   at smART.MVC.Service.Controllers.ScaleController.SaveTicketImage(String scaleId, String documentType) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Service\Controllers\ScaleController.cs:line 221
+Stack Trace:    at smART.MVC.Service.Controllers.ScaleController.SaveTicketImage(String scaleId, String documentType) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Service\Controllers\ScaleController.cs:line 221
+Method Name: SaveTicketImage
+Line No.: 221
+===============================================================================================================================
+
+Date: 8/9/2014 9:08:57 PM
+Title: An error occured in SaveTicketImage utils.
+Exception: System.Exception: Invalid scale id.
+   at smART.MVC.Service.Controllers.ScaleController.SaveTicketImage(String scaleId, String documentType) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Service\Controllers\ScaleController.cs:line 216
+Stack Trace:    at smART.MVC.Service.Controllers.ScaleController.SaveTicketImage(String scaleId, String documentType) in d:\Rsmart\Rsmart-SY-Project\smART.MVC.Service\Controllers\ScaleController.cs:line 216
+Method Name: SaveTicketImage
+Line No.: 216
+===============================================================================================================================
+

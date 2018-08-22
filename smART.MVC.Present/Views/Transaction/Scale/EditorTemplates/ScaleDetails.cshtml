@@ -1,0 +1,199 @@
+﻿@model smART.ViewModel.ScaleDetails 
+@using smART.MVC.Present.Extensions
+
+<div class="editor">
+
+  <script language="javascript" type="text/javascript">
+
+    $(document).ready(function ()
+    {
+      onScaleDetailsItemWeightChange();
+      var ticketType = $("#Ticket_Type").val();
+      showoHideSupplier(ticketType);
+    });
+
+    function showoHideSupplier(ticketType)
+    {
+      $('div[id|="supplierDiv"]').each(function (index)
+      {
+          if ("Receiving Ticket" == ticketType || "Local Sales" == ticketType)
+        {
+          $(this).show(1);
+        }
+        else
+        {
+          $(this).hide(1);
+        }
+      });
+    }
+
+
+    function onScaleDetailsItemWeightChange()
+    {
+      var splitValue = $("#Split_Value").val();
+      var pGrossWeight = $("#Gross_Weight").val();
+      var pTareWeight = $("#Tare_Weight").val();
+      var pDiffNetWeight = 0;// $("#Settlement_Diff_NetWeight").val();
+      var contaminationWeight = $("#Contamination_Weight").val();
+
+      var tareWeight = 0;
+      var grossWeight = 0;
+      var diffNetWeight = 0;
+      var netWeight = 0;
+
+      //add only if the value is number
+      if (pGrossWeight > 0)
+      {
+        grossWeight = parseFloat(pGrossWeight);
+        if (splitValue > 0)
+        {
+          grossWeight = grossWeight * (splitValue / 100);
+        }
+        netWeight = grossWeight;
+        $("#GrossWeight").val(grossWeight);
+      }
+
+      //add only if the value is number
+      if (pTareWeight > 0)
+      {
+        tareWeight = parseFloat(pTareWeight);
+        if (splitValue > 0)
+        {
+          tareWeight = tareWeight * (splitValue / 100); ;
+        }
+        netWeight -= tareWeight;
+        $("#TareWeight").val(tareWeight);
+      }
+
+      //add only if the value is number
+      if (contaminationWeight > 0)
+      {
+        netWeight -= parseFloat(contaminationWeight);
+      }
+
+      //add only if the value is number
+      if (diffNetWeight > 0)
+      {
+        netWeight += parseFloat(diffNetWeight);
+      }
+
+      $("#NetWeight").val(netWeight);
+    }
+
+    function onItemChange(e)
+    {
+      $("#LabelID_Apply_To_Item").val(e.Short_Name);
+      $("#HiddenID_Apply_To_ItemShort_Name").val(e.Short_Name);
+      $("#HiddenID_Apply_To_ItemID").val(e.ID);
+    }
+  </script>
+
+  <div id="ScaleDetailValidSum" class="validation-summary-errors">
+    @Html.ValidationSummary()
+  </div>
+
+  <table>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.ID)
+      </td>
+     <td>
+        @Html.TextBoxFor(l => l.ID, new {id = "Child_ID",@readonly = "readonly"})
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.Item_Received)
+      </td>
+      <td>
+        @Html.LookupHtml(l => l.Item_Received, "ItemLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" }, "onItemChange")
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.Apply_To_Item)
+      </td>
+      <td>
+        @Html.LookupHtml(l => l.Apply_To_Item, "ItemLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" })
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.Split_Value)
+      </td>
+      <td>
+        @if (Model.Split_Value == 0) {
+          @(Html.Telerik().NumericTextBoxFor(l => l.Split_Value).Spinners(true).MinValue(1).Value(100).MaxValue(100).ClientEvents(events => events.OnChange("onScaleDetailsItemWeightChange")))
+        }
+        else { 
+          @(Html.Telerik().NumericTextBoxFor(l => l.Split_Value).Spinners(true).MinValue(0).MaxValue(100).ClientEvents(events => events.OnChange("onScaleDetailsItemWeightChange")))
+        }
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.GrossWeight)
+      </td>
+      <td>
+        @Html.TextBoxFor(l => l.GrossWeight, new {@readonly = "readonly"})
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.TareWeight)
+      </td>
+      <td>
+        @Html.TextBoxFor(l => l.TareWeight, new {@readonly = "readonly"})        
+      </td>
+    </tr>
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.Contamination_Weight)
+      </td>
+      <td>
+        @(Html.Telerik().NumericTextBoxFor(l => l.Contamination_Weight).Spinners(false).MinValue(0).ClientEvents(events => events.OnChange("onScaleDetailsItemWeightChange")))
+      </td>
+    </tr>
+    @*<tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.Settlement_Diff_NetWeight)
+      </td>
+      <td>
+        @Html.TextBoxFor(l => l.Settlement_Diff_NetWeight, new {@readonly = "readonly"})        
+      </td>
+    </tr>*@
+    <tr>
+      <td>
+        @Html.AuthorizedLabelFor(l => l.NetWeight)
+      </td>
+      <td>
+        @Html.TextBoxFor(l => l.NetWeight, new {@readonly = "readonly"})        
+      </td>
+    </tr>
+    <tr>
+      <td colspan="2">
+        <div id="supplierDiv">
+          <table>
+            <tr>
+              <td>
+                @Html.AuthorizedLabelFor(l => l.Supplier_Item, new {style = "width=100%"})
+              </td>
+              <td>
+                @Html.TextBoxFor(l => l.Supplier_Item, new {style = "width=100%"})
+              </td>
+            </tr>
+            <tr>
+              <td>
+                @Html.AuthorizedLabelFor(l => l.Supplier_Net_Weight)
+              </td>
+              <td>
+                @(Html.Telerik().NumericTextBoxFor(l => l.Supplier_Net_Weight).Spinners(false).MinValue(0))
+              </td>
+            </tr>
+          </table>
+        </div>
+      </td>
+    </tr>
+  </table>
+
+</div>

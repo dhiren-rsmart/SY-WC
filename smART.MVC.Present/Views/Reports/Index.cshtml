@@ -1,0 +1,72 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@{
+    ViewBag.Title = "Reports";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script type="text/javascript">
+
+  function Refresh(item)
+  {
+    //var jsonObjects = { FocusAreaID: $("#FocusAreaID").val(), ReportName: $("#ReportName").val(), FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val(), PartyID: $("#PartyID").val() };
+    //var item = new Object();
+    //item = new Object({ FocusAreaID: $("#FocusAreaID").val(), ReportName: $("#ReportName").val(), FromDate: $("#FromDate").val(), ToDate: $("#ToDate").val(), PartyID: $("#PartyID").val(), DataSet_Name: $("#DataSet_Name").val(), Parameters: $("#Parameters").val() });
+
+    $.ajax({
+      url: '@(Url.Action("ShowReport", "Reports"))',
+      type: "POST",
+      dataType: 'json',
+      data: item,
+      success: function (data)
+      {
+        var focusAreaId = $("#FocusAreaID").val();
+        BindReportContentWithEntity(item);
+      },
+
+      error: function (data)
+      {
+        alert("Error occured to show report.");
+      }
+    });
+  }
+
+</script>
+<div style="height: 100%; width: 100%; padding-left: 0px; padding-right: 0px; margin-left: 0px;">
+    @{ Html.Telerik().Splitter()
+    .Name("Splitter1").HtmlAttributes(new
+    {
+        style = "height:550px;"
+    })
+    .Orientation(SplitterOrientation.Horizontal)
+    .Panes(hpanes =>
+    {
+
+        //add the first pane and set its properties
+        hpanes.Add()
+          .Size("200px")
+          .Collapsible(true)
+          .LoadContentFrom("FocusArea", "Reports");
+        //add the second pane
+        hpanes.Add()
+            //.Size("80%")
+          .Collapsible(false)
+          .Content(() =>
+          {
+              Html.Telerik().Splitter().Name("Splitter2")
+                                       .Orientation(SplitterOrientation.Vertical)
+                                       .HtmlAttributes(new
+                                       {
+                                           style = "height:99%;padding-left:0px; padding-right:0px; padding-top:0px; padding-bottom:0px;"
+                                       })
+                                       .Panes(panes =>
+                                       {
+                                           panes.Add().Size("15%").Collapsible(true).LoadContentFrom("ReportFilter", "Reports");
+                                           panes.Add().Size("85%").LoadContentFrom("ReportContent", "Reports", null);
+                                       }).Render();
+          });
+    })
+    .Render();
+    }
+</div>

@@ -1,0 +1,67 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Extensions;
+@model BaseEntity
+           
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="masterMenu">
+            @(Html.Telerik().Menu()
+                    .Name("menuMasterMenu")
+                    .Items(menu => {
+                        menu.Add().Text("Party").ActionIf(
+                                new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Party"
+                                        , Feature= smART.Common.EnumFeatures.Master_Party }
+                                }
+                                );//.Selected(Model.MenuSelect.Master_PartySelected);
+                        menu.Add().Text("Material").ActionIf(
+                             new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Item"
+                                        , Feature= smART.Common.EnumFeatures.Master_Item }
+                                }
+                             );//.Selected(Model.MenuSelect.Master_ItemSelected);                       
+                        menu.Add().Text("Cash").ActionIf(
+                                new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Cash"
+                                        , Feature= smART.Common.EnumFeatures.Transaction_Cash }
+                                }
+                                );//.Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        menu.Add().Text("Employee").ActionIf(
+                                new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="Employee"
+                                        , Feature= smART.Common.EnumFeatures.Master_Employee }
+                                }
+                                );//.Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        //menu.Add().Text("Role").ActionIf(
+                        //        new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="Role"
+                        //                , Feature= smART.Common.EnumFeatures.Master_Role }
+                        //        }
+                        //        );//.Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        menu.Add().Text("Price List").ActionIf(
+                              new ActionDetails[] {
+                                    new ActionDetails() { Action="New", Controller="PriceList"
+                                        , Feature= smART.Common.EnumFeatures.Master_PriceList }
+                                }
+                              );//.Selected(Model.MenuSelect.Master_PriceListSelected);
+                        //menu.Add().Text("Asset").ActionIf(
+                        //    new ActionDetails[] {
+                        //            new ActionDetails() { Action="New", Controller="Asset"
+                        //                , Feature= smART.Common.EnumFeatures.Master_Asset}
+                        //        }
+                        //    );//.Selected(Model.MenuSelect.Master_ItemSelected);
+                        
+
+                        //menu.Add().Text("Party").Action("New", "Party").Selected(Model.MenuSelect.Master_PartySelected);
+                        //menu.Add().Text("Employee").Action("New", "Employee").Selected(Model.MenuSelect.Master_EmployeeSelected);
+                        //menu.Add().Text("Item").Action("New", "Item").Selected(Model.MenuSelect.Master_ItemSelected);
+                        //menu.Add().Text("PriceList").Action("New", "PriceList").Selected(Model.MenuSelect.Master_PriceListSelected);
+                    }))
+</div>
+
+
+<div>
+    @RenderBody()
+</div>

@@ -1,0 +1,274 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+using System.Web.Mvc;
+using smART.Common;
+using smART.MVC.Present.Helpers;
+using smART.ViewModel;
+using smART.Library;
+
+namespace smART.MVC.Present.Controllers {
+
+  [Feature(EnumFeatures.Home)]
+  public class ReportsController : Controller {
+
+    #region Constructor
+
+    public ReportsController() {
+    }
+
+    #endregion Constructor
+
+    #region Item Reports
+
+    // GET: /Reports/
+    //[HttpGet]
+    public ActionResult Dispatcher(String ID) {
+      ViewBag.ID = ID;
+      return View("Dispatcher");
+    }
+
+    //PackingList
+    public ActionResult PackingList(String ID) {
+      smART.ViewModel.Booking booking = new smART.Library.BookingLibrary(Configuration.GetsmARTDBContextConnectionString()).GetByID(ID);
+      ViewBag.ID = booking.Booking_Ref_No;
+      return View("PackingList");
+    }
+
+    [HttpGet]
+    public ActionResult Scale(String ID) {
+      ViewBag.ID = ID;
+      smART.ViewModel.Scale scale = new smART.Library.ScaleLibrary(Configuration.GetsmARTDBContextConnectionString()).GetByID(ID);
+      String ScaleType = scale.Ticket_Type;
+
+      if (ScaleType == "Shipping Ticket") {
+        return View("ScaleShippingTicket");
+      }
+      if (ScaleType == "Local Sales") {
+        return View("ScaleLocalSalesTicket");
+      }
+      else {
+        return View("ScaleReceiveTicket");
+      }
+    }
+    public ActionResult SalesOrder(String ID) {
+      ViewBag.ID = ID;
+      return View("SalesOrder");
+    }
+
+    public ActionResult PurchaseOrder(String ID) {
+      ViewBag.ID = ID;
+      return View("PurchaseOrder");
+    }
+
+    public ActionResult Payment(String ID) {
+      ViewBag.ID = ID;
+      smART.ViewModel.PaymentReceipt paymentRec = new smART.Library.PaymentReceiptLibrary(Configuration.GetsmARTDBContextConnectionString()).GetByID(ID);
+      string paymentType = paymentRec.Payment_Receipt_Type;
+
+      if (paymentType == "Expenses")
+        return View("PaymentExpense");
+      else
+        return View("Payment");
+    }
+
+
+    public ActionResult Invoice(String ID) {
+      ViewBag.ID = ID;
+      smART.ViewModel.Invoice invoice = new smART.Library.InvoiceLibrary(Configuration.GetsmARTDBContextConnectionString()).GetByID(ID);
+      String invoiceType = invoice.Invoice_Type;
+
+      if (invoiceType == "Local Sales" || invoiceType == "Trading")
+        return View("InvoiceLocalSales");
+      else
+        return View("Invoice");
+    }
+
+    public ActionResult Reports() {
+      ViewBag.ReportServerUrl = Configuration.GetsmARTReportServerUrl();
+      return View("Reports");
+    }
+
+    #endregion  Item Reports
+
+    public ActionResult Index() {
+      ViewBag.ReportServerUrl = Configuration.GetsmARTReportServerUrl();
+      IList<telerik.web.mvc.ui.treeviewitem>
+    model = SearchHelper.FocusAreaTreeViewItems();
+    return View("~/Views/Reports/Index.cshtml", model);
+    }
+
+    public ActionResult ReportContent(ReportFilter entity) {
+    if (entity != null) {
+    smART.ViewModel.FocusArea focusArea = SearchHelper.GetFocusArea(entity.FocusAreaID.ToString());
+    if (focusArea != null) {
+    entity.ReportName = focusArea.Report_Name;
+    entity.SP_Name = focusArea.View_Name;
+    entity.DataSet_Name = focusArea.DataSet_Name;
+    entity.Parameters = focusArea.Parameters;
+    entity.SubReportInfo = focusArea.SubReportInfo;
+    }
+    }
+    Session["ReportFilter"] = entity;
+    return PartialView("~/Views/Reports/ReportContent.cshtml");
+    }
+
+    public ActionResult ReportFilter(string focusAreaID = "0") {
+    int fID = Convert.ToInt32(focusAreaID);
+    smART.ViewModel.FocusArea focusArea = SearchHelper.GetFocusArea(focusAreaID);
+    string fName = focusArea == null ? "" : focusArea.Focus_Area;
+    string subFName = focusArea == null ? "" : focusArea.Sub_Focus_Area;
+    ReportFilter entity = new smART.ViewModel.ReportFilter();
+    entity.FocusAreaID = fID;
+    string view = string.Format("~/Views/Reports/Filters/{0}.cshtml", GetFilterViewByFocusArea(fName, subFName));
+    return PartialView(view, entity);
+    }
+
+    // A Method to return partial view for focus area.
+    public ActionResult FocusArea() {
+    IList<telerik.web.mvc.ui.treeviewitem>
+        model = new List<telerik.web.mvc.ui.treeviewitem>
+            ();
+            IEnumerable<focusarea>
+                focusAreas = Helpers.SearchHelper.GetFocusAreaByType("Report");
+
+                var distinctFocusAreas = from f in focusAreas.GroupBy(g => g.Focus_Area)
+                select f.FirstOrDefault();
+
+                foreach (var focusArea in distinctFocusAreas) {
+                Telerik.Web.Mvc.UI.TreeViewItem parentNode = new Telerik.Web.Mvc.UI.TreeViewItem() {
+                Enabled = false,
+                Expanded = false,
+                Text = focusArea.Focus_Area,
+                Value = focusArea.ID.ToString()
+                };
+
+                var subFocusAreas = from sf in focusAreas
+                where sf.Focus_Area == focusArea.Focus_Area
+                select sf;
+
+                foreach (var subFocusArea in subFocusAreas) {
+                bool select = subFocusArea.Sub_Focus_Area == "Party Master" ? true : false;
+                Telerik.Web.Mvc.UI.TreeViewItem childNode = new Telerik.Web.Mvc.UI.TreeViewItem() {
+                ActionName = "ReportContent",
+                ControllerName = "Reports",
+                Enabled = true,
+                Expanded = true,
+                Selected = true,
+                Text = subFocusArea.Sub_Focus_Area,
+                Value = subFocusArea.ID.ToString(),
+                };
+                parentNode.Items.Add(childNode);
+                }
+                model.Add(parentNode);
+
+                }
+                return PartialView("~/Views/Reports/ReportFocusArea.cshtml", model);
+                }
+
+                private string GetFilterViewByFocusArea(string focusArea, string subFocusArea) {
+                switch (focusArea) {
+                case "Party":
+                return "PartyReportFilter";
+                case "Item":
+                return "ItemReportFilter";
+                case "Scale":
+                if (subFocusArea == "Receiving Scale Tickets")
+                return "ScaleReceivingReportFilter";
+                else if (subFocusArea == "Todays Receiving Tickets")
+                return "ReportFilter";
+                else if (subFocusArea == "Shipping Scale Tickets")
+                return "ScaleShippingReportFilter";
+                else if (subFocusArea == "Todays Shipping Tickets")
+                return "ReportFilter";
+                else if (subFocusArea == "Local Sales Scale Tickets")
+                return "ScaleLocalSalesReportFilter";
+                else if (subFocusArea == "Todays Local Sales Tickets")
+                return "ReportFilter";
+                else if (subFocusArea == "Un Paid Tickets")
+                return "ScaleReceivingReportFilter";
+                else
+                return "ScaleReceivingReportFilter";
+                case "Audit":
+                return "AuditReportFilter";
+                case "Purchase Orders":
+                return "POReportFilter";
+                case "Sales Orders":
+                return "SOReportFilter";
+                case "Booking":
+                return "BookingReportFilter";
+                case "Financials":
+                return "FinancialsReportFilter";
+                case "General":
+                return "GeneralReportFilter";
+                case "Inventory":
+                if (subFocusArea == "Daily Inventory")
+                return "InventoryDailyReportFilter";
+                else
+                return "InventoryReportFilter";
+                default:
+                return "ReportFilter";
+                }
+                }
+
+                [AcceptVerbs(HttpVerbs.Post)]
+                public ActionResult ShowReport(ReportFilter filter) {
+                Session["ReportFilter"] = filter;
+                return Json(true);
+                }
+
+                //// The method to return partial view to bind search content.
+                //public ActionResult SearchContent(string viewName) {
+                //  GlobalSearchLibrary lib = new GlobalSearchLibrary(smART.MVC.Present.Helpers.Configuration.GetsmARTDBContextConnectionString());
+                //  GlobalSearch globalSearch = lib.GetByViewName(viewName);
+                //  string orderByClause = globalSearch != null ? Convert.ToString(globalSearch.OrderBy_Clause) : string.Empty;
+                //  DataTable dt = lib.GetAllAsDt(viewName, orderByClause);
+                //  //DataTable dt = lib.GetAllWithPagingAsDt(
+                //  //                                        viewName,
+                //  //                                        out  totalRows,
+                //  //                                        1,
+                //  //                                        ViewBag.PageSize,
+                //  //                                        "",
+                //  //                                        "Asc"
+                //  //                                      );
+
+                //  //ViewData["total"] = totalRows;
+                //  //DataTableViewModel model = new DataTableViewModel();
+                //  //model.Data = dt;
+                //  //model.Columns = columns(dt);
+                //  //model.Total = totalRows;
+                //  ViewBag.PageSize = 18;
+                //  return PartialView("~/Views/Search/SearchContent.cshtml", dt);
+                //}
+
+                //// Ajax method to call bind search content
+                //[GridAction(EnableCustomBinding = false)]
+                //public ActionResult _SearchContent(GridCommand command, string viewName) {
+                //  GlobalSearchLibrary lib = new GlobalSearchLibrary(smART.MVC.Present.Helpers.Configuration.GetsmARTDBContextConnectionString());
+                //  GlobalSearch globalSearch = lib.GetByViewName(viewName);
+                //  string orderByClause = globalSearch != null ? Convert.ToString(globalSearch.OrderBy_Clause) : string.Empty;
+                //  DataTable dt = lib.GetAllAsDt(viewName, orderByClause);
+
+                //  //DataTable dt = lib.GetAllWithPagingAsDt(viewName,
+                //  //                                          out totalRows,
+                //  //                                          command.Page,
+                //  //                                          command.PageSize,
+                //  //                                          command.SortDescriptors.Count == 0 ? "" : command.SortDescriptors[0].Member,
+                //  //                                          command.SortDescriptors.Count == 0 ? "" : command.SortDescriptors[0].SortDirection == System.ComponentModel.ListSortDirection.Descending ? "Desc" : "Asc",
+                //  //                                          (command.FilterDescriptors.Count == 0 ? null : command.FilterDescriptors)
+                //  //                                        );
+
+                //  //DataTableViewModel model = new DataTableViewModel();
+                //  //model.Data = dt;
+                //  //model.Columns = columns(dt);
+                //  //model.Total = totalRows;
+                //  //ViewBag.PageSize = 18;
+                //  //ViewData["total"] = totalRows;
+                //  ViewBag.Total = dt.Rows.Count;
+                //  ViewBag.PageSize = 18;
+                //  return View(new GridModel(dt));
+                //}
+
+                }
+                }

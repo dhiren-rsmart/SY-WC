@@ -1,0 +1,439 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model DispatcherRequest
+@{
+   ViewBag.Title = "Dispatcher Request";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "DispatcherRequest";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "DispatcherRequest";
+   
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+    
+
+   ViewBag.PrintID = Model.ID;   
+   ViewBag.PrintAction = "Dispatcher";
+   ViewBag.PrintController = "Reports";
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+   
+   ViewBag.ContainerAction = "_LoadedContainers";
+   ViewBag.ContainerController = "Container";
+
+}
+@section ButtonSection{
+   @*@Html.AuthorizedButton("OpenLoadedContainer", "Loaded Containers", "button", new { onclick = "ShowContainerWindow()", @class = "t-button" })*@
+     @Html.AuthorizedButton("OpenLoadedContainer"
+                           , "Loaded Containers"
+                           , "button"
+                           , new {
+                             onclick = string.Format("openSearchWindow('{0}','{1}')", ViewBag.ContainerController, ViewBag.ContainerAction),
+                             @class = "t-button"
+                           }
+                          )
+}
+@section MasterSection
+{
+ @*  <div>
+      @Html.Telerik().Window().BuildWindow("ContainerWindow").LoadContentFrom((string)ViewBag.ContainerAction, (string)ViewBag.ContainerController)
+   </div>*@
+   <script type="text/javascript">
+
+      //#region Document Ready
+
+      $(document).ready(function () {
+         if ("True" == "@ViewBag.IsFromLoadedContainer") {
+            $("#ID").val(0)
+         }
+      });
+
+      //#endregion Document Ready
+
+      //#region Events  
+
+        function onTabStrib_Select(e)
+        {
+          var item = $(e.item);
+          var selectedIndex = item.index();       
+          if (selectedIndex == 2) // Notes
+            refreshGrid("#Grid_DispatcherRequest_Expense");
+        }
+
+
+      function Child_Grid_onSave(e) {
+         Grid_onSave(e);
+         // Required for notes etc.    
+         e.values["Parent.ID"] = eval('@Model.ID');
+         // Required for Expense etc.    
+         e.values["Reference_ID"] = eval('@Model.ID');
+      }
+
+      function Child_Grid_onEdit_Local(e) {
+         Child_Grid_onEdit(e);
+
+      }
+
+      function OnTabStrip_Load(e) {
+         var category = $("#RequestCategory").val();
+         SelectTab(category);
+      }
+
+      function OnBooking_Change(e) {
+         $("#Shipper_Party_Name").val(e.Shipping_Company.Party_Name);
+         $("#Sales_Order_No_Party_Party_Name").val(e.Sales_Order_No.Party.Party_Name);
+         $("#Sales_Order_No_ID").val(e.Sales_Order_No.ID);
+
+         $("#Container_No").val("");
+         var tGrid = $('#SearchWindowGrid_Container').data('tGrid');
+         tGrid.rebind({ Id: e.ID });
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../Container/_GetContainerByBookingId/" + e.ID.toString() };
+
+         $('#LabelID_Container').val('');
+         $("#HiddenID_ContainerID").val(0);
+         $('#HiddenID_Container_No').val('');
+      }
+
+      function OnContainer_Change(e) {
+         $("#Container_No").val(e.Container_No);
+      }
+
+      function OnCategory_Change(e) {
+         var selectedValue = e.value;
+         SelectTab(selectedValue);
+      }
+
+      function OnTrucker_Change(e) {
+         var tGrid = $('#SearchWindowGrid_Driver').data('tGrid');
+         tGrid.rebind({ Id: e.ID });
+
+         //set the refresh button ID value
+         tGrid.ajax = { selectUrl: "/Contact/_DriverRoleContactByPartyId?id=" + e.ID };
+
+         //clear driver data
+         $('#LabelID_Driver').val('');
+      }
+
+      function OnSupplier_Change(e) {
+         BindLocation(e.ID);
+         // Clear Purchase Order data.
+         $('#LabelID_Purchase_Order_No').val('');
+         $("#HiddenID_Purchase_Order_NoID").val(0);
+      }
+
+      function OnPurchaseOrder_Change(e) {
+         $("#LabelID_Party").val(e.Party.Party_Name);
+         $("#Party_ID").val(e.Party.ID);
+         BindLocation(e.Party.ID);
+      }
+
+      function OnAsset_Change(e) {
+         $("#Asset_Asset_No").val(e.Asset.Asset_No);
+         $("#Asset_ID").val(e.Asset.ID);
+         $("#Asset_Asset_Sub_Type").val(e.Asset.Asset_Sub_Type);
+      }
+
+      function OnRequestType_Change(e) {
+         if ($("#RequestCategory").val() === 'Bin') {
+            var selectedValue = e.value;
+            var tGrid = $('#SearchWindowGrid_AssetAuditLookup').data('tGrid');
+            tGrid.rebind({ dispatcherType: selectedValue });
+
+            //set the refresh button ID value
+            tGrid.ajax = { selectUrl: "../AssetAudit/_AssetsByDispatcherType/" + selectedValue };
+
+            //clear driver data
+            $("#Asset_Asset_No").val(0);
+            $("#Asset_ID").val('');
+            $("#Asset_Asset_Sub_Type").val('');
+
+         }
+      }
+
+      //#endregion Events
+
+      //#region Functions
+
+      function ShowContainerWindow() {
+         var window = $("#ContainerWindow").data("tWindow");
+         window.center().open();
+      }
+
+      function SelectTab(selectedValue) {
+         if (selectedValue == "Container") {
+            TabEnable("#Dispatcher_TabStrip", 1);
+            TabSelect("#Dispatcher_TabStrip", 1);
+            TabDisable("#Dispatcher_TabStrip", 0);
+         }
+         else if (selectedValue == "Bin") {
+            TabDisable("#Dispatcher_TabStrip", 1);
+            TabEnable("#Dispatcher_TabStrip", 0);
+            TabSelect("#Dispatcher_TabStrip", 0);
+         }
+         else {
+            TabDisable("#Dispatcher_TabStrip", 1);
+            TabDisable("#Dispatcher_TabStrip", 0);
+         }
+      }
+
+      function BindLocation(id) {
+         var tGrid = $('#SearchWindowGrid_Location').data('tGrid');
+         tGrid.rebind({ partyId: id });
+
+         // Set the refresh button ID value
+         tGrid.ajax = { selectUrl: "../AddressBook/_PartyAddresses?partyId" + id };
+
+         // Clear driver data
+         $('#LabelID_Location').val('');
+         $("#HiddenID_LocationID").val(0);
+      }
+
+      //#endregion 
+   </script>
+   @* Print *@
+   <script type="text/javascript" language="javascript">
+
+      function ValidatePrint() {
+         if (eval('@Model.ID') === '0') {
+            alert('There is nothing to print.');
+            return false;
+         }
+         return true;
+      }
+   </script>
+   @* Expense *@
+   <script type="text/javascript" language="javascript">
+
+      function Expense_Grid_onEdit_Local(e) {
+         Expense_Grid_onEdit(e);
+
+         // Set expense party.
+         var partyName = $("#LabelID_TruckingCompany").val();
+         var partyID = $("#HiddenID_TruckingCompanyID").val();
+         if (e.dataItem["Paid_Party_To"] === null && partyID > 0) {
+            $("#LabelID_Paid_Party_To").val(partyName);
+            $("#HiddenID_Paid_Party_ToID").val(partyID);
+            $("#HiddenID_Paid_Party_ToParty_Name").val(partyName);
+            $("#Paid_Party_To_ID").val(partyID);
+         }
+      }
+
+   </script>
+   @*<hr />*@
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <h3>
+         Trucking Company Details ...</h3>
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.TruckingCompany)
+            </td>
+            <td>
+               @Html.LookupHtml(m => m.TruckingCompany, "TruckerLookup", "ID", "Party_Name", "_PartyByType", "Party", new { partytype = "Trucking company" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnTrucker_Change")
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Driver)
+            </td>
+            <td>
+               <div id="ddlDriver">
+                  @Html.LookupHtml(m => m.Driver, "DriverLookup", "ID", "ListText", "_DriverRoleContactByPartyId", "Contact", new { id = @Model.TruckingCompany != null ? @Model.TruckingCompany.ID : 0 }, "_GetJson", "Contact", new string[] { "ID", "ListText", "ContactParty" })
+               </div>
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.RequestCategory)
+            </td>
+            <td>
+               @if (@Model.ID > 0) {@Html.TextBoxFor(m => m.RequestCategory, new { @readonly = "readonly" })                                
+               }
+               else { 
+                  @Html.AuthorizedEditorFor(m => m.RequestCategory, new { LovType = "REQUEST_CATEGORY", OnChange = "OnCategory_Change", selectedItem = "Bin" })
+               }
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <h3>
+         Request Details ...</h3>
+      <table>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>
+               @Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.RequestType)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.RequestType, new { LovType = "REQUEST_TYPE", selectedItem = "Pickup only", OnChange = "OnRequestType_Change" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.RequestStatus)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.RequestStatus, new { LovType = "REQUEST_STATUS", selectedItem = "Open" })
+            </td>
+         </tr>
+         <tr>
+            <td>
+               @Html.AuthorizedLabelFor(m => m.Time)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Time, DateTime.Now)
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   <h3>
+      Receiving/Shipping Details ...</h3>
+   @(Html.Telerik().TabStrip()
+    .Name("Dispatcher_TabStrip")
+         .ClientEvents(events => events.OnLoad("OnTabStrip_Load").OnSelect("onTabStrib_Select"))
+    .Items(items => {
+       @* ===================================== Receiving Tab=======================================================  *@ 
+       items.Add()
+           .Text("Receiving")
+           .Selected(true)
+           .Enabled(false)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Party_Supplier)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Party, "PartySupplierLookup", "ID", "Party_Name", "_PartyByTypes", "Party", new { partyTypes = "Industrial,Supplier" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnSupplier_Change")
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Location)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Location, "LocationLookup", "ID", "City", "_PartyAddresses", "AddressBook", new { partyId = @Model.Party_Supplier != null ? @Model.Party_Supplier.ID : 0 }, "_GetJson", "AddressBook", new string[] { "ID", "Address1", "City", "State", "Country" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Asset)
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Asset.Asset_No, new { @readonly = "readonly" })
+            @Html.HiddenFor(m => m.Asset.ID)
+            <div style="float: right">
+               @Html.LookupHtml(m => m.AssetAuditLookup, "AssetAuditLookup", "ID", "ID", "_AssetsByDispatcherType", "AssetAudit", new { dispatcherType = @Model.RequestType == null ? "Pickup only" : @Model.RequestType }, "_GetJSonLookup", "AssetAudit", new string[] { "Party.Party_Name", "Asset.Asset_No", "Asset.Asset_Sub_Type", "Location.FullAddress" }, "OnAsset_Change", false)
+            </div>
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Purchase_Order_No)
+         </td>
+         <td>
+            @Html.LookupHtml(m => m.Purchase_Order_No, "PurchaseOrderLookup", "ID", "ID", "_OpenPurchaseOrders", "PurchaseOrder", null, "_GetJson", "PurchaseOrder", new string[] { "ID", "Party.Party_Name", "Created_Date" }, "OnPurchaseOrder_Change")
+         </td>
+      </tr>
+   </table>
+   </text>);
+   @* ============================================ Shipping ======================================*@
+       items.Add()
+           .Text("Shipping")
+           .Enabled(false)
+           .Content(@<text>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Booking_Ref_No)
+         </td>
+         <td>
+            @if (Model.ID == 0) {
+               @Html.LookupHtml(m => m.Booking_Ref_No, "Booking_Ref_NoLookup", "ID", "Booking_Ref_No", "_NonTradingOpenBookings", "Booking", null, "_GetJson", "Booking", new string[] { "ID", "Booking_Ref_No", "No_Of_Containers" }, "OnBooking_Change")
+            }
+            else { 
+               @Html.TextBoxFor(m => m.Booking_Ref_No.Booking_Ref_No, new { @readonly = "readonly" })
+               @Html.HiddenFor(m => m.Booking_Ref_No.ID)
+            }
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.Label("Party Name")
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Sales_Order_No.Party.Party_Name, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Shipper)
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Shipper.Party_Name, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.Label("Sales Order #")
+         </td>
+         <td>
+            @Html.TextBoxFor(m => m.Sales_Order_No.ID, new { @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(m => m.Container_No)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Container_No)
+            @Html.LookupHtml(m => m.Container, "ContainerLookup", "ID", "Container_No", "_GetContainerByBookingId", "Container", new { id = @Model.Booking_Ref_No != null ? @Model.Booking_Ref_No.ID : 0 }, "_GetJson", "Container", new string[] { "ID", "Container_No", "Seal1_No" }, "OnContainer_Change", false)
+         </td>
+      </tr>
+   </table>
+   </text>);    
+      @* ========================Expense TAB ============================================================*@
+       items.Add()
+           .Text("Expenses")
+           .Enabled(true)
+           .Content(Html.Telerik().Grid<DispatcherRequestExpense>()
+                                .Columns(columns => {
+                                   columns.Bound(p => p.Paid_Party_To.Party_Name).ClientTemplate("<#= Paid_Party_To? Paid_Party_To.Party_Name  : '' #>").Filterable(true);
+                                })
+                               .BuildGrid(
+                                   gridName: "Grid_DispatcherRequest_Expense",
+                                   ajaxController: "DispatcherRequestExpense",
+                                    hiddenColumns: new string[] { "Paid_Party_To" },
+                                   indexID: Model.ID.ToString(),
+                                   feature: smART.Common.EnumFeatures.Transaction_DispatcherRequestExpense
+                               )
+                               .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Expense_Grid_onEdit_Local").OnError("Grid_onError").OnDataBinding("LookupGrid_onDataBinding"))
+                               .ToHtmlString()
+                   );
+
+    })
+)
+}
+@section DetailsSection
+{
+   <div />
+}

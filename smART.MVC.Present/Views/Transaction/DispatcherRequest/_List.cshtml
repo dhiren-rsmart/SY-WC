@@ -1,0 +1,38 @@
+﻿@model IEnumerable<smART.ViewModel.DispatcherRequest>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+   @(
+ Html.Telerik().Grid<DispatcherRequest>()
+        .Name("Grid_DispatcherRequest_List")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "DispatcherRequest"))
+
+        .Columns(columns => {
+           columns.Bound(o => o.ID).Title("Dispatch#").Filterable(true);
+           columns.Bound(o => o.RequestCategory);
+           columns.Bound(o => o.RequestType);
+           columns.Bound(o => o.RequestStatus);
+           columns.Bound(o => o.TruckingCompany.ListText).Title("Party Trucking Company").Sortable(false);
+           columns.Bound(p => p.Booking_Ref_No.Booking_Ref_No).ClientTemplate("<#= Booking_Ref_No? Booking_Ref_No.Booking_Ref_No  : '' #>");
+           columns.Bound(p => p.Container.Container_No).ClientTemplate("<#= Container != null ? Container.Container_No  : '' #>").Filterable(true);
+           columns.Bound(p => p.Purchase_Order_No.ID).ClientTemplate("<#= Purchase_Order_No? Purchase_Order_No.ID  : '' #>").Title("PO#");
+           columns.Bound(p => p.Asset.Asset_No).ClientTemplate("<#= Asset? Asset.Asset_No  : '' #>").Title("Bin#");
+           columns.Bound(o => o.ID).Sortable(false).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "Index", "DispatcherRequest", new { id = "<#= ID #>" }, null).ToHtmlString()).Filterable(false);
+        })
+        .Sortable(sorting => sorting.Enabled(true).SortMode(GridSortMode.SingleColumn).OrderBy(order => { order.Add(o => o.ID).Descending(); }))
+        .Filterable()
+        .Resizable(rs => rs.Columns(true))
+        .Scrollable(sc => sc.Height("*").Enabled(true))
+       .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+         //.Scrollable( s => s.Height("*"))       
+  )
+</div>

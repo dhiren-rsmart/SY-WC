@@ -1,0 +1,33 @@
+﻿@model IEnumerable<smart.viewmodel.paymentreceipt>
+    @using smART.ViewModel
+    @using smART.MVC.Present.Helpers
+
+    @{
+        Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+    }
+
+
+    @*<div>
+            @(
+             Html.Telerik().Grid<PaymentReceiptDetails>()
+            .Name("Grid_PaymentDetails_List")
+                 .Selectable()
+            .DataKeys(keys => keys.Add(key => key.ID))
+                .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+                .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+                .Total(100))
+            .DataBinding(bindings => bindings.Ajax()
+                .Select("_GetQScalePaymentHistory", "PaymentDetails"))
+            .Columns(columns =>
+            {
+                columns.Bound(o => o.PaymentReceipt.ID).Title("Payment#");
+                columns.Bound(o => o.Settlement.Scale.Created_Date).ClientTemplate("<#= Settlement != null && Settlement.Scale != null ? $.telerik.formatString('{0:MM/dd/yyyy}', Settlement.Scale.Created_Date)  : '' #>").Title("Scale Ticket Date");
+                columns.Bound(o => o.Settlement.Scale.Scale_Ticket_No).ClientTemplate("<#= Settlement != null && Settlement.Scale != null ? Settlement.Scale.Scale_Ticket_No  : '' #>").Title("Ticket#");
+                columns.Bound(o => o.Apply_Amount).Title("Net Amount").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                columns.Bound(o => o.PaymentReceipt.Party.Party_Short_Name).ClientTemplate("<#= PaymentReceipt != null && PaymentReceipt.Party != null ? PaymentReceipt.Party.Party_Short_Name  : '' #>").Title("Paid To");
+
+                })
+             .Sortable(sorting => sorting.Enabled(true).SortMode(GridSortMode.SingleColumn).OrderBy(order => { order.Add(o => o.ID).Descending(); }))
+             .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+            )
+        </div>*@

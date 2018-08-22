@@ -1,0 +1,12 @@
+﻿@using smART.ViewModel;
+@using smART.MVC.Present.Helpers;
+
+@model Contact
+
+@if (Model != null)
+{
+    @(Html.Telerik().DropDownListFor(o => o.ID)
+        .BindTo(ContactHelper.ContactList(Model.ID))
+        .HtmlAttributes(new { style = "width: 90%" })
+        )
+}

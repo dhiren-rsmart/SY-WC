@@ -1,0 +1,30 @@
+﻿@using smART.ViewModel;
+@using smART.MVC.Present.Helpers;
+
+@model Party
+
+@if (Model != null)
+{
+    Telerik.Web.Mvc.UI.Fluent.DropDownListBuilder list = null;
+    if (ViewBag.PartyType != null)
+    {
+        list = Html.Telerik().DropDownListFor(o => o.ID)
+            .BindTo(PartyHelper.PartyList((string)ViewBag.PartyType, Model.ID))
+            .HtmlAttributes(new { style = "width: 90%" });
+                
+    }
+    else
+    {
+        list = Html.Telerik().DropDownListFor(o => o.ID)
+            .BindTo(PartyHelper.PartyList(Model.ID))
+            .HtmlAttributes(new { style = "width: 90%" });
+                
+    }
+
+    if (ViewBag.OnChange != null)
+    {
+        list.ClientEvents(events => events.OnChange(ViewBag.OnChange));
+    }
+    
+    @list
+}

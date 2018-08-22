@@ -1,0 +1,51 @@
+﻿@model IEnumerable<smART.ViewModel.Scale>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+
+<script type="text/javascript">
+
+  function On_RowSelect_Ticket(e)
+  {
+    var grid = $(this).data('tGrid');
+    var dataItem = grid.dataItem(e.row);
+    if (dataItem != null)
+    {
+      RefreshContent("/QScale/Index/" + dataItem.ID)
+      closeWindow();
+    }
+  }
+  
+</script>
+ @(
+ Html.Telerik().Grid<Scale>()
+        .Name("Grid_Scale_List")        
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+            .Select("_Index", "QScale"))
+        .Columns(columns =>
+            {
+                 columns.Bound(o => o.Scale_Ticket_No).Filterable(true);
+                 columns.Bound(o => o.Created_Date).Format("{0:MM/dd/yyyy}").Filterable(true);
+                 columns.Bound(o => o.Ticket_Status).Filterable(true);
+                 columns.Bound(p => p.Party_ID.Party_Name).ClientTemplate("<#= Party_ID? Party_ID.Party_Name  : '' #>");
+                 columns.Bound(p => p.Party_ID.License_No).ClientTemplate("<#= Party_ID? Party_ID.License_No  : '' #>");
+                 //columns.Bound(o => o.Make);
+                 //columns.Bound(o => o.Model);
+                 //columns.Bound(o => o.Color);
+                 columns.Bound(o => o.Net_Weight).HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+                 //columns.Bound(o => o.Item_Amount).Title("Total Amount").HtmlAttributes(new {style = "text-align: right;"}).Format("{0:0.00}");
+              
+            })
+         .Sortable(sorting => sorting.Enabled(true).SortMode(GridSortMode.SingleColumn).OrderBy(order => { order.Add(o => o.ID).Descending(); }))
+         .Filterable()
+         .ClientEvents(ev => ev.OnRowSelect("On_RowSelect_Ticket").OnLoad("SetDefaultFilterToContains"))
+)
+</div>

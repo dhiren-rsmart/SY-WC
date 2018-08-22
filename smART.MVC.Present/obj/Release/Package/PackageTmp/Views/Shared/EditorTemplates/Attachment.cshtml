@@ -1,0 +1,72 @@
+﻿@using smART.ViewModel;
+@using smART.MVC.Present.Helpers;
+@using smART.ViewModel
+@using smART.MVC.Present.Extensions;
+@using System.Web;
+@model BaseAttachment 
+@if (Model != null)
+{   
+      
+    <script language="javascript" type="text/javascript">
+
+
+        function onSuccess(e) {
+            // Array with information about the uploaded files
+            var files = e.files;
+
+            if (e.operation == "upload") {
+                alert("Successfully uploaded " + files.length + " files");
+                document.getElementById('Document_Name').value = files[0].name;
+            }
+
+        }
+
+        function onRemove(e) {
+            // Array with information about the uploaded files
+            var files = e.files;
+            document.getElementById('Document_Name').value = '';
+
+         }
+    </script>
+    
+    <div class="editor">
+        @Html.ValidationSummary()
+        <table>
+            <tr>
+                <td>
+                    @Html.AuthorizedLabelFor(l => l.ID)
+                </td>
+                <td>
+                    @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+                    @Html.HiddenFor(l => l.Document_Name)
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.Label("Document")
+                </td>
+                <td>
+                    @(Html.Telerik().Upload().Name("attachments").Multiple(false)
+                         .ClientEvents(
+                                c => c.OnSuccess("onSuccess").OnRemove("onRemove")
+                         )
+                         .Async(async => async
+                                .Save("Save", ViewData["ContName"].ToString(), new { docRefID = Model.Document_RefId })
+                                .AutoUpload(true)
+                                .Remove("Remove", ViewData["ContName"].ToString(), new { docRefID = Model.Document_RefId })
+                                )
+                      )
+                </td>
+            </tr>
+            <tr>
+                <td>
+                    @Html.AuthorizedLabelFor(l => l.Document_Title)
+                </td>
+                <td>
+                    @Html.AuthorizedEditorFor(l => l.Document_Title)
+                </td>
+            </tr>
+        </table>
+    </div>
+
+}

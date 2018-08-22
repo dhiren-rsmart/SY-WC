@@ -1,0 +1,132 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="smART.MVC.ViewModel.App_Start.RegisterClientValidationExtensions" Collapsed="true">
+    <Position X="25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>App_Start\RegisterClientValidationExtensions.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.ClientTemplateExtension" Collapsed="true">
+    <Position X="23.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\ClientTemplateExtension.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.ClientTemplateHtmlAttribute" Collapsed="true">
+    <Position X="25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Attributes\ClientTemplateHtmlAttribute.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.BaseEntity" Collapsed="true">
+    <Position X="10.5" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAIAgAoAAAAAAAAAAAAAAAAEBAAAAAAAAAA=</HashCode>
+      <FileName>Base\BaseEntity.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.MenuSelect" Collapsed="true">
+    <Position X="23.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAgAAAAAAAAhAAAIAAAAAAAAAAAAAAAEABAAAAAIAA=</HashCode>
+      <FileName>Base\MenuSelect.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.ViewModelBase" Collapsed="true">
+    <Position X="10.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Base\ViewModelBase.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.LOV" Collapsed="true">
+    <Position X="14" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAIAAAAAAAgAAAAQAAAAAAAA=</HashCode>
+      <FileName>Common\LOV.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.LOVType" Collapsed="true">
+    <Position X="18.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAEAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Common\LOVType.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.AddressBook" Collapsed="true">
+    <Position X="9.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAIAAAEAAAAAAIABAAAAAAABAAAAAA=</HashCode>
+      <FileName>Master\AddressBook.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Bank" Collapsed="true">
+    <Position X="2.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IEAAAAAAAC0AEAAIAAAAAAAAACIAAAABAAAABAACAAA=</HashCode>
+      <FileName>Master\Bank.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Bin" Collapsed="true">
+    <Position X="5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\Bin.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Contact" Collapsed="true">
+    <Position X="7.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEBAAAAAACAAAAAAAAAAAAABAACAAACAAABAAAAAAJA=</HashCode>
+      <FileName>Master\Contact.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Item" Collapsed="true">
+    <Position X="20.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAEAAAAAACAAIAAAAAAAAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>Master\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Note" Collapsed="true">
+    <Position X="11.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAIAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>Master\Note.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="smART.ViewModel.Party" Collapsed="true">
+    <Position X="0.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAQACAQAADEAgAAAAAAAAAgAAAAAAgAApA=</HashCode>
+      <FileName>Master\Party.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.ViewModel.PartyChildEntity" Collapsed="true">
+    <Position X="7.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJA=</HashCode>
+      <FileName>Master\PartyChildEntity.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="smART.ViewModel.DispatcherRequest" Collapsed="true">
+    <Position X="16.25" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAAAAAEAAAAAAAAIAIAACAAAEAEoEQgAAIAAAAAAQA=</HashCode>
+      <FileName>Transaction\DispatcherRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Interface Name="smART.ViewModel.IListType" Collapsed="true">
+    <Position X="23.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAJA=</HashCode>
+      <FileName>Base\IListType.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>

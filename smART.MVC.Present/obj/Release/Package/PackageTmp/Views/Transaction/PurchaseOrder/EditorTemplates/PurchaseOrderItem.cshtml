@@ -1,0 +1,315 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model PurchaseOrderItem
+@{
+                       //ViewBag.Title = "Purchase Order Item";
+
+                       //ViewBag.AjaxFormSubmitMethod = "Save";
+                       //ViewBag.NewUrl = "New";
+
+                       //ViewBag.DeleteAction = "_Delete";
+                       //ViewBag.DeleteController = "PurchaseOrderItem";
+                       //ViewBag.DeleteData = Model.ID.ToString();
+
+                       //ViewBag.SearchAction = "_Index";
+                       //ViewBag.SearchController = "PurchaseOrderItem";
+                       //ViewBag.Transaction = true;
+                       //Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+<script language="javascript" type="text/javascript" runat="server">
+        function OnChange_PriceType()
+        {
+            var ddlPriceType = $('#Price_Type').data('tDropDownList');
+                            
+            if ( ddlPriceType.value()=='Price List')
+            {
+                if(!SelectedPriceListID)
+                {
+                   
+                   alert("Please select Price List first.");
+                   ddlPriceType.value(' ');
+                }
+            }
+        }
+        function GetItemPrice(itemID) {
+            
+            if (SelectedPriceListID) {
+                $.ajax({
+                    url: '@(Url.Action("_GetItemPrice", "PriceListItem"))',
+                    type: 'POST',
+                    contentType: 'application/json;',
+                    data: "{PriceListID: " + SelectedPriceListID + ", ItemID: " + itemID + " }",
+                    success: function (data, result) {
+                        if(data)
+                        {
+                            $("#Price").data("tTextBox").value(data);
+                            var ddlUOM = $('#Ordered_Qty_UOM').data('tDropDownList');
+                            ddlUOM.value(SelectedPriceListUOM);
+                            var ddlPriceType = $('#Price_Type').data('tDropDownList');
+                            ddlPriceType.value('Price List');
+                        }
+                    }
+                });
+            }
+        }
+    function Payment_Method_PerMonth_onselect(s)
+    {       
+       
+        $('#Payment_Method_Amt1').attr("disabled", "disabled");
+        $('#Payment_Method_Amt2').attr("disabled", "disabled");
+        $('#Payment_Method_Amt3').attr("disabled", "disabled");
+        $('#Payment_Method_Amt4').attr("disabled", "disabled");
+        $(s).removeAttr("disabled", "disabled");
+       
+
+        $("#radiobutt input[type=radio]").each(function(i){ $(this).click(function () 
+            {         
+                if(i==0) { 
+                    //0rd radiobutton     
+                  
+                   // $("#textbox1").attr("disabled", "disabled");                  
+                 }         
+                 else {                        
+                   // $("#textbox1").removeAttr("disabled");
+                       
+                 }       
+            });    
+         }); 
+    }
+  function ItemOverride_Change(e) {
+      $("#Item_Override").val(e.ListText);
+   }
+
+</script>
+<div class="editor">
+   <div class="validation-summary-errors">
+      @Html.ValidationSummary()
+   </div>
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.ID)
+         </td>
+         <td>
+            @Html.TextBoxFor(l => l.ID, new { id = "Child_ID", @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Item)
+         </td>
+         <td>
+            @*@Html.LookupHtml(l => l.Party, "ItemPartyLookup", "ID", "Party_Name", "_Index", "Party", null, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnPartyChange")*@
+            @Html.LookupHtml(l => l.Item, "ItemLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" }, "OnItemChange")
+            @*@Html.AuthorizedEditorFor(l => l.Item_ID)*@ @*@Html.HiddenFor(l=>l.Item.ID)*@
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Item_Override)
+         </td>
+         <td>           
+            @Html.AuthorizedEditorFor(m => m.Item_Override)
+            @Html.LookupHtml(l => l.Item_Override_Lookup, "ItemOverrideLookup", "ID", "Short_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Short_Name", "Long_Name", "Item_Category", "Item_Group" }, "ItemOverride_Change", false)            
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Material)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Material, new { LovType = "Material_Type" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Packaging_Type)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Packaging_Type, new { LovType = "Packaging_Type" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Ordered_Qty_UOM)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Ordered_Qty_UOM, new { LovType = "UOM" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Ordered_Qty)
+         </td>
+         <td>
+            @*@Html.AuthorizedEditorFor(l => l.Ordered_Qty)*@
+            @(Html.Telerik().NumericTextBoxFor(l => l.Ordered_Qty).Spinners(false).MinValue(0))
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Price_Type)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Price_Type, new { LovType = "PRICE_TYPE", OnChange = "OnChange_PriceType" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Price)
+         </td>
+         <td>
+            @*@Html.AuthorizedEditorFor(l => l.Price)*@
+            @(Html.Telerik().NumericTextBoxFor(l => l.Price).Spinners(false).MinValue(0))
+         </td>
+      </tr>
+      @*<tr>
+            <td>
+                @Html.AuthorizedLabelFor(l => l.Price_UOM)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(l => l.Price_UOM, new { LovType = "UOM"})
+            </td>
+        </tr>*@
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.No_Of_Containers)
+         </td>
+         <td>
+            @*@Html.AuthorizedEditorFor(l => l.No_Of_Containers)*@
+            @(Html.Telerik().IntegerTextBoxFor(l => l.No_Of_Containers).Spinners(true).MinValue(0))
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Container_Type)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Container_Type, new { LovType = "SHIPPING_CONTAINERS" })
+         </td>
+      </tr>
+   </table>
+   Expense Detail
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Order_Confirmed_By)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Order_Confirmed_By)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(l => l.Expense_Type)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Expense_Type, new { LovType = "EXPENSE_TYPE" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            How to Pay ?
+         </td>
+         <td>
+            <table>
+               <tr>
+                  <td>
+                     @Html.RadioButtonFor(l => l.Payment_Method, "PerMonth", new { @onclick = "Payment_Method_PerMonth_onselect('#Payment_Method_Amt1')" })
+                  </td>
+                  <td>
+                     Per Month
+                  </td>
+                  <td>
+                     @*@Html.AuthorizedEditorFor(l => l.Payment_Method_Amt1)*@
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Payment_Method_Amt1).Spinners(false).MinValue(0))
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.RadioButtonFor(l => l.Payment_Method, "Percentage", new { @onclick = "Payment_Method_PerMonth_onselect('#Payment_Method_Amt2')" })
+                  </td>
+                  <td>
+                     %
+                  </td>
+                  <td>
+                     @*@Html.AuthorizedEditorFor(l => l.Payment_Method_Amt2)*@
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Payment_Method_Amt2).Spinners(false).MinValue(0))
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.RadioButtonFor(l => l.Payment_Method, "FixedAmount", new { @onclick = "Payment_Method_PerMonth_onselect('#Payment_Method_Amt3')" })
+                  </td>
+                  <td>
+                     Fixed Amount
+                  </td>
+                  <td>
+                     @*@Html.AuthorizedEditorFor(l => l.Payment_Method_Amt3)*@
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Payment_Method_Amt3).Spinners(false).MinValue(0))
+                  </td>
+               </tr>
+               <tr>
+                  <td>
+                     @Html.RadioButtonFor(l => l.Payment_Method, "FixedAmountPerScaleTicket", new { @onclick = "Payment_Method_PerMonth_onselect('#Payment_Method_Amt4')" })
+                  </td>
+                  <td>
+                     Fixed amount Per Scale Ticket
+                  </td>
+                  <td>
+                     @*@Html.AuthorizedEditorFor(l => l.Payment_Method_Amt4)*@
+                     @(Html.Telerik().NumericTextBoxFor(l => l.Payment_Method_Amt4).Spinners(false).MinValue(0))
+                  </td>
+               </tr>
+            </table>
+            @* <table>
+                    <tr>
+                        <td>
+                            <input id="rdPaymentMethod_PerMonth" name="PaymentType" value="PerMonth" group="PaymentType" type="radio" />
+                        </td>
+                        <td>
+                        Per Month
+                        </td>
+                        <td>
+                              @Html.AuthorizedEditorFor(l => l.Payment_Method_Amt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="rdPaymentMethod_Percentage" name="PaymentType" value="Percentage" group="PaymentType" type="radio" />
+                        </td>
+                        <td>
+                        %
+                        </td>
+                        <td>
+                              @Html.AuthorizedEditorFor(l => l.Payment_Method_Amt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="rdPaymentMethod_FixedAmount" name="PaymentType" value="FixedAmount" group="PaymentType" type="radio" />
+                        </td>
+                        <td>
+                        Fixed Amount
+                        </td>
+                        <td>
+                              @Html.AuthorizedEditorFor(l => l.Payment_Method_Amt)
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <input id="rdPaymentMethod_FixedAmountPerScaleTicket" name="PaymentType" value="FixedAmountPerScaleTicket" group="PaymentType" type="radio" />
+                        </td>
+                        <td>
+                        Fixed amount Per Scale Ticket
+                        </td>
+                        <td>
+                              @Html.AuthorizedEditorFor(l => l.Payment_Method_Amt)
+                        </td>
+                    </tr>
+                </table>*@
+         </td>
+      </tr>
+   </table>
+</div>

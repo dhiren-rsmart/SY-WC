@@ -1,0 +1,23 @@
+----------------------------------------
+Timestamp : 11/14/2015 11:50:52 PM
+
+Title     : An error has occurred while processing your request. Please contact your system administrator for help.
+
+Message   : An internal error has occurred and has been logged. Please contact your system administrator for help.
+
+Exception: System.FormatException: Input string was not in a correct format.
+   at System.Number.StringToNumber(String str, NumberStyles options, NumberBuffer& number, NumberFormatInfo info, Boolean parseDecimal)
+   at System.Number.ParseInt32(String s, NumberStyles style, NumberFormatInfo info)
+   at System.Convert.ToInt32(String value)
+   at smART.Library.GenericLibrary`2.GetByID(String id, String[] includePredicate) in d:\Rsmart\Rsmart-SY\Server\smART.MVC.Library\GenericLibrary.cs:line 339
+Method Name: GetByID
+Line No.: 339
+
+Category  : Library
+
+Priority  : 3
+
+Severity  : Error
+
+
+----------------------------------------

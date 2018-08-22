@@ -1,0 +1,101 @@
+﻿@model smART.ViewModel.AddressBook
+@using smART.MVC.Present.Extensions
+<div class="editor">
+  
+   <div id="AddressBookValidSum" class="validation-summary-errors">
+       @Html.ValidationSummary()
+   </div>
+
+   <table>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.ID)
+         </td>
+         <td>
+            @Html.TextBoxFor(o => o.ID, new { id = "Child_ID", @readonly = "readonly" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Address1)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.Address1)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Address2)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.Address2)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.City)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.City)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.State)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.State)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Country)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.Country)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Zip_Code)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.Zip_Code)
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Address_Type)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(l => l.Address_Type, new { LovType = "ADDRESS_TYPE" })
+         </td>
+      </tr>
+      <tr>
+         <td>
+            @Html.AuthorizedLabelFor(o => o.Primary_Flag)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(o => o.Primary_Flag)
+         </td>
+      </tr>
+      @*
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Active_Ind)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Active_Ind)
+            </td>
+        </tr>
+        <tr>
+            <td>
+                @Html.AuthorizedLabelFor(o => o.Party)
+            </td>
+            <td>
+                @Html.AuthorizedEditorFor(o => o.Party)
+            </td>
+        </tr>
+        *@
+   </table>
+</div>

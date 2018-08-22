@@ -1,0 +1,30 @@
+﻿@model IEnumerable<smART.ViewModel.Invoice>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+   @(
+ Html.Telerik().Grid<Invoice>()
+        .Name("Grid_Invoice")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+        .Select("_UnPaidInvoices", "Invoice"))
+        .Columns(columns => {
+               columns.Bound(o => o.ID).Title("Invoice#").Filterable(true);
+               columns.Bound(o => o.Invoice_Type);
+               columns.Bound(o => o.Booking.Booking_Ref_No).ClientTemplate("<#= Booking? Booking.Booking_Ref_No : '' #>").Filterable(true);
+               columns.Bound(o => o.Party_Name);
+               columns.Bound(o => o.Net_Amt).Title("Amount").Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+               columns.Bound(o => o.Amount_Paid_Till_Date).Title("Amount Received").Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+               columns.Bound(o => o.Balance_Amount).Filterable(true).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+            })
+           .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+
+        )
+</div>

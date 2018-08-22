@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<parameters>
+  <parameter name="DefaultConnection-Web.config Connection String" description="DefaultConnection Connection String used in web.config by the application to access the database." defaultValue="Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-smART.MVC.Service-20140417014017;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-smART.MVC.Service-20140417014017.mdf" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Rsmart\\Rsmart-SY-Project\\smART\.MVC\.Service\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='DefaultConnection']/@connectionString" />
+  </parameter>
+  <parameter name="smARTDBContext-Web.config Connection String" description="smARTDBContext Connection String used in web.config by the application to access the database." defaultValue="Server=tcp:x8xxrf4rts.database.windows.net,1433;Database=Rsmart;User ID=rsmart@x8xxrf4rts;Password=Password@123;Trusted_Connection=False;Encrypt=True;Connection Timeout=30;" tags="SqlConnectionString">
+    <parameterEntry kind="XmlFile" scope="D:\\Rsmart\\Rsmart-SY-Project\\smART\.MVC\.Service\\obj\\Release\\Package\\PackageTmp\\Web\.config$" match="/configuration/connectionStrings/add[@name='smARTDBContext']/@connectionString" />
+  </parameter>
+</parameters>

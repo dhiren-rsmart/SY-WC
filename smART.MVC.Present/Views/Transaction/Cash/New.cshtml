@@ -1,0 +1,157 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.Cash
+@{
+   ViewBag.Title = "Cash Management";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "Cash";
+   ViewBag.DeleteData = Model.ID.ToString();
+
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}"; 
+   
+   ViewBag.SearchAction = "_Index";
+   ViewBag.SearchController = "Cash";
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+}
+@section ButtonSection{
+  @Html.AuthorizedButton("submitForm", "Save", "Submit", new {onclick = "this.disabled=1; this.form.submit();",
+                                                              @class = "t-button"
+                                                              }
+                                                       , (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Save)
+  @Html.AuthorizedButton("newForm", "New", "button", new {onclick = "newEntity()",@class = "t-button" 
+                                                          }, (ViewBag.Feature != null) ? (smART.Common.EnumFeatures) ViewBag.Feature : smART.Common.EnumFeatures.All, smART.Common.EnumActions.Add)
+}
+@section MasterSection
+{ 
+<script type="text/javascript">
+
+      //#region Document.Ready
+  $(document).ready(function ()
+  { 
+    $("#StandardButtonSection").attr('style', 'display:none');
+  });
+      //#endregion 
+
+</script>
+
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td>@Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Transaction_Type)
+            </td>
+            <td>
+               @Html.AuthorizedEditorFor(m => m.Transaction_Type, new { LovType = "Cash_Trans_Type", selectedItem = "Add Cash" })
+            </td>
+         </tr>        
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Amount)
+            </td>
+            <td>
+             @(Html.Telerik().NumericTextBoxFor(m => m.Amount).Spinners(false).MinValue(0))
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Balance)
+            </td>
+            <td>
+              @Html.TextBoxFor(m => m.Balance, new { @readonly = "readonly" })
+            </td>
+         </tr>
+          <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Date)
+            </td>
+            <td>
+              @Html.TextBoxFor(m => m.Date, new { @readonly = "readonly" })
+            </td>
+         </tr>
+          <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Created_By,"Login")
+            </td>
+            <td>
+              @Html.TextBoxFor(m => m.Created_By, new { @readonly = "readonly" })
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @(Html.Telerik().TabStrip()
+    .Name("Cash_TabStrip")
+    .Items(items => {
+        @* ========================Payment TAB ============================================================*@
+      items.Add()
+          .Text("Payments")
+          .Enabled(true)
+          .Selected(true)                    
+          .Content(Html.Telerik().Grid<PaymentReceiptDetails>()                          
+                          .Columns(columns => {
+                            columns.Bound(o => o.PaymentReceipt.ID).Title("Payment#");
+                            columns.Bound(o => o.Settlement.Scale.Created_Date).ClientTemplate("<#= Settlement != null && Settlement.Scale != null ? $.telerik.formatString('{0:MM/dd/yyyy}', Settlement.Scale.Created_Date)  : '' #>").Title("Scale Ticket Date");
+                            columns.Bound(o => o.Settlement.Scale.Scale_Ticket_No).ClientTemplate("<#= Settlement != null && Settlement.Scale != null ? Settlement.Scale.Scale_Ticket_No  : '' #>").Title("Ticket#"); 
+                            columns.Bound(o => o.Apply_Amount).Title("Net Amount").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                            columns.Bound(o => o.PaymentReceipt.Party.Party_Short_Name).ClientTemplate("<#= PaymentReceipt != null && PaymentReceipt.Party != null ? PaymentReceipt.Party.Party_Short_Name  : '' #>").Title("Paid To");
+                          })
+                          .BuildGrid(
+                                  gridName: "Grid_Payment",
+                                  ajaxController: "PaymentDetails",
+                                  action: "_GetQScalePaymentHistory",
+                                  routedValue: null,
+                                  indexID: Model.ID.ToString(),
+                                  hiddenColumns: new string[] { "ID","Balance_Amount","Paid_In_Full","Apply_Amount" },
+                                  allowEdit: false,
+                                  allowInsert: false,
+                                  allowDelete: false,
+                                  feature: smART.Common.EnumFeatures.Transaction_Payment
+                              ).Pageable(paging => paging.PageSize(10)).ToString());                                                        
+        //.ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                            
+                
+       @* ========================Audit TAB ============================================================*@
+      items.Add()
+          .Text("Audit")
+          .Enabled(true)        
+          .Content(Html.Telerik().Grid<AuditLog>()
+                          .Columns(columns => {
+                            columns.Bound(o => o.Field_Name);
+                            columns.Bound(o => o.Old_Value).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                            columns.Bound(o => o.New_Value).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                            columns.Bound(o => o.Last_Updated_Date).Title("Updated Date");
+                            columns.Bound(o => o.Updated_By).Title("Updated By");
+                          })
+                          .BuildGrid(
+                                  gridName: "Grid_Scale_AuditLog",
+                                  ajaxController: "AuditLog",
+                                  action: "_GetCashAuditLog",
+                                  routedValue:null,                                            
+                                  indexID: Model.ID.ToString(),
+                                  hiddenColumns: new string[] { "ID", "Field_Name", "Old_Value","New_Value"},
+                                  allowEdit: false,
+                                  allowInsert: false,
+                                  allowDelete: false,
+                                  feature: smART.Common.EnumFeatures.Transaction_AuditLog
+                              )
+                             
+                            //.ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnDataBinding("LookupGrid_onDataBinding"))
+                            .ToHtmlString()
+                );
+       })
+
+  )
+ }
+@section DetailsSection
+{
+   <div />
+}

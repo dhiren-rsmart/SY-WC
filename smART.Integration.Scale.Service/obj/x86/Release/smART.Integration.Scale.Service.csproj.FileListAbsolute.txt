@@ -1,0 +1,9 @@
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\bin\Release\smART.Integration.Scale.Service.exe.config
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\bin\Release\smART.Integration.Scale.Service.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\bin\Release\smART.Integration.Scale.Service.pdb
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\bin\Release\Newtonsoft.Json.dll
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\obj\x86\Release\smART.Integration.Scale.Service.csprojResolveAssemblyReference.cache
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\obj\x86\Release\smART.Integration.Scale.Service.ProjectInstaller.resources
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\obj\x86\Release\smART.Integration.Scale.Service.csproj.GenerateResource.Cache
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\obj\x86\Release\smART.Integration.Scale.Service.exe
+D:\Rsmart\Rsmart-SY-Project\smART.Integration.Scale.Service\obj\x86\Release\smART.Integration.Scale.Service.pdb

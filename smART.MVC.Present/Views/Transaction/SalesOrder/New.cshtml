@@ -1,0 +1,450 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions;
+@model SalesOrder
+@{
+   ViewBag.Title = "Sales Order";
+
+   ViewBag.AjaxFormSubmitMethod = "Save";
+   ViewBag.NewUrl = "New";
+
+   ViewBag.DeleteAction = "_Delete";
+   ViewBag.DeleteController = "SalesOrder";
+   ViewBag.DeleteData = Model.ID;
+
+   ViewBag.SearchAction = "_GetAllItems";
+   ViewBag.SearchController = "SalesOrderItem";
+   ViewBag.Transaction = true;
+   Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutMasterDetails.cshtml";
+
+   ViewBag.PrintID = Model.ID;
+   ViewBag.PrintAction = "SalesOrder";
+   ViewBag.PrintController = "Reports";
+   ViewBag.PrintParams = "{ID: " + Model.ID + "}";  
+   
+}
+@section MasterSection
+{
+   <script language="javascript" type="text/javascript">
+
+      $(document).ready(function ()
+      {
+         if ("True" == "@ViewBag.IsCopy")
+         {
+            $("#ID").val(0)
+         }
+      });
+   </script>
+   <script language="javascript" type="text/javascript">
+    
+        function Child_Grid_onEdit_Local(e) {
+
+            Child_Grid_onEdit(e);
+
+            if (e.dataItem["Item"]!=null)
+              $("#LabelID_Item").val(e.dataItem["Item"].Short_Name);
+            if (e.dataItem["Item_Override"]!=null)
+              $("#LabelID_Item_Override").val(e.dataItem["Item_Override"].Short_Name);
+        }
+
+    function Child_Grid_onSave(e) {
+        // Set SalesOrder.ID to the Parent ID
+        e.values["SalesOrder.ID"] = @Model.ID;
+        e.values["Parent.ID"] = @Model.ID; //required for notes etc.
+        // The following are "required" fields for thr SalesOrder object; 
+        // setting them to ANY value has no effect, 
+        // as these values are overwritten based on the ID
+        // set in the "SalesOrder.ID" field above
+
+        e.values["Item.Category"] = 'Test';
+        e.values["Item.Group"] = 'Test'
+
+//        e.values["SalesOrder_Name"] = 'Test';
+//        e.values["SalesOrder_Short_Name"] = 'Test';
+//        e.values["SalesOrder_Type"] = 'Test';
+    }
+
+
+
+    function OnPartyChange(e) {
+       var tGrid = $('#SearchWindowGrid_Contact').data('tGrid');
+        tGrid.rebind({Id: e.ID });
+                    
+        //set the refresh button ID value
+        tGrid.ajax = { selectUrl: "../Contact/_Index/" + e.ID };
+
+        $('#LabelID_Contact').val('');                            
+        $("#HiddenID_ContactID").val(0);  
+        $('#HiddenID_ContactFirst_Name').val(''); 
+        $('#HiddenID_ContactLast_Name').val('');    
+           
+      }
+
+   </script>
+   <script type="text/javascript">
+
+      function TabSelect(tab, index)
+      {
+         var tabstrip = $(tab).data("tTabStrip");
+         var item = $("li", tabstrip.element)[index];
+         tabstrip.select(item);
+      }
+      function TabEnable(tab, index)
+      {
+         var tabstrip = $(tab).data("tTabStrip");
+         var item = $("li", tabstrip.element)[index];
+         tabstrip.enable(item);
+      }
+      function TabDisable(tab, index)
+      {
+         var tabstrip = $(tab).data("tTabStrip");
+         var item = $("li", tabstrip.element)[index];
+         tabstrip.disable(item);
+      }
+      function OnCategoryChange(e)
+      {
+         var selectedValue = e.value;
+
+         TabDisable("#SalesOrder_TabStrip", 0);
+         TabDisable("#SalesOrder_TabStrip", 1);
+
+         if (selectedValue.indexOf("Inbound") == -1)
+         {
+            TabEnable("#SalesOrder_TabStrip", 1);
+            TabSelect("#SalesOrder_TabStrip", 1);
+            TabDisable("#SalesOrder_TabStrip", 0);
+         }
+         else if (selectedValue.indexOf("Outbound") == -1)
+         {
+            TabEnable("#SalesOrder_TabStrip", 0);
+            TabSelect("#SalesOrder_TabStrip", 0);
+            TabDisable("#SalesOrder_TabStrip", 1);
+         }
+      }
+   </script>
+   <script language="javascript" type="text/javascript">
+
+      function hideEdit(e)
+      {
+         $(e.row).find('a.t-grid-edit').remove();
+      }
+
+      function onRowDataBound(e)
+      {
+         if (e.dataItem.RemoveDelete > 0)
+         {
+            $(e.row).find('a.t-grid-delete').remove(); //remove Delete button
+         }
+      }
+
+   </script>
+    <script type="text/javascript" language="javascript">
+       function OnShowHideImage_Clicked(e)
+       {
+          var grid = $("#Grid_SalesOrder_Attachments").data('tGrid');
+          var Rows = grid.$rows();
+          for (var i = 0; i < Rows.length; i++)
+          {
+             var row = Rows[i];
+             ShowHideAttchmentImage(row, grid);
+          }
+       }
+       function Attachment_Grid_onRowDataBound(e)
+       {
+          var grid = $("#Grid_SalesOrder_Attachments").data('tGrid');
+          ShowHideAttchmentImage(e.row, grid);
+       }
+   </script>
+    @* Print *@
+   <script type="text/javascript" language="javascript">
+
+      function ValidatePrint()
+      {
+         if (eval('@Model.ID') === '0')
+         {
+            alert('There is nothing to print.');
+            return false;
+         }
+         return true;
+      }
+   </script>
+   @* @( Html.Telerik().Window()
+            .Name("ExpenseEditor")
+            //.Title("View PDF")
+            //.Icon(Url.Content("~/Content/Common/Icons/favicon.png"), "favicon")
+            .LoadContentFrom(Model.PDFFilePath).Modal(true)
+            .Buttons(buttons => buttons.Close(Url.Action("Controller", "Action")))
+            //.Buttons(buttons => buttons.Maximize(Url.Action("Controller")).Close(Url.Action("Controller", "Action")))
+            .Scrollable(false)
+            .Resizable()
+            .Draggable(true)
+            .Width(870)
+            .Height(500)
+            .Render();
+    )*@ @* <hr />*@
+ @*  <h3>
+      Sales Order Details ...</h3>*@
+   @Html.ValidationSummary()
+   <div class="editLeft">
+      <table>
+         <tr>
+            <td style="width: 25%">
+               @Html.AuthorizedLabelFor(m => m.ID)
+            </td>
+            <td style="width: 75%">
+               @Html.TextBoxFor(m => m.ID, new { @readonly = "readonly" })
+               @* @Model.FormatedID*@ @*@Html.HiddenFor(m => m.ID)*@ @* @Html.HiddenFor(m => m.Created_Date)*@
+            </td>
+         </tr>
+         <tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Party)
+            </td>
+            <td>
+               <div id="ddlParty">
+                  @Html.LookupHtml(m => m.Party, "PartyLookup", "ID", "Party_Name", "_PartyByType", "Party", new { partytype = "Buyer" }, "_GetJson", "Party", new string[] { "ID", "Party_Name", "Party_Short_Name" }, "OnPartyChange")
+               </div>
+            </td>
+         </tr>
+         <tr>@*Contact ID*@
+            <td>@Html.AuthorizedLabelFor(m => m.Contact)
+            </td>
+            <td>
+               <div id="ddlContact">
+                  @Html.LookupHtml(m => m.Contact, "ContactLookup", "ID", "ListText", "_Index", "Contact", new { id = @Model.Party == null ? 0: @Model.Party.ID }, "_GetJson", "Contact", new string[] { "ID", "ListText", "Email" })
+               </div>
+               @*@Html.LookupHtml(m=> m.Item , "ItemLookup", "ID", "Long_Name", "_Index", "Item", null, "_GetJson", "item", new string[] { "ID", "Long_Name", "Short_Name" })*@
+               @*@Html.LookupHtml(m => m.Item, "BankLookup", "ID", "Bank_Name", "_Index", "Bank", null, "_GetJson", "Bank", new string[] { "ID", "Account_No", "Bank_Name" })*@
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>@*Party Order Ref#*@
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Party_Order_Ref)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Party_Order_Ref)
+            </td>
+         </tr>
+         <tr>@*Order Type*@
+            <td>@Html.AuthorizedLabelFor(m => m.Order_Type)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Order_Type, new { LovType = "ORDER_TYPE", selectedItem = "Firm" })
+            </td>
+         </tr>
+         <tr>@*Order Status*@
+            <td>@Html.AuthorizedLabelFor(m => m.Order_Status)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Order_Status, new { LovType = "ORDER_STATUS", selectedItem = "Open" })
+            </td>
+         </tr>
+      </table>
+   </div>
+   <div class="editLeft">
+      <table>
+         <tr>@*Order Closed By?*@
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Order_Closed_By)
+            </td>
+            <td>@Html.TextBoxFor(m => m.Order_Closed_By, new { @readonly = "readonly" })
+            </td>
+         </tr>
+         <tr>@*Order Requested By*@
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Order_Requested_By)
+            </td>
+            <td style="width: 75%">@Html.AuthorizedEditorFor(m => m.Order_Requested_By)
+            </td>
+         </tr>
+         <tr>@*Order Created  By*@
+            <td style="width: 25%">@Html.AuthorizedLabelFor(m => m.Order_Created_By)
+            </td>
+            <td style="width: 75%">@Html.AuthorizedEditorFor(m => m.Order_Created_By)
+            </td>
+         </tr>
+         @*<tr>
+            <td>@Html.AuthorizedLabelFor(m => m.Scale_Broker)
+            </td>
+            <td>@Html.AuthorizedEditorFor(m => m.Scale_Broker, new { LovType = "ORDER_SUB_TYPE", selectedItem = "Scale" })
+            </td>
+         </tr>*@
+      </table>
+   </div>
+   <div class="editClear">
+   </div>
+   <hr />
+   @(Html.Telerik().TabStrip()
+            .Name("SalesOrder_TabStrip")
+    .Items(items => {
+       items.Add()
+           .Text("Items")
+           .Selected(true)
+           .Enabled(true)
+           .Content(Html.Telerik().Grid<SalesOrderItem>()
+            .Columns(columns => {
+               columns.Bound(o => o.Item.Short_Name).Title("Item");
+               columns.Bound(o => o.Item_Override).Title("Item Override");
+
+            })
+           .BuildGrid(
+               gridName: "Grid_Item_List",
+               ajaxController: "SalesOrderItem",
+               indexID: Model.ID.ToString(),
+               hiddenColumns: new string[] {"No_Of_Containers","Container_Type", "Item", "Item_Override", "Price_UOM", "Payment_Method_UOM", "Payment_Method_Amt1", "Payment_Method_Amt2", "Payment_Method_Amt3", "Payment_Method_Amt4", "Order_Confirmed_By", "ID" },
+               feature: smART.Common.EnumFeatures.Transaction_SalesOrderItem
+           )
+           .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local").OnError("Grid_onError"))
+           .ToHtmlString()
+          );
+
+       items.Add()
+               .Text("Shipping Info and Order Terms")
+               .Enabled(true)
+               .Content(@<text>
+   <table>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Party_Location)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Party_Location)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Delivery_Destination)
+         </td>
+         <td>
+            @Html.AuthorizedEditorFor(m => m.Delivery_Destination, new { LovType = "PORT_OF_DISCHARGE" })
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Ship_Via)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Ship_Via, new { LovType = "SHIPPING_MEDIUM" })
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Payment_Terms)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Payment_Terms, new { LovType = "PAYMENT_TERMS" })
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Shipping_Terms)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Shipping_Terms, new { LovType = "SHIPPING_TERMS" })
+         </td>
+      </tr>
+   </table>
+   </text>);
+
+       items.Add()
+               .Text("Other Info")
+               .Enabled(true)
+               .Content(@<text>
+   <table>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Order_Date)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Order_Date)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Order_Expired_By)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Order_Expired_By)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Delivery_Due_Date)
+         </td>
+         <td>@Html.AuthorizedEditorFor(m => m.Delivery_Due_Date)
+         </td>
+      </tr>
+      <tr>
+         <td>@Html.AuthorizedLabelFor(m => m.Qty_Variance)
+         </td>
+         <td>
+            @*@Html.AuthorizedEditorFor(m => m.Qty_Variance)*@
+            @(Html.Telerik().NumericTextBoxFor(m => m.Qty_Variance).Spinners(false).MinValue(0).MaxValue(100))
+         </td>
+      </tr>
+   </table>
+   </text>);
+     @* Scale Tickets TAB *@
+       items.Add()
+           .Text("Scale Tickets")
+           .Enabled(true)           
+           .Content(Html.Telerik().Grid<Scale>()
+                             .Columns(columns => {
+                                 columns.BoundActionLink((item) => item.ID, "Index", "Scale", (item) => new { id = item.ID }).Title("Ticket#");
+                                //columns.Bound(o => o.Scale_Ticket_No).Title("Ticket#");
+                                //columns.Bound(o => o.Container_No.Booking.Booking_Ref_No).ClientTemplate("<#= Container_No ? Container_No.Booking.Booking_Ref_No : '' #>").Title("Booking#");
+                                //columns.Bound(o => o.Container_No.Container_No).ClientTemplate("<#= Container_No ? Container_No.Container_No : '' #>").Title("Container#");
+                                columns.Bound(o => o.Gross_Weight).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                                columns.Bound(o => o.Tare_Weight).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                                columns.Bound(o => o.Net_Weight).HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.00}");
+                                columns.Bound(o => o.Net_Weight_SOUOM).Aggregate(a => a.Sum()).ClientFooterTemplate("<div style ='text-align: right;' > Total: <#= typeof Sum != 'undefined' ? $.telerik.formatString('{0:0.000}', Sum) : 0  #> </div>").HtmlAttributes(new { style = "text-align: right;" }).Format("{0:0.000}").Width("150px"); 
+                             })
+                           .BuildGrid(
+                                   gridName: "Grid_SalesOrder_Scale",
+                                   ajaxController: "Scale",
+                                   action: "_GetScaleTicketsBySO",
+                                   routedValue: new { soId = @Model.ID.ToString() },
+                                   indexID: Model.ID.ToString(),
+                                   hiddenColumns: new string[] { "ID", "Scale_Ticket_No", "Ticket_Type", "Ticket_Status", "Vehicle_Type", "Truck_No", "Vehicle_Plate_No", "Trailer_Chasis_No", "Other_Details", "Driver_Name", "Settlement_Diff_NetWeight", "Party_Name", "Supplier_Scale_Ticket_No", "Asset_ID", "ContainerNo", "Seal_No", "Gross_Weight", "Tare_Weight", "Net_Weight", "Net_Weight_SOUOM", "Net_Weight_POUOM" },
+                                   allowEdit: false,
+                                   allowInsert: false,
+                                   allowDelete: false,
+                                   feature: smART.Common.EnumFeatures.Transaction_Scale
+                               )                             
+                            .Pageable(paging => paging.PageSize(100))
+                             .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit"))
+                             .ToHtmlString()
+                 );
+
+                          
+        @* Notes TAB *@
+       items.Add()
+            .Text("Notes")
+            .Enabled(true)
+            .Content
+            (Html.Telerik().Grid<SalesOrderNotes>()
+                              .BuildGrid(
+                                  gridName: "Grid_SalesOrder_Notes",
+                                  ajaxController: "SalesOrderNotes",
+                                  indexID: Model.ID.ToString(),
+                                  feature: smART.Common.EnumFeatures.Transaction_SalesOrderNote
+                              )
+
+                              .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit_Local"))
+                              .ToHtmlString()
+                   );
+          @* Attachment TAB *@
+       items.Add().Text("Attachments").Content(
+
+               Html.Telerik().Grid<SalesOrderAttachments>()
+                   .BuildGrid(
+                       gridName: "Grid_SalesOrder_Attachments",
+                       ajaxController: "SalesOrderAttachments",
+                       indexID: Model.ID.ToString(),
+                       hiddenColumns: new string[] { "ID" },
+                       allowEdit: false,
+                       allowInsert: true,
+                       allowDelete: true,
+                       feature: smART.Common.EnumFeatures.Transaction_SalesOrderAttachment
+                   )
+                     .ToolBar(toolBar => toolBar.Template(@<text> <a class='t-button t-grid-add'>Add new record</a>
+                                                               <label class="customer-label" for="Customers-input">
+                                                                  Show Images</label>
+                                                               <input type='checkbox' id='chkImage'  name='chkImages' onclick='OnShowHideImage_Clicked("Grid_SalesOrder_Attachments")' />
+                                                               </text>))
+                   .ClientEvents(events => events.OnSave("Child_Grid_onSave").OnEdit("Child_Grid_onEdit").OnRowDataBound("Attachment_Grid_onRowDataBound"))
+                   .ToHtmlString()
+             );
+
+    })
+
+
+     )
+}
+@section DetailsSection
+{
+   <div />
+}

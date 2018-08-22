@@ -1,0 +1,166 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{B843FF1C-96DF-4484-B061-564A4FD262BA}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>smART.MVC.ViewModel</RootNamespace>
+    <AssemblyName>smART.MVC.ViewModel</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="DataAnnotationsExtensions">
+      <HintPath>..\packages\DataAnnotationsExtensions.0.6.0.0\lib\NETFramework40\DataAnnotationsExtensions.dll</HintPath>
+    </Reference>
+    <Reference Include="DataAnnotationsExtensions.ClientValidation">
+      <HintPath>..\packages\DataAnnotationsExtensions.MVC3.0.6.0.0\lib\NETFramework40\DataAnnotationsExtensions.ClientValidation.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Mvc, Version=4.0.0.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.4.0.30506.0\lib\net40\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WebActivator">
+      <HintPath>..\packages\WebActivator.1.1.0.0\lib\NETFramework40\WebActivator.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Administration\LeadLogcs.cs" />
+    <Compile Include="Administration\LOV.cs" />
+    <Compile Include="Administration\LOVType.cs" />
+    <Compile Include="Administration\UOMConversion.cs" />
+    <Compile Include="App_Start\RegisterClientValidationExtensions.cs" />
+    <Compile Include="Attributes\ClientTemplateExtension.cs" />
+    <Compile Include="Attributes\ClientTemplateHtmlAttribute.cs" />
+    <Compile Include="Base\AttachmentEntity.cs" />
+    <Compile Include="Base\BaseAttachment.cs" />
+    <Compile Include="Base\BaseEntity.cs" />
+    <Compile Include="Base\BaseNotes.cs" />
+    <Compile Include="Base\FormatedBaseEntity.cs" />
+    <Compile Include="Base\ExpenseEntity.cs" />
+    <Compile Include="Base\IListType.cs" />
+    <Compile Include="Base\LogOn.cs" />
+    <Compile Include="Base\MenuSelect.cs" />
+    <Compile Include="Base\NotesEntity.cs" />
+    <Compile Include="Base\ViewModelBase.cs" />
+    <Compile Include="Camera\CameraFile.cs" />
+    <Compile Include="Camera\CameraInput.cs" />
+    <Compile Include="Master\DeviceSettings\DeviceSettings.cs" />
+    <Compile Include="Master\FocusArea\FocusArea.cs" />
+    <Compile Include="Master\Party\AddressBook.cs" />
+    <Compile Include="Master\Asset\Asset.cs" />
+    <Compile Include="Master\Asset\AssetAttachments.cs" />
+    <Compile Include="Master\Asset\AssetAudit.cs" />
+    <Compile Include="Master\Party\Bank.cs" />
+    <Compile Include="Master\Party\Bin.cs" />
+    <Compile Include="Master\Party\Contact.cs" />
+    <Compile Include="Master\Item\Item.cs" />
+    <Compile Include="Master\Item\ItemAttachment.cs" />
+    <Compile Include="Master\Item\ItemNotes.cs" />
+    <Compile Include="Master\Item\Note.cs" />
+    <Compile Include="Master\Party\Party.cs" />
+    <Compile Include="Master\Party\PartyChildEntity.cs" />
+    <Compile Include="Administration\PriceList.cs" />
+    <Compile Include="Master\Security\DataAccessControl.cs" />
+    <Compile Include="Master\Security\Employee.cs" />
+    <Compile Include="Master\Security\EmployeeRole.cs" />
+    <Compile Include="Master\Security\Feature.cs" />
+    <Compile Include="Master\Security\Role.cs" />
+    <Compile Include="Master\Security\RoleFeature.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Report\ReportConfig.cs" />
+    <Compile Include="Report\ReportFilter.cs" />
+    <Compile Include="Transaction\AuditLog\AuditLog.cs" />
+    <Compile Include="Transaction\Booking\Booking.cs" />
+    <Compile Include="Transaction\Booking\BookingAttachments.cs" />
+    <Compile Include="Transaction\Booking\BookingNotes.cs" />
+    <Compile Include="Transaction\Booking\Container.cs" />
+    <Compile Include="Transaction\Cash\Cash.cs" />
+    <Compile Include="Transaction\DispatcherRequest\DispatcherRequest.cs" />
+    <Compile Include="Transaction\DispatcherRequest\DispatcherRequestExpense.cs" />
+    <Compile Include="Transaction\Expense\ExpensesRequest.cs" />
+    <Compile Include="Transaction\Inventory\Cycle.cs" />
+    <Compile Include="Transaction\Inventory\CycleDetails.cs" />
+    <Compile Include="Transaction\Inventory\InventoryAudit.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceAttachments.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceChildEntity.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceExpense.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceItem.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceLocalSales.cs" />
+    <Compile Include="Transaction\Invoice\InvoiceNotes.cs" />
+    <Compile Include="Transaction\Invoice\Invoice.cs" />
+    <Compile Include="Transaction\Invoice\Invoice_BookingLookup.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceipt.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptAttachments.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptDetails.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptExpense.cs" />
+    <Compile Include="Transaction\PaymentReceipt\PaymentReceiptNotes.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrder.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderAttachments.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderChildEntity.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderItem.cs" />
+    <Compile Include="Transaction\PurchaseOrder\PurchaseOrderNotes.cs" />
+    <Compile Include="Administration\QB\QBLog.cs" />
+    <Compile Include="Administration\QB\ServiceQBLog.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrder.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderAttachments.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderChildEntity.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderItem.cs" />
+    <Compile Include="Transaction\SalesOrder\SalesOrderNotes.cs" />
+    <Compile Include="Transaction\Scale\Scale.cs" />
+    <Compile Include="Transaction\Scale\ScaleAttachments.cs" />
+    <Compile Include="Transaction\Scale\ScaleDetails.cs" />
+    <Compile Include="Transaction\Scale\ScaleExpense.cs" />
+    <Compile Include="Transaction\Scale\ScaleIDCardAttachments.cs" />
+    <Compile Include="Transaction\Scale\ScaleNotes.cs" />
+    <Compile Include="Transaction\Settlement\Settlement.cs" />
+    <Compile Include="Transaction\Settlement\SettlementDetails.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+    <None Include="smART.MVC.Model.ClassDiagram" />
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

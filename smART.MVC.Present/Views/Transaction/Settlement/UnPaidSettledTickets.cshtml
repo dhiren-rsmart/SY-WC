@@ -1,0 +1,40 @@
+﻿@model IEnumerable<smART.ViewModel.Settlement>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript">
+
+  function onRowDataBoundGrid_Settlement(e) {
+    if (e.dataItem.Amount_Paid_Till_Date > 0) {
+       e.row.cells[6].innerText = "";
+    }
+  }
+
+</script>
+<div>
+@(
+ Html.Telerik().Grid<Settlement>()
+        .Name("Grid_Settlement")
+             .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+            .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+           .Select("_UnPaidSettledTickets", "Settlement"))
+        .Columns(columns => {
+              columns.Bound(o => o.Scale.Scale_Ticket_No).Filterable(true);
+              columns.Bound(o => o.Scale.Party_ID.Party_Name);
+              columns.Bound(o => o.Scale.Net_Weight);
+              columns.Bound(o => o.Amount);
+              columns.Bound(o => o.Amount_Paid_Till_Date);
+              columns.Bound(o => o.Balance_Amount);
+              columns.Bound(o => o.ID).Title("Undo").ClientTemplate(Ajax.ActionLink("Undo", "Undo", "Settlement", new {
+                settlementId = "<#= ID #>"
+              }, null).ToHtmlString()).Filterable(false);
+            })
+           .ClientEvents(events => events.OnRowDataBound("onRowDataBoundGrid_Settlement").OnLoad("SetDefaultFilterToContains")).Filterable()
+   )
+</div>

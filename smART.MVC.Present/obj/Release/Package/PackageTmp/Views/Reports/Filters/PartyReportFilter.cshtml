@@ -1,0 +1,65 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.ReportFilter
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutReportsDetails.cshtml";  
+  ViewBag.Feature = smART.Common.EnumFeatures.Reports_Report; 
+  ViewBag.Transaction = true;
+}
+
+
+<script type="text/javascript">
+
+  function onPartyChange(e)
+  {
+    $("#PartyID").val(e.value);
+  }
+
+  
+  function RefreshReport()
+  {
+    var item = new Object();
+    item = new Object({ FocusAreaID: $("#FocusAreaID").val(), ReportName: $("#ReportName").val(), PartyID: $("#PartyID").val(), LicenseID: $("#LicenseID").val(), DataSet_Name: $("#DataSet_Name").val(), Parameters: $("#Parameters").val() });
+    Refresh(item)
+  }
+</script>
+
+<table>
+  <tr>
+ @*  <td>
+      @Html.AuthorizedLabelFor(m => m.FromDate)
+    </td>
+    <td>
+      @Html.Telerik().DatePickerFor(m => m.FromDate)
+    </td>
+
+    <td>
+      @Html.AuthorizedLabelFor(m => m.ToDate)
+    </td>
+    <td>
+      @Html.Telerik().DatePickerFor(m => m.ToDate)
+    </td>
+*@
+    <td>@Html.Label("Party")
+   </td>
+    <td>
+       @(Html.Telerik().ComboBox().Name("Party").DropDownHtmlAttributes(new {style = "height: 200px; width:250px;"}).BindTo(PartyHelper.PartyList("")).ClientEvents(events => events.OnChange("onPartyChange")).SelectedIndex(0))        
+    </td>
+      <td>
+          @Html.Label("License ID")
+    </td>
+      <td>
+          @Html.AuthorizedEditorFor(m => m.LicenseID)
+      </td>
+      
+    <td>
+     <button type="submit" class="t-button" onclick="RefreshReport()">Refresh</button>
+       @Html.HiddenFor(m => m.PartyID)       
+       @Html.HiddenFor(m => m.FocusAreaID)      
+       @Html.HiddenFor(m => m.ReportName)      
+       @Html.HiddenFor(m => m.DataSet_Name)      
+       @Html.HiddenFor(m => m.Parameters)  
+     </td>
+  </tr>
+</table>

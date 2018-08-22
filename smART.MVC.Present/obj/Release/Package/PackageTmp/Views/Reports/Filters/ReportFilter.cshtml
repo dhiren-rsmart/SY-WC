@@ -1,0 +1,24 @@
+﻿@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@using smART.MVC.Present.Extensions
+@model smART.ViewModel.ReportFilter
+@{
+  Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_LayoutReportsDetails.cshtml";
+  ViewBag.Feature = smART.Common.EnumFeatures.Reports_Report;
+
+  ViewBag.SearchAction = "_GetAllItems";
+  ViewBag.SearchController = "SalesOrderItem";
+  ViewBag.Transaction = true;
+}
+<script type="text/javascript">
+
+  function RefreshReport()
+  {
+    var item = new Object();
+    item = new Object({ FocusAreaID: $("#FocusAreaID").val(), ReportName: $("#ReportName").val(), DataSet_Name: $("#DataSet_Name").val(), Parameters: $("#Parameters").val()    
+    });
+    Refresh(item)
+  }
+
+
+</script>

@@ -1,0 +1,35 @@
+﻿@model IEnumerable<smART.ViewModel.Container>
+@using smART.ViewModel
+@using smART.MVC.Present.Helpers
+@{
+    Layout = Request.IsAjaxRequest() ? null : "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    @(
+ Html.Telerik().Grid<Container>()
+        .Name("Grid_Booking_List")
+        .Selectable()
+        .DataKeys(keys => keys.Add(key => key.ID))
+        .Pageable(paging => paging.PageSize(ViewBag.PageSize)
+            .Style(Telerik.Web.Mvc.UI.GridPagerStyles.NextPreviousAndNumeric)
+            .Total(100))
+        .DataBinding(bindings => bindings.Ajax()
+        .Select("_OpenBookingContainers", "Container"))
+        .Columns(columns =>
+            {
+                columns.Bound(o => o.Booking.Sales_Order_No.Party.Party_Name);
+                columns.Bound(o => o.Booking.Sales_Order_No.ID).Title("Sales Order#");
+                columns.Bound(o => o.Booking.Booking_Ref_No);
+                //columns.Bound(o => o.Booking.Sales_Order_No.ItemName);
+                //columns.Bound(o => o.ItemName);           
+                columns.Bound(o => o.Container_No);
+                //columns.Bound(o => o.ContainerType);
+                columns.Bound(o => o.Booking.Pickup_Date);
+                columns.Bound(o => o.Booking.Cutoff_Date);               
+                columns.Bound(o => o.ID).Title("Select").ClientTemplate(Ajax.ActionLink("Select", "SelectOpneBookingItem", "Scale", new { id = "<#= ID #>" },null).ToHtmlString()).Filterable(false);
+
+            })
+             .ClientEvents(events => events.OnLoad("SetDefaultFilterToContains")).Filterable()
+
+)
+</div>
